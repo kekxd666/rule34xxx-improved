@@ -2,7 +2,7 @@
 #### A lot of improvements for rule34.xxx ![rule34](https://rule34.xxx/favicon.ico)
 #### Click [here](https://github.com/kekxd666/rule34xxx-improved/raw/main/rule34_improved.user.js) to install.
 
-Navigate to your account options page to view and customize all of your options.
+Navigate to your account options page to view and customize all of your options. ([My Account > Options](https://rule34.xxx/index.php?page=account&s=options))
 ###### Tested on: Violent Monkey
 
 ## Features (Options):
@@ -22,4 +22,4 @@ Navigate to your account options page to view and customize all of your options.
 - Hide Fav Posts
 - Embed Video
 - Thumb Fav
-- Main Page Extra
+- Main Page Extra (Tag Bookmark, Superfav Gallery)
