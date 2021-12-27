@@ -625,7 +625,7 @@ if (isPage_opt) {
 		slider.className = "slider";
 		let slider_info = document.createElement("p");
 		slider_info.style = "display: inline-block;";
-		slider_info.innerHTML = "Volume: " + slider.value + "%";
+		slider_info.innerHTML = slider.value + "%";
 		slider.oninput = function() {
 			slider_info.innerHTML = slider.value + "%";
 			GM_setValue(viewportDependentHeight_, slider.value);
