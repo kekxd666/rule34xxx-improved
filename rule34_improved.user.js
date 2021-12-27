@@ -405,6 +405,7 @@ function favPost(id, close = false, element = null) {
 	// wait for server to respond
 	var timer = setInterval(function() {
 		var selectElement = document.getElementById("notice");
+		if (selectElement.innerHTML.includes("You are not logged in")) { clearInterval(timer); return; }
 		if (!selectElement.innerHTML.includes("Post added to favorites") && !selectElement.innerHTML.includes("Post already in your favorites")) {
 			document.title = id + ": ...";
 			selectElement.innerHTML = "Server is slow, trying again..."
