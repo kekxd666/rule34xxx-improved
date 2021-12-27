@@ -12,10 +12,11 @@
 // ==/UserScript==
 
 // Tested on: Violent Monkey
+// If you want to edit settings, go to the options page of your account...
 
-//|
-//|  If you want to edit settings, go to the options page of your account...
-//|
+// TODO:
+// - replace all iframe calls with a get request call
+
 function getSetting(settingName, settingDefault) {
 	let value = GM_getValue(settingName, null);
 	if (value == null) { GM_setValue(settingName, settingDefault); value = settingDefault; }
