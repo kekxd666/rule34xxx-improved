@@ -16,88 +16,40 @@
 //|
 //|  If you want to edit settings, go to the options page of your account...
 //|
-function recheckS(s_, s) {
-	if (GM_getValue(s_, null) == null) {
-		GM_setValue(s_, s);
-	}
+function getSetting(settingName, settingDefault) {
+	let value = GM_getValue(settingName, null);
+	if (value == null) { GM_setValue(settingName, settingDefault); value = settingDefault; }
+	return value;
 }
 
-var autoplayVideos_ = "autoplayVideos";
-var autoplayVideos = GM_getValue(autoplayVideos_, false);
-recheckS(autoplayVideos_, autoplayVideos);
-var defaultVideoVolume_ = "defaultVideoVolume";
-var defaultVideoVolume = GM_getValue(defaultVideoVolume_, 1);
-recheckS(defaultVideoVolume_, defaultVideoVolume);
-var useViewportDependentSize_ = "useViewportDependentSize";
-var useViewportDependentSize = GM_getValue(useViewportDependentSize_, true);
-recheckS(useViewportDependentSize_, useViewportDependentSize);
-var viewportDependentHeight_ = "viewportDependentHeight";
-var viewportDependentHeight = GM_getValue(viewportDependentHeight_, 70);
-recheckS(viewportDependentHeight_, viewportDependentHeight);
-var stretchImgVid_ = "stretchImgVid";
-var stretchImgVid = GM_getValue(stretchImgVid_, true);
-recheckS(stretchImgVid_, stretchImgVid);
-var trueVideoSize_ = "trueVideoSize";
-var trueVideoSize = GM_getValue(trueVideoSize_, false);
-recheckS(trueVideoSize_, trueVideoSize);
-var enableFavOnEnter_ = "enableFavOnEnter";
-var enableFavOnEnter = GM_getValue(enableFavOnEnter_, true);
-recheckS(enableFavOnEnter_, enableFavOnEnter);
-var hideBlacklistedThumbnails_ = "hideBlacklistedThumbnails";
-var hideBlacklistedThumbnails = GM_getValue(hideBlacklistedThumbnails_, true);
-recheckS(hideBlacklistedThumbnails_, hideBlacklistedThumbnails);
-var forceDarkTheme_ = "forceDarkTheme";
-var forceDarkTheme = GM_getValue(forceDarkTheme_, true);
-recheckS(forceDarkTheme_, forceDarkTheme);
-var betterDarkTheme_ = "betterDarkTheme";
-var betterDarkTheme = GM_getValue(betterDarkTheme_, true);
-recheckS(betterDarkTheme_, betterDarkTheme);
-var removeBloat_ = "removeBloat";
-var removeBloat = GM_getValue(removeBloat_, true);
-recheckS(removeBloat_, removeBloat);
-var endlessScrolling_ = "endlessScrolling";
-var endlessScrolling = GM_getValue(endlessScrolling_, true);
-recheckS(endlessScrolling_, endlessScrolling);
-var favFilter_ = "favFilter";
-var favFilter = GM_getValue(favFilter_, true);
-recheckS(favFilter_, favFilter);
-var showFavPosts_ = "showFavPosts";
-var showFavPosts = GM_getValue(showFavPosts_, true);
-recheckS(showFavPosts_, showFavPosts);
-var showFavPosts2_ = "showFavPosts2";
-var showFavPosts2 = GM_getValue(showFavPosts2_, false);
-recheckS(showFavPosts2_, showFavPosts2);
-var embedVideo_ = "embedVideo";
-var embedVideo = GM_getValue(embedVideo_, true);
-recheckS(embedVideo_, embedVideo);
-var thumbFav_ = "thumbFav";
-var thumbFav = GM_getValue(thumbFav_, true);
-recheckS(thumbFav_, thumbFav);
-
-var rootCss = `
-:root {
-    --favdisplay: inline;
-}
-`;
+var autoplayVideos_            = "autoplayVideos";            var autoplayVideos            = getSetting(autoplayVideos_            , false);
+var defaultVideoVolume_        = "defaultVideoVolume";        var defaultVideoVolume        = getSetting(defaultVideoVolume_        , 1);
+var useViewportDependentSize_  = "useViewportDependentSize";  var useViewportDependentSize  = getSetting(useViewportDependentSize_  , true);
+var viewportDependentHeight_   = "viewportDependentHeight";   var viewportDependentHeight   = getSetting(viewportDependentHeight_   , 70);
+var stretchImgVid_             = "stretchImgVid";             var stretchImgVid             = getSetting(stretchImgVid_             , true);
+var trueVideoSize_             = "trueVideoSize";             var trueVideoSize             = getSetting(trueVideoSize_             , false);
+var enableFavOnEnter_          = "enableFavOnEnter";          var enableFavOnEnter          = getSetting(enableFavOnEnter_          , true);
+var hideBlacklistedThumbnails_ = "hideBlacklistedThumbnails"; var hideBlacklistedThumbnails = getSetting(hideBlacklistedThumbnails_ , true);
+var forceDarkTheme_            = "forceDarkTheme";            var forceDarkTheme            = getSetting(forceDarkTheme_            , true);
+var betterDarkTheme_           = "betterDarkTheme";           var betterDarkTheme           = getSetting(betterDarkTheme_           , true);
+var removeBloat_               = "removeBloat";               var removeBloat               = getSetting(removeBloat_               , true);
+var endlessScrolling_          = "endlessScrolling";          var endlessScrolling          = getSetting(endlessScrolling_          , true);
+var favFilter_                 = "favFilter";                 var favFilter                 = getSetting(favFilter_                 , true);
+var showFavPosts_              = "showFavPosts";              var showFavPosts              = getSetting(showFavPosts_              , true);
+var showFavPosts2_             = "showFavPosts2";             var showFavPosts2             = getSetting(showFavPosts2_             , false);
+var embedVideo_                = "embedVideo";                var embedVideo                = getSetting(embedVideo_                , true);
+var thumbFav_                  = "thumbFav";                  var thumbFav                  = getSetting(thumbFav_                  , true);
+var mainPageExtra_             = "mainPageExtra";             var mainPageExtra             = getSetting(mainPageExtra_             , true);
 
 
+var rootCss = `:root { --favdisplay: inline; }`;
 GM_addStyle(rootCss);
 
 var betterDarkThemeCss = `
 * { --c-bg: #101010; --c-bg-alt: #101010; --c-bg-highlight: #202020; }
-
 body { background-image: none !important; color: white !important; background-color: #101010 !important }
-
 table.highlightable td { border-color: #023C00; }
-
-input[type="text"], input[type="password"], input[type="email"], textarea, select {
-	color: lime;
-	background-color: black;
-	border-color: green;
-	border-style:solid;
-	margin: 1px;
-}
-
+input[type="text"], input[type="password"], input[type="email"], textarea, select { color: lime; background-color: black; border-color: green; border-style:solid; margin: 1px;}
 input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, textarea:focus, select:focus { background-color: #101010 !important; }
 
 .awesomplete [hidden] { display: none }
@@ -292,7 +244,7 @@ var postCss = `
 }`) : "");
 
 var favedPostStyle = `
-  display: var(--favdisplay);
+	display: var(--favdisplay);
 	background: linear-gradient(to bottom, hotpink, purple);
 	opacity: 0.4;
 `;
@@ -315,23 +267,10 @@ var expandButtonStyle = `
 	text-align: center;
 `;
 
-/// TODO:
-//    - inject custom checkbox css / radio button css
-//    - add fav button while browsing in thumb div
-
 // add custom css to show that the post is in fav
 function showFavPosts_check(element) {
 
-	//console.log(element);
-
-	if (element == null ||
-		element.className == "thumb fav" ||
-		!GM_getValue("favlist", []).includes(getPostID(element))
-	) {
-		return
-	}
-
-	//if (showFavPosts2) { element.remove(); return; }
+	if (element == null || element.className == "thumb fav" || !GM_getValue("favlist", []).includes(getPostID(element))) { return }
 
 	let heart = document.createElement("div");
 	heart.style = heartStyle;
@@ -349,11 +288,7 @@ function showFavPosts_check(element) {
 
 function updateNavbar_p1(postID) {
 	let navbar = document.getElementById("subnavbar");
-	for (let i = 0; i < navbar.childNodes.length; i++) {
-		if (navbar.childNodes[i].id == "isinfav") {
-			return;
-		}
-	}
+	for (let i = 0; i < navbar.childNodes.length; i++) { if (navbar.childNodes[i].id == "isinfav") { return; } }
 	if (GM_getValue("favlist", []).includes(postID)) {
 		let div = document.createElement("div");
 		div.id = "isinfav";
@@ -365,20 +300,11 @@ function updateNavbar_p1(postID) {
 
 function updateNavbar_p2(postID) {
 	let navbar = document.getElementById("subnavbar");
-	for (let i = 0; i < navbar.childNodes.length; i++) {
-		if (navbar.childNodes[i].id == "isinfav2") {
-			return;
-		}
-	}
+	for (let i = 0; i < navbar.childNodes.length; i++) { if (navbar.childNodes[i].id == "isinfav2") { return; } }
 
 	let favlist = GM_getValue("favlist2", []);
 	let cont = false;
-	for (let i = 0; i < favlist.length; i++) {
-		if (favlist[i][0] == postID) {
-			cont = true;
-			break;
-		}
-	}
+	for (let i = 0; i < favlist.length; i++) { if (favlist[i][0] == postID) { cont = true; break; } }
 	if (cont) {
 		let div = document.createElement("div");
 		div.id = "isinfav2";
@@ -389,11 +315,8 @@ function updateNavbar_p2(postID) {
 }
 
 function updateNavbar(postID) {
-	if (!isPage_post || !showFavPosts) {
-		return;
-	}
+	if (!isPage_post || !showFavPosts) { return; }
 	updateNavbar_p1(postID);
-	//console.log(postID);
 	updateNavbar_p2(postID);
 }
 
@@ -406,19 +329,16 @@ function favPost(id, close = false, element = null) {
 	var timer = setInterval(function() {
 		var selectElement = document.getElementById("notice");
 		if (selectElement.innerHTML.includes("You are not logged in")) { clearInterval(timer); return; }
+    
 		if (!selectElement.innerHTML.includes("Post added to favorites") && !selectElement.innerHTML.includes("Post already in your favorites")) {
 			document.title = id + ": ...";
-			selectElement.innerHTML = "Server is slow, trying again..."
+			selectElement.innerHTML = "Error, trying again..."
 			return;
 		}
 
-		if (selectElement.innerHTML.includes("Post added to favorites")) {
-			document.title = id + ": +";
-		} else if (selectElement.innerHTML.includes("Post already in your favorites")) {
-			document.title = id + ": !";
-		} else {
-			document.title = id + ": ?";
-		}
+		if      (selectElement.innerHTML.includes("Post added to favorites"))        { document.title = id + ": +"; }
+		else if (selectElement.innerHTML.includes("Post already in your favorites")) { document.title = id + ": !"; }
+		else                                                                         { document.title = id + ": ?"; }
 
 		clearInterval(timer);
 
@@ -442,19 +362,13 @@ function favPost(id, close = false, element = null) {
 			updateNavbar(id);
 		}
 
-		if (close) {
-			window.close();
-		}
+		if (close) { window.close(); }
 	}, 100);
 }
 
 function favPost2(postID) {
 	let favlist = GM_getValue("favlist2", []);
-	for (let i = 0; i < favlist.length; i++) {
-		if (favlist[i][0] == postID) {
-			return;
-		}
-	}
+	for (let i = 0; i < favlist.length; i++) { if (favlist[i][0] == postID) { return; } }
 
 	let link = "";
 	let as = document.getElementsByTagName("a");
@@ -480,15 +394,11 @@ function httpGet(url, callback, async) {
 			callback(xhr.responseText);
 		}
 	};
-	xhr.onerror = function(e) {
-		console.error(xhr.statusText);
-	};
+	xhr.onerror = function(e) { console.error(xhr.statusText); };
 	xhr.send(null);
 }
 
-function sleep(milliseconds) {
-	return new Promise(resolve => setTimeout(resolve, milliseconds));
-}
+function sleep(milliseconds) { return new Promise(resolve => setTimeout(resolve, milliseconds)); }
 var originalTitle = document.title;
 
 var isPage_post = document.location.href.includes("index.php?page=post&s=view");
@@ -496,29 +406,21 @@ var isPage_posts = document.location.href.includes("index.php?page=post&s=list")
 var isPage_fav = document.location.href.includes("index.php?page=favorites&s=view");
 var isPage_opt = document.location.href.includes("index.php?page=account&s=options");
 var isPage_main = (document.location.href == "http://rule34.xxx/" || document.location.href == "https://rule34.xxx/");
-//console.log(window.location);
 
 // get thumbnail post id
 function getPostID(element) {
 	let id = element.id.replace('s', '');
-	if (id != "") {
-		return id;
-	}
+	if (id != "") { return id; }
 	return element.childNodes[0].id.replace('p', '');
 }
 
-// add extra code to remove the id from favlist
-// when you press the remove button on the favorites page
+// add extra code to remove the id from favlist, when you press the remove button on the favorites page
 function showFavPosts_injectRemoveCode(element) {
 
-	if (!isPage_fav) {
-		return;
-	}
+	if (!isPage_fav) { return;}
 
 	let rm = element.childNodes[2];
-	if (rm == undefined || rm == null) {
-		return;
-	}
+	if (rm == undefined || rm == null) { return; }
 	rm.remove();
 
 	let id = element.childNodes[0].id.replace('p', '');
@@ -537,23 +439,14 @@ function showFavPosts_injectRemoveCode(element) {
 
 // if blacklisted remove
 function hideBlacklistedThumbnails_check(element) {
-	if (element == null ||
-		element.className != "thumb blacklisted-image"
-	) {
-		return;
-	}
+	if (element == null || element.className != "thumb blacklisted-image") { return; }
 	element.remove();
 }
 
 // add fav button on post
 function thumbFav_check(element) {
 
-	if (element == null ||
-		element.className == "thumb fav" ||
-		element.classname == "thumb 4fav"
-	) {
-		return
-	}
+	if (element == null || element.className == "thumb fav" || element.classname == "thumb 4fav" ) { return; }
 
 	element.className = "thumb 4fav";
 	element.style.position = "relative";
@@ -576,24 +469,15 @@ function thumbFav_check(element) {
 
 	element.appendChild(tag);
 
-	tag.onmousedown = function() {
-		tag.remove();
-		favPost(getPostID(element), false, element);
-	};
+	tag.onmousedown = function() { tag.remove(); favPost(getPostID(element), false, element); };
 
-	element.onmouseenter = function() {
-		tag.style.display = "block";
-	};
-	element.onmouseleave = function() {
-		tag.style.display = "none";
-	};
+	element.onmouseenter = function() { tag.style.display = "block"; };
+	element.onmouseleave = function() { tag.style.display = "none"; };
 }
 
 function embedDefaultVideo() {
 	let playerCont = document.getElementById("gelcomVideoContainer");
-	if (!playerCont) {
-		return;
-	}
+	if (!playerCont) { return; }
 
 	// set style of video as the container
 	let vid = document.createElement("video");
@@ -613,28 +497,21 @@ function embedDefaultVideo() {
 
 if (hideBlacklistedThumbnails) {
 	let elements = document.getElementsByClassName("thumb blacklisted-image");
-	while (elements[0]) {
-		elements[0].remove();
-	}
+	while (elements[0]) { elements[0].remove(); }
 }
 
 if (thumbFav) {
 	let elements = document.getElementsByClassName("thumb");
-	for (let i = 0; i < elements.length; i++) {
-		thumbFav_check(elements[i]);
-	}
+	for (let i = 0; i < elements.length; i++) { thumbFav_check(elements[i]); }
 }
 
+// remove clicker ad and other ads
 if (removeBloat) {
 	let items = document.getElementsByTagName("a");
 	for (i = items.length - 1; i >= 0; i--) {
 		//if (items[i].href.includes("clicker")) { items[i].remove(); }
-		if (items[i].href.includes("https://rule34.xxx/hwspecial.php")) {
-			items[i].remove();
-		}
-		if (items[i].href.includes("https://buymyshit.moneygrubbingwhore.com")) {
-			items[i].remove();
-		}
+		if (items[i].href.includes("https://rule34.xxx/hwspecial.php")) { items[i].remove(); }
+		if (items[i].href.includes("https://buymyshit.moneygrubbingwhore.com")) { items[i].remove(); }
 		// will add more if rule34 adds more
 	}
 }
@@ -645,12 +522,8 @@ if (forceDarkTheme) {
 
 	// disable default css
 	document.querySelectorAll('link[rel=stylesheet]').forEach(function(node) {
-		if (node.href.includes("desktop.css")) {
-			node.disabled = true;
-		}
-		if (node.href.includes("h2-mobile.css")) {
-			node.disabled = true;
-		}
+		if (node.href.includes("desktop.css")) { node.disabled = true; }
+		if (node.href.includes("h2-mobile.css")) { node.disabled = true; }
 	});
 
 	// append dark theme
@@ -663,9 +536,7 @@ if (forceDarkTheme) {
 	head.appendChild(link);
 
 	// append even better dark theme css
-	if (betterDarkTheme) {
-		GM_addStyle(betterDarkThemeCss)
-	}
+	if (betterDarkTheme) { GM_addStyle(betterDarkThemeCss) }
 }
 
 // options page
@@ -678,10 +549,7 @@ if (isPage_opt) {
 		let input = document.createElement("input");
 		input.type = "checkbox";
 		input.checked = GM_getValue(setv_, setv);
-		input.addEventListener("change", function() {
-			GM_setValue(setv_, this.checked);
-			setv = this.checked;
-		});
+		input.addEventListener("change", function() { GM_setValue(setv_, this.checked); setv = this.checked; });
 		let span = document.createElement("span");
 		span.className = "checkmark";
 		label.appendChild(input);
@@ -706,7 +574,8 @@ if (isPage_opt) {
 		vtbody.appendChild(vtr);
 	}
 
-	makeCB_form(autoplayVideos_, autoplayVideos, "AutoPlay", "Automatically play the video."); {
+	makeCB_form(autoplayVideos_, autoplayVideos, "AutoPlay", "Automatically play the video.");
+	{
 		let row = document.createElement("tr");
 		let header = document.createElement("th");
 		let title = document.createElement("label");
@@ -733,7 +602,8 @@ if (isPage_opt) {
 		data.appendChild(slider_info);
 		row.appendChild(data);
 		vtbody.appendChild(row);
-	} {
+	}
+	{
 		let row = document.createElement("tr");
 		let header = document.createElement("th");
 		let title = document.createElement("label");
@@ -766,31 +636,28 @@ if (isPage_opt) {
 		row.appendChild(data);
 		vtbody.appendChild(row);
 	}
-	makeCB_form(stretchImgVid_, stretchImgVid, "Stretch Image/Video", "This overrides 'True Video Size'");
-	makeCB_form(trueVideoSize_, trueVideoSize, "True Video Size", "Resizes videos to their true size");
-	makeCB_form(enableFavOnEnter_, enableFavOnEnter, "Enable Fav On Enter", "Use the ENTER key on your keyboard to add a post to your favorites");
+	makeCB_form(stretchImgVid_,             stretchImgVid,             "Stretch Image/Video", "This overrides 'True Video Size'");
+	makeCB_form(trueVideoSize_,             trueVideoSize,             "True Video Size", "Resizes videos to their true size");
+	makeCB_form(enableFavOnEnter_,          enableFavOnEnter,          "Enable Fav On Enter", "Use the ENTER key on your keyboard to add a post to your favorites");
 	makeCB_form(hideBlacklistedThumbnails_, hideBlacklistedThumbnails, "Hide Blacklisted Thumbnails", "Hide blacklisted thumbnails on the front page.");
-	makeCB_form(forceDarkTheme_, forceDarkTheme, "Force Dark Theme", "Force rule34's dark theme on every page, even if light theme is set in the options");
-	makeCB_form(betterDarkTheme_, betterDarkTheme, "Better Dark Theme", "(must enable 'Force Dark Theme') Use a custom CSS dark theme with the rule34's dark theme");
-	makeCB_form(removeBloat_, removeBloat, "Remove Bloat", "Removes: hentai clicker game AD, and other bullshit.");
-	makeCB_form(endlessScrolling_, endlessScrolling, "Endless Scrolling", "When you get to the bottom of the current page it will automatically append the content from the next page on the current page");
-	makeCB_form(favFilter_, favFilter, "Favorites Filter", "Adds a searchbox for tag(s) in favorites");
-	makeCB_form(showFavPosts_, showFavPosts, "Show Fav Posts", "Shows you which posts are in your favorites while browsing");
-	makeCB_form(showFavPosts2_, showFavPosts2, "Hide Fav Posts", "(must enable 'Show Fav Posts') Hides favorites while browsing");
-	makeCB_form(embedVideo_, embedVideo, "Embed Video", "replace rule34's player with the default player");
-	makeCB_form(thumbFav_, thumbFav, "Thumb Fav", "add fav button while browsing on post's thumbnail");
+	makeCB_form(forceDarkTheme_,            forceDarkTheme,            "Force Dark Theme", "Force rule34's dark theme on every page, even if light theme is set in the options");
+	makeCB_form(betterDarkTheme_,           betterDarkTheme,           "Better Dark Theme", "(must enable 'Force Dark Theme') Use a custom CSS dark theme with the rule34's dark theme");
+	makeCB_form(removeBloat_,               removeBloat,               "Remove Bloat", "Removes: hentai clicker game AD, and other bullshit.");
+	makeCB_form(endlessScrolling_,          endlessScrolling,          "Endless Scrolling", "When you get to the bottom of the current page it will automatically append the content from the next page on the current page");
+	makeCB_form(favFilter_,                 favFilter,                 "Favorites Filter", "Adds a searchbox for tag(s) in favorites");
+	makeCB_form(showFavPosts_,              showFavPosts,              "Show Fav Posts", "Shows you which posts are in your favorites while browsing");
+	makeCB_form(showFavPosts2_,             showFavPosts2,             "Hide Fav Posts", "(must enable 'Show Fav Posts') Hides favorites while browsing");
+	makeCB_form(embedVideo_,                embedVideo,                "Embed Video", "replace rule34's player with the default player");
+	makeCB_form(thumbFav_,                  thumbFav,                  "Thumb Fav", "add fav button while browsing on post's thumbnail");
+	makeCB_form(mainPageExtra_,             mainPageExtra,             "Main Page Extra", "Add a button (on the main page) that expands to a form that allows you to bookmark tags and see super favorites");
 }
 
 // favorites page
 if (isPage_fav) {
 
-	// remove stupid <br>s on fav page wtf... why are they here
-	let bodyc = document.getElementById("body").children;
-	for (let i = 0; i < bodyc.length; i++) {
-		if (bodyc[i].tagName === "BR") {
-			bodyc[i].remove();
-		}
-	}
+	//// remove stupid <br>s on fav page wtf... why are they here
+	//let bodyc = document.getElementById("body").children;
+	//for (let i = 0; i < bodyc.length; i++) { if (bodyc[i].tagName === "BR") { bodyc[i].remove(); } }
 
 	// container for all the controls in favorites
 	let cont = document.createElement("div");
@@ -801,9 +668,7 @@ if (isPage_fav) {
 	if (favFilter) {
 		function removeContent() {
 			let elements = document.getElementsByClassName("thumb");
-			while (elements[0]) {
-				elements[0].remove();
-			}
+			while (elements[0]) { elements[0].remove(); }
 		}
 
 		let imagesAdded = 0;
@@ -821,12 +686,7 @@ if (isPage_fav) {
 		let input = document.createElement("input");
 		input.style = "width: 20%; display: inline-block;";
 		input.type = "text";
-		input.addEventListener("keydown", function(event) {
-			if (event.keyCode == 13) {
-				event.preventDefault();
-				main_favFilter();
-			}
-		});
+		input.addEventListener("keydown", function(event) { if (event.key === 'Enter') { event.preventDefault(); main_favFilter(); } });
 
 		// filter/search button
 		let btn_filter = document.createElement("button");
@@ -834,18 +694,14 @@ if (isPage_fav) {
 		btn_filter.id = "filterButton";
 		btn_filter.title = "Start search"
 		btn_filter.innerHTML = "Filter";
-		btn_filter.onclick = function() {
-			main_favFilter();
-		}
+		btn_filter.onclick = function() { main_favFilter(); }
 
 		// stop button
 		let btn_stop = document.createElement("button");
 		btn_stop.style = "display: inline-block;";
 		btn_stop.title = "Stop search";
 		btn_stop.innerHTML = "Stop";
-		btn_stop.onclick = function() {
-			shouldStop = true;
-		}
+		btn_stop.onclick = function() { shouldStop = true; }
 
 		// help button
 		let btn_help = document.createElement("button");
@@ -875,9 +731,7 @@ if (isPage_fav) {
 		let txt_speed = document.createElement("p");
 		txt_speed.style = "display: inline-block;";
 		txt_speed.innerHTML = "Request Speed: " + slider.value + "ms";
-		slider.oninput = function() {
-			txt_speed.innerHTML = "Request Speed: " + slider.value + "ms";
-		}
+		slider.oninput = function() { txt_speed.innerHTML = "Request Speed: " + slider.value + "ms"; }
 
 		// current / max
 		let txt_curmax = document.createElement("p");
@@ -937,10 +791,7 @@ if (isPage_fav) {
 				txt_curmax.innerHTML = url + " -- " + cur + "/" + max + " (" + ((cur / step) + 1) + "/" + ((max / step) + 1) + ")";
 				getImagesFromUrl(url, input.value.split(" "));
 				await sleep(slider.value);
-				if (shouldStop) {
-					shouldStop = false;
-					return;
-				}
+				if (shouldStop) { shouldStop = false; return; }
 			}
 		};
 
@@ -982,20 +833,12 @@ if (isPage_fav) {
 
 if (showFavPosts) {
 
-	//if (showFavPosts2) {
-	//  GM_addStyle(".fav { display: none !important; }")
-	//}
-
-	if (showFavPosts2) {
-		document.documentElement.style.setProperty('--favdisplay', 'none');
-	}
+	if (showFavPosts2) { document.documentElement.style.setProperty('--favdisplay', 'none'); }
 
 	// filtering
 	if (isPage_posts) {
 		let elements = document.querySelectorAll(".thumb");
-		for (let i = 0; i < elements.length; i++) {
-			showFavPosts_check(elements[i]);
-		}
+		for (let i = 0; i < elements.length; i++) { showFavPosts_check(elements[i]); }
 	}
 
 	if (isPage_fav) {
@@ -1021,9 +864,7 @@ if (showFavPosts) {
 		async function getIds() {
 			let reg = /pid=([0-9]*)/gm;
 			let base = /(.*)&pid=/gm.exec(document.location.href) == null ? document.location.href : /(.*)&pid=/gm.exec(document.location.href)[1];
-			if (!base.includes("favorites")) {
-				return console.log("not a favorites page");
-			};
+			if (!base.includes("favorites")) { return console.log("not a favorites page"); };
 
 			// vars
 			let step = 50;
@@ -1056,9 +897,7 @@ if (showFavPosts) {
 				GM_setValue("favlist", favlist);
 			}
 		}
-		btn_updatefav.onclick = function() {
-			getIds();
-		};
+		btn_updatefav.onclick = function() { getIds(); };
 		// container for controls
 		let favlistCont = document.createElement("div");
 		favlistCont.style = "position: fixed; top: 30px; right: 5px;";
@@ -1082,10 +921,7 @@ if (isPage_posts || isPage_fav) {
 	let input = document.createElement("input");
 	input.type = "checkbox";
 	input.checked = endlessScrolling;
-	input.addEventListener("change", function() {
-		GM_setValue(endlessScrolling_, this.checked);
-		endlessScrolling = this.checked;
-	});
+	input.addEventListener("change", function() { GM_setValue(endlessScrolling_, this.checked); endlessScrolling = this.checked; });
 	let span = document.createElement("span");
 	span.className = "checkmark";
 	label.appendChild(input);
@@ -1142,15 +978,12 @@ if (isPage_posts || isPage_fav) {
 			}
 			case 50: {
 				let els = document.getElementsByName("lastpage");
-				if (els.length == 0) {
-					return;
-				}
+				if (els.length == 0) { return; }
 				el = els[0];
 				text = el.attributes[1].nodeValue;
 				break;
 			}
-			default:
-				return;
+			default: return;
 		}
 		let maxMatch = reg.exec(text);
 		let max = maxMatch == null ? 0 : parseInt(maxMatch[1]);
@@ -1213,13 +1046,8 @@ if (isPage_post) {
 				case "select":
 				case "button":
 				case "tags":
-				case "comment":
-					break;
-				default:
-					if (event.keyCode == 13) {
-						favPost(postID);
-					}
-					break;
+				case "comment": break;
+				default: if (event.key === 'Enter') { favPost(postID); } break;
 			}
 		}
 	}
@@ -1231,9 +1059,7 @@ if (isPage_post) {
 	let vid = document.querySelector("#gelcomVideoPlayer");
 	if (vid) {
 		vid.volume = defaultVideoVolume;
-		if (autoplayVideos) {
-			vid.autoplay = true;
-		}
+		if (autoplayVideos) { vid.autoplay = true; }
 		if (!stretchImgVid && trueVideoSize) {
 			let size = document.querySelector("#stats > ul:nth-child(2) > li:nth-child(3)").innerHTML.split(": ")[1];
 			let wNh = size.split("x");
@@ -1251,57 +1077,43 @@ if (isPage_post) {
 	let btn_like = document.createElement("button");
 	btn_like.className = "custom-button";
 	btn_like.innerHTML = "👍like";
-	btn_like.onclick = function() {
-		post_vote(postID, 'up');
-	};
+	btn_like.onclick = function() { post_vote(postID, 'up'); };
 	cont.appendChild(btn_like);
 
 	let btn_fav = document.createElement("button");
 	btn_fav.className = "custom-button";
 	btn_fav.innerHTML = "❤️fav";
-	btn_fav.onclick = function() {
-		favPost(postID);
-	};
+	btn_fav.onclick = function() { favPost(postID); };
 	cont.appendChild(btn_fav);
 
 	let btn_close = document.createElement("button");
 	btn_close.className = "custom-button";
 	btn_close.innerHTML = "❌close";
-	btn_close.onclick = function() {
-		window.close();
-	};
+	btn_close.onclick = function() { window.close(); };
 	cont.appendChild(btn_close);
 
 	let btn_favclose = document.createElement("button");
 	btn_favclose.className = "custom-button";
 	btn_favclose.innerHTML = "❤️+❌favclose";
-	btn_favclose.onclick = function() {
-		favPost(postID, true);
-	};
+	btn_favclose.onclick = function() { favPost(postID, true); };
 	cont.appendChild(btn_favclose);
 
 	let btn_prev = document.createElement("button");
 	btn_prev.className = "custom-button";
 	btn_prev.innerHTML = "⏮️prev";
-	btn_prev.onclick = function() {
-		document.querySelector(".sidebar > div:nth-child(12) > ul:nth-child(2) > li:nth-child(1) > a:nth-child(1)").click();
-	};
+	btn_prev.onclick = function() { document.querySelector(".sidebar > div:nth-child(12) > ul:nth-child(2) > li:nth-child(1) > a:nth-child(1)").click(); };
 	cont.appendChild(btn_prev);
 
 	let btn_next = document.createElement("button");
 	btn_next.className = "custom-button";
 	btn_next.innerHTML = "⏭️next";
-	btn_next.onclick = function() {
-		document.querySelector(".sidebar > div:nth-child(12) > ul:nth-child(2) > li:nth-child(2) > a:nth-child(1)").click();
-	};
+	btn_next.onclick = function() { document.querySelector(".sidebar > div:nth-child(12) > ul:nth-child(2) > li:nth-child(2) > a:nth-child(1)").click(); };
 	cont.appendChild(btn_next);
 
 	let btn_fav2 = document.createElement("button");
 	btn_fav2.className = "custom-button";
 	btn_fav2.innerHTML = "💚superfav";
-	btn_fav2.onclick = function() {
-		favPost2(postID);
-	};
+	btn_fav2.onclick = function() { favPost2(postID); };
 	cont.appendChild(btn_fav2);
 
 	navbar.appendChild(cont);
@@ -1309,27 +1121,15 @@ if (isPage_post) {
 	// show if a post is in fav
 	updateNavbar(postID);
 
-	if (embedVideo) {
-		embedDefaultVideo();
-	}
+	if (embedVideo) { embedDefaultVideo(); }
 }
 
-if (isPage_main) {
+if (isPage_main && mainPageExtra) {
 
 	function loadExtraContent() {
-
-
-
 		let favTagsDiv = document.createElement("div");
 		favTagsDiv.className = "tagbar";
 		favTagsDiv.style = "position: fixed; top: 5px; right: 5px; border: lime 1px dashed; padding: 4px; width: 180px;"
-
-		//document.getElementById("static-index").style = "float: left !important"
-
-		let elements = document.getElementsByTagName("small");
-		while (elements[0]) {
-			elements[0].remove();
-		}
 
 		let favTagsDiv_h5 = document.createElement("h5");
 		favTagsDiv_h5.innerHTML = "Favorite Tags";
@@ -1362,6 +1162,7 @@ if (isPage_main) {
 		input.type = "text";
 
 		function add() {
+			if (!input.value) { return; }
 			let taglist = GM_getValue("taglist", []);
 			if (!taglist.includes(input.value)) {
 				taglist.push(input.value);
@@ -1373,37 +1174,25 @@ if (isPage_main) {
 
 		function sortItems() {
 			let elements = document.getElementsByClassName("favtag");
-			while (elements[0]) {
-				elements[0].remove();
-			}
+			while (elements[0]) { elements[0].remove(); }
 			let tl = GM_getValue("taglist", []);
 			tl.sort();
-			for (let i = 0; i < tl.length; i++) {
-				favTagsDiv_add(tl[i]);
-			}
+			for (let i = 0; i < tl.length; i++) { favTagsDiv_add(tl[i]); }
 			GM_setValue("taglist", tl);
 		}
 
-		input.addEventListener("keydown", function(event) {
-			if (event.keyCode == 13) {
-				add();
-			}
-		});
+		input.addEventListener("keydown", function(event) { if (event.key === 'Enter' ) { add(); } });
 
 		let btn_add = document.createElement("button");
 		btn_add.style = "padding: 1px; color: lime; cursor: pointer;"
 		btn_add.innerHTML = "🔽";
-		btn_add.onclick = function() {
-			add();
-		};
+		btn_add.onclick = function() { add(); };
 		btn_add.title = "Add";
 
 		let btn_sort = document.createElement("button");
 		btn_sort.style = "padding: 1px; color: lime; cursor: pointer;"
-		btn_sort.innerHTML = "🗂️";
-		btn_sort.onclick = function() {
-			sortItems();
-		};
+		btn_sort.innerHTML = "🧮";
+		btn_sort.onclick = function() { sortItems(); };
 		btn_sort.title = "Sort";
 
 		favTagsDiv.appendChild(input);
@@ -1412,15 +1201,14 @@ if (isPage_main) {
 
 		// add fav tags
 		let tl = GM_getValue("taglist", []);
-		for (let i = 0; i < tl.length; i++) {
-			favTagsDiv_add(tl[i]);
-		}
+		for (let i = 0; i < tl.length; i++) { favTagsDiv_add(tl[i]); }
 
 		let superFavDiv = document.createElement("div");
 		superFavDiv.className = "superFavCont";
-		superFavDiv.style = "display: inline-block; border: lime 1px dashed; padding: 4px;"
+		superFavDiv.style = "height: auto; margin-bottom: 500px;";
 
 		let superFavDiv_h5 = document.createElement("h5");
+		superFavDiv_h5.style = "margin-left: 10px; text-decoration: underline;"
 		superFavDiv_h5.innerHTML = "Super Favorites";
 		superFavDiv.appendChild(superFavDiv_h5);
 
@@ -1461,7 +1249,7 @@ if (isPage_main) {
 
 			superFavDiv.appendChild(span);
 		}
-
+		
 		document.body.appendChild(favTagsDiv);
 		document.body.appendChild(superFavDiv);
 	}
@@ -1477,3 +1265,4 @@ if (isPage_main) {
 	}
 	document.body.appendChild(btn_expand);
 }
+
