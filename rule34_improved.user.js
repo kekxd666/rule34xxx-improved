@@ -14,9 +14,6 @@
 // Tested on: Violent Monkey
 // If you want to edit settings, go to the options page of your account...
 
-// TODO:
-// - replace all iframe calls with a get request call
-
 function getSetting(settingName, settingDefault) {
 	let value = GM_getValue(settingName, null);
 	if (value == null) { GM_setValue(settingName, settingDefault); value = settingDefault; }
@@ -783,52 +780,38 @@ if (isPage_fav) {
 			let curMatch = reg.exec(document.location);
 			let cur = curMatch == null ? 0 : parseInt(curMatch[1]);
 
-			// remove all spans
-			removeContent();
+			// call clear
+			btn_clear.click();
 
 			// start search
 			for (; cur <= max; cur += step) {
 				let url = base + "&pid=" + cur;
 				txt_curmax.innerHTML = url + " -- " + cur + "/" + max + " (" + ((cur / step) + 1) + "/" + ((max / step) + 1) + ")";
-				getImagesFromUrl(url, input.value.split(" "));
+				let match = input.value.split(" ");
+				
+				httpGet(url, function(response) {
+
+					document.title = "[" + imagesAdded + "] Loading...";
+					txt_status.innerHTML = "Loading...";
+
+					let doc = new DOMParser().parseFromString(response, "text/html");
+					let images = Array.prototype.slice.call(doc.getElementsByTagName("img"), 0);
+
+					let pag = document.getElementById("paginator");
+					for (let i = images.length - 1; i >= 0; i--) {
+						let addImage = true;
+						for (let j = 0; j < match.length; j++) { if (!images[i].title.includes(match[j])) { addImage = false; break; } }
+						if (addImage) { pag.parentNode.insertBefore(images[i].parentNode.parentNode, pag); imagesAdded++; }
+					}
+					document.title = "[" + imagesAdded + "] Done!";
+					txt_imageCount.innerHTML = "Images Loaded: " + imagesAdded;
+					txt_status.innerHTML = "Done!";
+				});
+
 				await sleep(slider.value);
 				if (shouldStop) { shouldStop = false; return; }
 			}
 		};
-
-		// load images from url
-		function getImagesFromUrl(url, match) {
-			let ifr = document.createElement("iframe");
-			ifr.style = "display: none";
-			ifr.src = url;
-			ifr.onload = function() {
-				let toAdd = [];
-				let images = ifr.contentWindow.document.getElementsByTagName("img");
-				//console.log(images);
-				for (i = images.length - 1; i >= 0; i--) {
-					let addImage = true;
-					for (j = 0; j < match.length; j++) {
-						if (!images[i].title.includes(match[j])) {
-							addImage = false;
-						}
-					}
-					if (addImage) {
-						toAdd.push(images[i].parentNode.parentNode);
-					}
-				}
-				for (i = toAdd.length - 1; i >= 0; i--) {
-					document.getElementById("paginator").parentNode.insertBefore(toAdd[i], document.getElementById("paginator"));
-					imagesAdded++;
-				}
-				ifr.parentNode.removeChild(ifr);
-				document.title = "[" + imagesAdded + "] Done!";
-				txt_imageCount.innerHTML = "Images Loaded: " + imagesAdded;
-				txt_status.innerHTML = "Done!";
-			}
-			document.title = "[" + imagesAdded + "] Loading...";
-			txt_status.innerHTML = "Loading...";
-			document.body.appendChild(ifr);
-		}
 	}
 }
 
@@ -993,12 +976,8 @@ if (isPage_posts || isPage_fav) {
 		let paginator = document.getElementById("paginator");
 
 		window.addEventListener("scroll", async function() {
-			if (reachedTheEnd || !endlessScrolling || !isInViewport(paginator)) {
-				return;
-			}
-			if (!endlessScrolling) {
-				return;
-			}
+			if (reachedTheEnd || !endlessScrolling || !isInViewport(paginator)) { return; }
+			if (!endlessScrolling) { return; }
 			cur += step;
 			let url = base + "&pid=" + cur;
 			document.title = "Loading...";
@@ -1007,22 +986,12 @@ if (isPage_posts || isPage_fav) {
 				let doc = new DOMParser().parseFromString(response, "text/html");
 				//let elements = doc.getElementsByClassName("thumb");
 				let elements = Array.prototype.slice.call(doc.getElementsByClassName("thumb"), 0);
-				if (elements.length == 0) {
-					reachedTheEnd = true;
-					return;
-				}
+				if (elements.length == 0) { reachedTheEnd = true; return; }
 				for (let i = 0; i < elements.length; i++) {
 					paginator.parentNode.insertBefore(elements[i], paginator);
-					if (hideBlacklistedThumbnails) {
-						hideBlacklistedThumbnails_check(elements[i]);
-					}
-					if (showFavPosts) {
-						showFavPosts_check(elements[i]);
-						showFavPosts_injectRemoveCode(elements[i]);
-					}
-					if (thumbFav) {
-						thumbFav_check(elements[i]);
-					}
+					if (hideBlacklistedThumbnails) { hideBlacklistedThumbnails_check(elements[i]); }
+					if (showFavPosts) { showFavPosts_check(elements[i]); showFavPosts_injectRemoveCode(elements[i]); }
+					if (thumbFav) { thumbFav_check(elements[i]); }
 				}
 				p.innerHTML = cur + " (" + ((cur + step) / step) + ")";
 			}, false);
