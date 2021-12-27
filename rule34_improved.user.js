@@ -575,7 +575,7 @@ if (isPage_opt) {
 		vtbody.appendChild(vtr);
 	}
 
-	makeCB_form(autoplayVideos_, autoplayVideos, "AutoPlay", "Automatically play the video.");
+	makeCB_form(autoplayVideos_, autoplayVideos, "AutoPlay", "Automatically play the video");
 	{
 		let row = document.createElement("tr");
 		let header = document.createElement("th");
