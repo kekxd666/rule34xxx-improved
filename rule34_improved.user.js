@@ -640,17 +640,17 @@ if (isPage_opt) {
 	makeCB_form(stretchImgVid_,             stretchImgVid,             "Stretch Image/Video", "This overrides 'True Video Size'");
 	makeCB_form(trueVideoSize_,             trueVideoSize,             "True Video Size", "Resizes videos to their true size");
 	makeCB_form(enableFavOnEnter_,          enableFavOnEnter,          "Enable Fav On Enter", "Use the ENTER key on your keyboard to add a post to your favorites");
-	makeCB_form(hideBlacklistedThumbnails_, hideBlacklistedThumbnails, "Hide Blacklisted Thumbnails", "Hide blacklisted thumbnails on the front page.");
-	makeCB_form(forceDarkTheme_,            forceDarkTheme,            "Force Dark Theme", "Force rule34's dark theme on every page, even if light theme is set in the options");
+	makeCB_form(hideBlacklistedThumbnails_, hideBlacklistedThumbnails, "Hide Blacklisted Thumbnails", "Hide blacklisted thumbnails on the main post page");
+	makeCB_form(forceDarkTheme_,            forceDarkTheme,            "Force Dark Theme", "Force rule34's dark theme on every page");
 	makeCB_form(betterDarkTheme_,           betterDarkTheme,           "Better Dark Theme", "(must enable 'Force Dark Theme') Use a custom CSS dark theme with the rule34's dark theme");
 	makeCB_form(removeBloat_,               removeBloat,               "Remove Bloat", "Removes: hentai clicker game AD, and other bullshit.");
 	makeCB_form(endlessScrolling_,          endlessScrolling,          "Endless Scrolling", "When you get to the bottom of the current page it will automatically append the content from the next page on the current page");
 	makeCB_form(favFilter_,                 favFilter,                 "Favorites Filter", "Adds a searchbox for tag(s) in favorites");
 	makeCB_form(showFavPosts_,              showFavPosts,              "Show Fav Posts", "Shows you which posts are in your favorites while browsing");
 	makeCB_form(showFavPosts2_,             showFavPosts2,             "Hide Fav Posts", "(must enable 'Show Fav Posts') Hides favorites while browsing");
-	makeCB_form(embedVideo_,                embedVideo,                "Embed Video", "replace rule34's player with the default player");
-	makeCB_form(thumbFav_,                  thumbFav,                  "Thumb Fav", "add fav button while browsing on post's thumbnail");
-	makeCB_form(mainPageExtra_,             mainPageExtra,             "Main Page Extra", "Add a button (on the main page) that expands to a form that allows you to bookmark tags and see super favorites");
+	makeCB_form(embedVideo_,                embedVideo,                "Embed Video", "Replace rule34's player with the default browser player");
+	makeCB_form(thumbFav_,                  thumbFav,                  "Thumb Fav", "Adds a fav button on each post while browsing");
+	makeCB_form(mainPageExtra_,             mainPageExtra,             "Main Page Extra", "Adds a button (on the main page) that expands to a form that allows you to bookmark tags and see super favorites");
 }
 
 // favorites page
