@@ -45,6 +45,7 @@ var setting_embedVideo_                = "embedVideo";                var settin
 var setting_thumbFav_                  = "thumbFav";                  var setting_thumbFav                  = getSetting(setting_thumbFav_                  , true);
 var setting_mainPageExtra_             = "mainPageExtra";             var setting_mainPageExtra             = getSetting(setting_mainPageExtra_             , true);
 var setting_slideShow_                 = "slideShow";                 var setting_slideShow                 = getSetting(setting_slideShow_                 , true);
+var setting_videoVolumeScroll_         = "videoVolumeScroll";         var setting_videoVolumeScroll         = getSetting(setting_videoVolumeScroll_         , true);
 
 var css_root = `:root { --favdisplay: inline; }`;
 GM_addStyle(css_root);
@@ -374,8 +375,8 @@ function favPost(id, callback) {
 	addFav(id); // add to fav
 
 	// wait for server to respond
-	var timer = setInterval(function() {
-		var div_notice = document.getElementById("notice");
+	let timer = setInterval(function() {
+		let div_notice = document.getElementById("notice");
 		if (div_notice.innerHTML.includes("You are not logged in")) { clearInterval(timer); return; }
 
 		if (!div_notice.innerHTML.includes("Post added to favorites") && !div_notice.innerHTML.includes("Post already in your favorites")) {
@@ -513,31 +514,33 @@ function embedDefaultVideo() {
 	video_og.autoplay = setting_autoplayVideos;
 	video_og.style.cssText = div_gelcomVideoContainer.style.cssText;
 
-	let current = 0;
-	let MouseWheelHandler = function (e) {
-		e.preventDefault();
-		e.stopPropagation();
-
-		e = window.event || e;
-		let delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-		current = current + delta;
+	if (setting_videoVolumeScroll) {
+		let current = 0;
+		let MouseWheelHandler = function (e) {
+			e.preventDefault();
+			e.stopPropagation();
 	
-		let curVol = video_og.volume;
-		if      (delta ==  1) { curVol += 0.05; }
-		else if (delta == -1) { curVol -= 0.05; }
-
-		if      (curVol > 1) { video_og.volume = curVol = 1; }
-		else if (curVol < 0) { video_og.volume = curVol = 0; }
-		else                 { video_og.volume = curVol;     }
-
-		return false;
-	};
+			e = window.event || e;
+			let delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+			current = current + delta;
+		
+			let curVol = video_og.volume;
+			if      (delta ==  1) { curVol += 0.05; }
+			else if (delta == -1) { curVol -= 0.05; }
 	
-	if (video_og.addEventListener) {
-		// IE9, Chrome, Safari, Opera
-		video_og.addEventListener("mousewheel", MouseWheelHandler, false);
-		// Firefox
-		video_og.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+			if      (curVol > 1) { video_og.volume = curVol = 1; }
+			else if (curVol < 0) { video_og.volume = curVol = 0; }
+			else                 { video_og.volume = curVol;     }
+	
+			return false;
+		};
+		
+		if (video_og.addEventListener) {
+			// IE9, Chrome, Safari, Opera
+			video_og.addEventListener("mousewheel", MouseWheelHandler, false);
+			// Firefox
+			video_og.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+		}
 	}
 
 	// get player src
@@ -707,6 +710,7 @@ if (isPage_opt) {
 	makeCB_form(setting_thumbFav_,                  setting_thumbFav,                  "Thumb Fav", "Adds a fav button on each post while browsing");
 	makeCB_form(setting_mainPageExtra_,             setting_mainPageExtra,             "Main Page Extra", "Adds a button (on the main page) that expands to a form that allows you to bookmark tags and see super favorites");
 	makeCB_form(setting_slideShow_,                 setting_slideShow,                 "Slideshow", "Adds a button in the top right corner, when browsing, to activate slideshow mode");
+	makeCB_form(setting_videoVolumeScroll_,         setting_videoVolumeScroll,         "Video Volume Scroll", "Control video volume with mouse scroll wheel, must 'Embed Video' if viewing from post's page...");
 }
 
 // favorites page
@@ -1111,31 +1115,33 @@ if (isPage_posts || isPage_fav) {
 				content.volume = setting_defaultVideoVolume;
 				content.autoplay = setting_autoplayVideos;
 
-				let current = 0;
-				let MouseWheelHandler = function (e) {
-					e.preventDefault();
-					e.stopPropagation();
-
-					e = window.event || e;
-					let delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-					current = current + delta;
-				
-					let curVol = content.volume;
-					if      (delta ==  1) { curVol += 0.05; }
-					else if (delta == -1) { curVol -= 0.05; }
-
-					if      (curVol > 1) { content.volume = curVol = 1; }
-					else if (curVol < 0) { content.volume = curVol = 0; }
-					else                 { content.volume = curVol;     }
-
-					return false;
-				};
-				
-				if (content.addEventListener) {
-					// IE9, Chrome, Safari, Opera
-					content.addEventListener("mousewheel", MouseWheelHandler, false);
-					// Firefox
-					content.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+				if (setting_videoVolumeScroll) {
+					let current = 0;
+					let MouseWheelHandler = function (e) {
+						e.preventDefault();
+						e.stopPropagation();
+	
+						e = window.event || e;
+						let delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+						current = current + delta;
+					
+						let curVol = content.volume;
+						if      (delta ==  1) { curVol += 0.05; }
+						else if (delta == -1) { curVol -= 0.05; }
+	
+						if      (curVol > 1) { content.volume = curVol = 1; }
+						else if (curVol < 0) { content.volume = curVol = 0; }
+						else                 { content.volume = curVol;     }
+	
+						return false;
+					};
+					
+					if (content.addEventListener) {
+						// IE9, Chrome, Safari, Opera
+						content.addEventListener("mousewheel", MouseWheelHandler, false);
+						// Firefox
+						content.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+					}
 				}
 
 				content.src = contentURL;
@@ -1241,7 +1247,7 @@ if (isPage_posts || isPage_fav) {
 	document.body.appendChild(div_trcont);
 
 	function isInViewport(myElement) {
-		var bounding = myElement.getBoundingClientRect();
+		let bounding = myElement.getBoundingClientRect();
 		return (bounding.top >= 0 && bounding.left >= 0 && bounding.right <= (window.innerWidth || document.documentElement.clientWidth) && bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight));
 	}
 
@@ -1311,7 +1317,7 @@ if (isPage_post) {
 
 	if (setting_enableFavOnEnter) {
 		document.onkeydown = function(e) {
-			var event = document.all ? window.event : e;
+			let event = document.all ? window.event : e;
 			switch (e.target.tagName.toLowerCase()) {
 				case "input":
 				case "textarea":
