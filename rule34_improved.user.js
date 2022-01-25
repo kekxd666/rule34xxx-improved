@@ -14,36 +14,42 @@
 // Tested on: Violent Monkey
 // If you want to edit settings, go to the options page of your account...
 
+// TODO:
+// - add video support for "super favorites"
+// - make slideshow work in favorites
+// - cleanup spaggettyyyyy code :P
+
+
 function getSetting(settingName, settingDefault) {
 	let value = GM_getValue(settingName, null);
 	if (value == null) { GM_setValue(settingName, settingDefault); value = settingDefault; }
 	return value;
 }
 
-var autoplayVideos_            = "autoplayVideos";            var autoplayVideos            = getSetting(autoplayVideos_            , false);
-var defaultVideoVolume_        = "defaultVideoVolume";        var defaultVideoVolume        = getSetting(defaultVideoVolume_        , 1);
-var useViewportDependentSize_  = "useViewportDependentSize";  var useViewportDependentSize  = getSetting(useViewportDependentSize_  , true);
-var viewportDependentHeight_   = "viewportDependentHeight";   var viewportDependentHeight   = getSetting(viewportDependentHeight_   , 70);
-var stretchImgVid_             = "stretchImgVid";             var stretchImgVid             = getSetting(stretchImgVid_             , true);
-var trueVideoSize_             = "trueVideoSize";             var trueVideoSize             = getSetting(trueVideoSize_             , false);
-var enableFavOnEnter_          = "enableFavOnEnter";          var enableFavOnEnter          = getSetting(enableFavOnEnter_          , true);
-var hideBlacklistedThumbnails_ = "hideBlacklistedThumbnails"; var hideBlacklistedThumbnails = getSetting(hideBlacklistedThumbnails_ , true);
-var forceDarkTheme_            = "forceDarkTheme";            var forceDarkTheme            = getSetting(forceDarkTheme_            , true);
-var betterDarkTheme_           = "betterDarkTheme";           var betterDarkTheme           = getSetting(betterDarkTheme_           , true);
-var removeBloat_               = "removeBloat";               var removeBloat               = getSetting(removeBloat_               , true);
-var endlessScrolling_          = "endlessScrolling";          var endlessScrolling          = getSetting(endlessScrolling_          , true);
-var favFilter_                 = "favFilter";                 var favFilter                 = getSetting(favFilter_                 , true);
-var showFavPosts_              = "showFavPosts";              var showFavPosts              = getSetting(showFavPosts_              , true);
-var showFavPosts2_             = "showFavPosts2";             var showFavPosts2             = getSetting(showFavPosts2_             , false);
-var embedVideo_                = "embedVideo";                var embedVideo                = getSetting(embedVideo_                , true);
-var thumbFav_                  = "thumbFav";                  var thumbFav                  = getSetting(thumbFav_                  , true);
-var mainPageExtra_             = "mainPageExtra";             var mainPageExtra             = getSetting(mainPageExtra_             , true);
+var setting_autoplayVideos_            = "autoplayVideos";            var setting_autoplayVideos            = getSetting(setting_autoplayVideos_            , false);
+var setting_defaultVideoVolume_        = "defaultVideoVolume";        var setting_defaultVideoVolume        = getSetting(setting_defaultVideoVolume_        , 1);
+var setting_useViewportDependentSize_  = "useViewportDependentSize";  var setting_useViewportDependentSize  = getSetting(setting_useViewportDependentSize_  , true);
+var setting_viewportDependentHeight_   = "viewportDependentHeight";   var setting_viewportDependentHeight   = getSetting(setting_viewportDependentHeight_   , 70);
+var setting_stretchImgVid_             = "stretchImgVid";             var setting_stretchImgVid             = getSetting(setting_stretchImgVid_             , true);
+var setting_trueVideoSize_             = "trueVideoSize";             var setting_trueVideoSize             = getSetting(setting_trueVideoSize_             , false);
+var setting_enableFavOnEnter_          = "enableFavOnEnter";          var setting_enableFavOnEnter          = getSetting(setting_enableFavOnEnter_          , true);
+var setting_hideBlacklistedThumbnails_ = "hideBlacklistedThumbnails"; var setting_hideBlacklistedThumbnails = getSetting(setting_hideBlacklistedThumbnails_ , true);
+var setting_forceDarkTheme_            = "forceDarkTheme";            var setting_forceDarkTheme            = getSetting(setting_forceDarkTheme_            , true);
+var setting_betterDarkTheme_           = "betterDarkTheme";           var setting_betterDarkTheme           = getSetting(setting_betterDarkTheme_           , true);
+var setting_removeBloat_               = "removeBloat";               var setting_removeBloat               = getSetting(setting_removeBloat_               , true);
+var setting_endlessScrolling_          = "endlessScrolling";          var setting_endlessScrolling          = getSetting(setting_endlessScrolling_          , true);
+var setting_favFilter_                 = "favFilter";                 var setting_favFilter                 = getSetting(setting_favFilter_                 , true);
+var setting_showFavPosts_              = "showFavPosts";              var setting_showFavPosts              = getSetting(setting_showFavPosts_              , true);
+var setting_showFavPosts2_             = "showFavPosts2";             var setting_showFavPosts2             = getSetting(setting_showFavPosts2_             , false);
+var setting_embedVideo_                = "embedVideo";                var setting_embedVideo                = getSetting(setting_embedVideo_                , true);
+var setting_thumbFav_                  = "thumbFav";                  var setting_thumbFav                  = getSetting(setting_thumbFav_                  , true);
+var setting_mainPageExtra_             = "mainPageExtra";             var setting_mainPageExtra             = getSetting(setting_mainPageExtra_             , true);
+var setting_slideShow_                 = "slideShow";                 var setting_slideShow                 = getSetting(setting_slideShow_                 , true);
 
+var css_root = `:root { --favdisplay: inline; }`;
+GM_addStyle(css_root);
 
-var rootCss = `:root { --favdisplay: inline; }`;
-GM_addStyle(rootCss);
-
-var betterDarkThemeCss = `
+var css_betterDarkTheme = `
 * { --c-bg: #101010; --c-bg-alt: #101010; --c-bg-highlight: #202020; }
 body { background-image: none !important; color: white !important; background-color: #101010 !important }
 table.highlightable td { border-color: #023C00; }
@@ -199,7 +205,7 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 
 `;
 
-var postCss = `
+var css_post = `
 #postbar { 
 	margin: 0;
 	padding 30px;
@@ -228,157 +234,190 @@ var postCss = `
 	border: 1px deeppink solid;
 }
 
-` + (useViewportDependentSize ?
-	((stretchImgVid ? `
+` + (setting_useViewportDependentSize ?
+	((setting_stretchImgVid ? `
 #gelcomVideoContainer {
 	width: auto !important;
 	max-width: 100% !important;
-	height: ` + viewportDependentHeight + `vh !important;
+	height: ` + setting_viewportDependentHeight + `vh !important;
 }` : "") + `
 #image {
 	width: auto !important;
 	max-width: 100% !important;
-	` + (stretchImgVid ? "" : "max-") + `height: ` + viewportDependentHeight + `vh !important;
+	` + (setting_stretchImgVid ? "" : "max-") + `height: ` + setting_viewportDependentHeight + `vh !important;
 }`) : "");
 
-var favedPostStyle = `
-	display: var(--favdisplay);
-	background: linear-gradient(to bottom, hotpink, purple);
-	opacity: 0.4;
-`;
 
-var heartStyle = `
-	position: absolute;
-	text-align: left;
+var cssStyle_heart = `
+    display: inline;
+	text-align: center;
 	font-size: 20px;
 	opacity: 0.8;
 `;
 
-var expandButtonStyle = `
-	position: fixed;
-	top: 5px;
-	right: 5px;
-	cursor: pointer;
-	border: darkgreen 2px dashed;
-	width: 20px;
-	height: 20px;
-	text-align: center;
-`;
+
+// get thumbnail post id
+function getPostID(element) {
+	let id = element.id.replace('s', '');
+	if (id != "") { return id; }
+	return element.childNodes[0].id.replace('p', '');
+}
+
+// get original image/video url from id
+function GetOG(id) {
+	// get/show content
+	let contentURL = "";
+	httpGet("index.php?page=post&s=view&id=" + id, function(response) {
+		let doc = new DOMParser().parseFromString(response, "text/html");
+		let metas = doc.body.getElementsByTagName("meta");
+		for (let i = 0; i < metas.length; i++) { if (metas[i].getAttribute("property") == "og:image") { contentURL = metas[i].getAttribute("content"); break; } }
+	}, false);
+	
+	return contentURL;
+}
+
+function favlist_contains(id) {
+	return GM_getValue("favlist", []).includes(id);
+}
+
+function favlist2_contains(postID) {
+	if (!postID) { return false; }
+	let favlist = GM_getValue("favlist2", []);
+	for (let i = 0; i < favlist.length; i++) { if (favlist[i][0] == postID) { return true; } }
+	return false;
+}
+
+function showFavPosts_elementUpdate(element, isfav, isfav2) {
+	if (isfav && !element.classList.contains("fav")) {
+		element.classList.add("fav");
+		let div_heart = document.createElement("div");
+		div_heart.style = cssStyle_heart;
+		div_heart.title = "Post is in Favorites.";
+		div_heart.innerHTML = "❤️";
+		element.appendChild(div_heart);
+		element.classList.add("fav");
+		
+		element.style.background = "linear-gradient(to bottom, hotpink, purple)";
+		
+		if (setting_thumbFav) {
+			element.onmouseenter = null;
+			element.onmouseleave = null;
+		}
+	}
+	
+	if (isfav2 && !element.classList.contains("sfav")) {
+		element.classList.add("sfav");
+		let div_heart2 = document.createElement("div");
+		div_heart2.style = cssStyle_heart;
+		div_heart2.title = "Post is in Favorites.";
+		div_heart2.innerHTML = "💚";
+		element.appendChild(div_heart2);
+		element.classList.add("sfav");
+		
+		element.style.background = "linear-gradient(to bottom, lime, green)";
+	}
+	
+	if (isfav && isfav2) { element.style.background = "linear-gradient(to bottom, green, purple)"; }
+	
+	if (isfav || isfav2) {
+		element.style = "display: var(--favdisplay);"
+		element.style.opacity = "0.4";
+	}
+}
 
 // add custom css to show that the post is in fav
-function showFavPosts_check(element) {
-
-	if (element == null || element.className == "thumb fav" || !GM_getValue("favlist", []).includes(getPostID(element))) { return }
-
-	let heart = document.createElement("div");
-	heart.style = heartStyle;
-	heart.title = "Post is in Favorites.";
-	heart.innerHTML = "❤️";
-	element.className = "thumb fav";
-	element.appendChild(heart);
-	element.style = favedPostStyle;
-
-	if (thumbFav) {
-		element.onmouseenter = null;
-		element.onmouseleave = null;
-	}
+function showFavPosts_elementCheck(element) {
+	if (element == null) { return; }
+	let id = getPostID(element);
+	let isfav  = favlist_contains(id);
+	let isfav2 = favlist2_contains(id);
+	showFavPosts_elementUpdate(element, isfav, isfav2);
 }
 
-function updateNavbar_p1(postID) {
-	let navbar = document.getElementById("subnavbar");
-	for (let i = 0; i < navbar.childNodes.length; i++) { if (navbar.childNodes[i].id == "isinfav") { return; } }
-	if (GM_getValue("favlist", []).includes(postID)) {
-		let div = document.createElement("div");
-		div.id = "isinfav";
-		div.title = "Post is in Favorites."
-		div.innerHTML = "❤️";
-		navbar.appendChild(div);
-	}
+// show red heart for fav
+function updateSubnavbar_p1(postID) {
+	let ul_subnavbar = document.getElementById("subnavbar");
+	for (let i = 0; i < ul_subnavbar.childNodes.length; i++) { if (ul_subnavbar.childNodes[i].id == "isinfav") { return; } }
+	if (!favlist_contains(postID)) { return; }
+
+	let div_isinfav = document.createElement("div");
+	div_isinfav.id = "isinfav";
+	div_isinfav.title = "Post is in Favorites."
+	div_isinfav.innerHTML = "❤️";
+	ul_subnavbar.appendChild(div_isinfav);
 }
 
-function updateNavbar_p2(postID) {
-	let navbar = document.getElementById("subnavbar");
-	for (let i = 0; i < navbar.childNodes.length; i++) { if (navbar.childNodes[i].id == "isinfav2") { return; } }
+// show green heart for super fav
+function updateSubnavbar_p2(postID) {
+	let ul_subnavbar = document.getElementById("subnavbar");
+	for (let i = 0; i < ul_subnavbar.childNodes.length; i++) { if (ul_subnavbar.childNodes[i].id == "isinfav2") { return; } }
+	if (!favlist2_contains(postID)) { return }
 
-	let favlist = GM_getValue("favlist2", []);
-	let cont = false;
-	for (let i = 0; i < favlist.length; i++) { if (favlist[i][0] == postID) { cont = true; break; } }
-	if (cont) {
-		let div = document.createElement("div");
-		div.id = "isinfav2";
-		div.title = "Post is in Super Favorites."
-		div.innerHTML = "💚";
-		navbar.appendChild(div);
-	}
+	let div_isinfav2 = document.createElement("div");
+	div_isinfav2.id = "isinfav2";
+	div_isinfav2.title = "Post is in Super Favorites."
+	div_isinfav2.innerHTML = "💚";
+	ul_subnavbar.appendChild(div_isinfav2);
 }
 
-function updateNavbar(postID) {
-	if (!isPage_post || !showFavPosts) { return; }
-	updateNavbar_p1(postID);
-	updateNavbar_p2(postID);
+function updateSubnavbar(postID) {
+	if (!isPage_post || !setting_showFavPosts) { return; }
+	updateSubnavbar_p1(postID);
+	updateSubnavbar_p2(postID);
 }
+
+
 
 // add post to favorites, like it & add it to favlist
-function favPost(id, close = false, element = null) {
+function favPost(id, callback) {
 	post_vote(id, 'up'); // like
 	addFav(id); // add to fav
 
 	// wait for server to respond
 	var timer = setInterval(function() {
-		var selectElement = document.getElementById("notice");
-		if (selectElement.innerHTML.includes("You are not logged in")) { clearInterval(timer); return; }
-    
-		if (!selectElement.innerHTML.includes("Post added to favorites") && !selectElement.innerHTML.includes("Post already in your favorites")) {
+		var div_notice = document.getElementById("notice");
+		if (div_notice.innerHTML.includes("You are not logged in")) { clearInterval(timer); return; }
+
+		if (!div_notice.innerHTML.includes("Post added to favorites") && !div_notice.innerHTML.includes("Post already in your favorites")) {
 			document.title = id + ": ...";
-			selectElement.innerHTML = "Error, trying again..."
 			return;
 		}
 
-		if      (selectElement.innerHTML.includes("Post added to favorites"))        { document.title = id + ": +"; }
-		else if (selectElement.innerHTML.includes("Post already in your favorites")) { document.title = id + ": !"; }
-		else                                                                         { document.title = id + ": ?"; }
+		if      (div_notice.innerHTML.includes("Post added to favorites"))        { document.title = id + ": +"; }
+		else if (div_notice.innerHTML.includes("Post already in your favorites")) { document.title = id + ": !"; }
+		else                                                                      { document.title = id + ": ?"; }
 
 		clearInterval(timer);
 
 		// add to favlist
-		if (showFavPosts) {
+		if (setting_showFavPosts) {
 			let favlist = GM_getValue("favlist", []);
 			if (favlist.includes(id)) {
-				selectElement.innerHTML += ", Post already in your favlist";
+				div_notice.innerHTML += ", Post already in your favlist";
 				document.title += "!";
 			} else {
 				favlist.push(id);
 				GM_setValue("favlist", favlist);
-				selectElement.innerHTML += ", Added to favlist";
+				div_notice.innerHTML += ", Added to favlist";
 				document.title += "+";
 			}
 
-			// if element is passed
-			showFavPosts_check(element);
-
-			// if on posts page update navbar
-			updateNavbar(id);
+			callback();
 		}
-
-		if (close) { window.close(); }
 	}, 100);
 }
 
 function favPost2(postID) {
-	let favlist = GM_getValue("favlist2", []);
-	for (let i = 0; i < favlist.length; i++) { if (favlist[i][0] == postID) { return; } }
+	
+	if (favlist2_contains(postID)) { return; }
 
-	let link = "";
-	let as = document.getElementsByTagName("a");
-	for (let i = 0; i < as.length; i++) {
-		if (as[i].href && as[i].href.includes("saucenao.com")) {
-			link = as[i].href.split("&url=")[1];
-		}
-	}
+	let link = GetOG(postID);
+
 	if (link != "") {
+        let favlist = GM_getValue("favlist2", []);
 		favlist.push([postID, link]);
 		GM_setValue("favlist2", favlist);
-		updateNavbar(postID);
+		updateSubnavbar(postID);
 	}
 }
 
@@ -405,34 +444,27 @@ var isPage_fav = document.location.href.includes("index.php?page=favorites&s=vie
 var isPage_opt = document.location.href.includes("index.php?page=account&s=options");
 var isPage_main = (document.location.href == "http://rule34.xxx/" || document.location.href == "https://rule34.xxx/");
 
-// get thumbnail post id
-function getPostID(element) {
-	let id = element.id.replace('s', '');
-	if (id != "") { return id; }
-	return element.childNodes[0].id.replace('p', '');
-}
-
 // add extra code to remove the id from favlist, when you press the remove button on the favorites page
 function showFavPosts_injectRemoveCode(element) {
 
 	if (!isPage_fav) { return;}
 
-	let rm = element.childNodes[2];
-	if (rm == undefined || rm == null) { return; }
-	rm.remove();
+	let a_remove = element.childNodes[2];
+	if (a_remove == undefined || a_remove == null) { return; }
+	a_remove.remove();
 
 	let id = element.childNodes[0].id.replace('p', '');
 
-	let btn = document.createElement("button");
-	btn.className = "button-remove";
-	btn.title = "remove: " + id;
-	btn.innerHTML = "❌REMOVE❌";
-	btn.onclick = function() {
+	let button_remove = document.createElement("button");
+	button_remove.className = "button-remove";
+	button_remove.title = "remove: " + id;
+	button_remove.innerHTML = "❌REMOVE❌";
+	button_remove.onclick = function() {
 		let favlist = GM_getValue("favlist", []);
 		GM_setValue("favlist", favlist.filter(e => e !== id));
 		document.location = 'index.php?page=favorites&s=delete&id=' + id;
 	};
-	element.appendChild(btn);
+	element.appendChild(button_remove);
 }
 
 // if blacklisted remove
@@ -444,77 +476,76 @@ function hideBlacklistedThumbnails_check(element) {
 // add fav button on post
 function thumbFav_check(element) {
 
-	if (element == null || element.className == "thumb fav" || element.classname == "thumb 4fav" ) { return; }
+	if (element == null || element.classList.contains("fav") || element.classList.contains("4fav")) { return; }
 
-	element.className = "thumb 4fav";
+	element.classList.add("4fav");
 	element.style.position = "relative";
 
-	let tag = document.createElement('button');
-	tag.innerHTML = "♥";
-	tag.title = "Add to favorites";
-	tag.style.position = "absolute";
-	tag.style.top = "20%";
-	tag.style.left = "80%";
-	tag.style.width = "20%";
-	tag.style.height = "20%";
-	tag.style.color = "#ffffff";
-	tag.style.textAlign = "#center";
-	tag.style.font = "normal bold 19px arial,serif";
-	tag.style.border = "solid 3px red";
-	tag.style.backgroundColor = "rgba(20, 20, 20, .8)";
-	tag.style.transform = "translate(-50%, -50%)";
-	tag.style.display = "none";
+	let button_favOnPost = document.createElement('button');
+	button_favOnPost.innerHTML = "♥";
+	button_favOnPost.title = "Add to favorites";
+	button_favOnPost.style = "position: absolute; top: 20%; left: 80%; width: 20%; height: 20%; color: rgb(255, 255, 255); font: bold 19px arial, serif; border: 3px solid red; background-color: rgba(20, 20, 20, 0.8); transform: translate(-50%, -50%); display: none;"
 
-	element.appendChild(tag);
+	element.appendChild(button_favOnPost);
 
-	tag.onmousedown = function() { tag.remove(); favPost(getPostID(element), false, element); };
+	button_favOnPost.onmousedown = function() {
+		button_favOnPost.remove();
+		let id = getPostID(element);
+		favPost(id, function () {
+			showFavPosts_elementCheck(element);
+			updateNavbar(id);
+		});
+	}
 
-	element.onmouseenter = function() { tag.style.display = "block"; };
-	element.onmouseleave = function() { tag.style.display = "none"; };
+	element.onmouseenter = function() { button_favOnPost.style.display = "block"; };
+	element.onmouseleave = function() { button_favOnPost.style.display = "none"; };
 }
 
 function embedDefaultVideo() {
-	let playerCont = document.getElementById("gelcomVideoContainer");
-	if (!playerCont) { return; }
+	let div_gelcomVideoContainer = document.getElementById("gelcomVideoContainer");
+	if (!div_gelcomVideoContainer) { return; }
 
 	// set style of video as the container
-	let vid = document.createElement("video");
-	vid.id = "gelcomVideoContainer";
-	vid.controls = true;
-	vid.volume = defaultVideoVolume;
-	vid.style.cssText = playerCont.style.cssText;
+	let video_og = document.createElement("video");
+	video_og.id = "videoEmbeded";
+	video_og.controls = true;
+	video_og.volume = setting_defaultVideoVolume;
+	video_og.autoplay = setting_autoplayVideos;
+	video_og.style.cssText = div_gelcomVideoContainer.style.cssText;
 
 	// get player src
-	let player = document.getElementById("gelcomVideoPlayer");
+	let video_gelcomVideoPlayer = document.getElementById("gelcomVideoPlayer");
 	// let link = document.getElementById('stats').nextElementSibling.childNodes[3].childNodes[3].childNodes[0];
-	vid.src = player.currentSrc;
-	playerCont.style.display = "none";
-	playerCont.parentNode.insertBefore(vid, playerCont);
+	video_og.src = video_gelcomVideoPlayer.currentSrc;
+	div_gelcomVideoContainer.style.display = "none";
+	div_gelcomVideoContainer.parentNode.insertBefore(video_og, div_gelcomVideoContainer);
+
+	// //div_gelcomVideoContainer.remove(); // can't remove or will get a massive error spam in console
 	//playerCont.parentNode.replaceChild(vid, playerCont);
 }
 
-if (hideBlacklistedThumbnails) {
+if (setting_hideBlacklistedThumbnails) {
 	let elements = document.getElementsByClassName("thumb blacklisted-image");
 	while (elements[0]) { elements[0].remove(); }
 }
 
-if (thumbFav) {
+if (setting_thumbFav) {
 	let elements = document.getElementsByClassName("thumb");
 	for (let i = 0; i < elements.length; i++) { thumbFav_check(elements[i]); }
 }
 
 // remove clicker ad and other ads
-if (removeBloat) {
-	let items = document.getElementsByTagName("a");
-	for (i = items.length - 1; i >= 0; i--) {
+if (setting_removeBloat) {
+	let a_links = document.getElementsByTagName("a");
+	for (i = a_links.length - 1; i >= 0; i--) {
 		//if (items[i].href.includes("clicker")) { items[i].remove(); }
-		if (items[i].href.includes("https://rule34.xxx/hwspecial.php")) { items[i].remove(); }
-		if (items[i].href.includes("https://buymyshit.moneygrubbingwhore.com")) { items[i].remove(); }
+		if (a_links[i].href.includes("https://rule34.xxx/hwspecial.php")) { a_links[i].remove(); }
+		if (a_links[i].href.includes("https://buymyshit.moneygrubbingwhore.com")) { a_links[i].remove(); }
 		// will add more if rule34 adds more
 	}
 }
 
-if (forceDarkTheme) {
+if (setting_forceDarkTheme) {
 	document.cookie = "theme=dark; Path=/;"
 	//Cookie.create('theme', 'dark');
 
@@ -534,12 +565,12 @@ if (forceDarkTheme) {
 	head.appendChild(link);
 
 	// append even better dark theme css
-	if (betterDarkTheme) { GM_addStyle(betterDarkThemeCss) }
+	if (setting_betterDarkTheme) { GM_addStyle(css_betterDarkTheme) }
 }
 
 // options page
 if (isPage_opt) {
-	let vtbody = document.body.getElementsByTagName("tbody")[0];
+	let tbody_options = document.body.getElementsByTagName("tbody")[0];
 
 	function makeCB(setv_, setv) {
 		let label = document.createElement("label");
@@ -556,50 +587,50 @@ if (isPage_opt) {
 	}
 
 	function makeCB_form(setv_, setv, name, desc) {
-		let vtr = document.createElement("tr");
-		let vth = document.createElement("th");
-		vlabel = document.createElement("label");
-		vlabel.className = "block";
-		vlabel.innerHTML = name;
-		vth.appendChild(vlabel);
-		let vp = document.createElement("p");
-		vp.innerHTML = desc;
-		vth.appendChild(vp);
-		vtr.appendChild(vth);
-		let vtd = document.createElement("td");
-		vtd.appendChild(makeCB(setv_, setv));
-		vtr.appendChild(vtd);
-		vtbody.appendChild(vtr);
+		let tr = document.createElement("tr");
+		let th = document.createElement("th");
+		let label = document.createElement("label");
+		label.className = "block";
+		label.innerHTML = name;
+		th.appendChild(label);
+		let p = document.createElement("p");
+		p.innerHTML = desc;
+		th.appendChild(p);
+		tr.appendChild(th);
+		let td = document.createElement("td");
+		td.appendChild(makeCB(setv_, setv));
+		tr.appendChild(td);
+		tbody_options.appendChild(tr);
 	}
 
-	makeCB_form(autoplayVideos_, autoplayVideos, "AutoPlay", "Automatically play the video");
+	makeCB_form(setting_autoplayVideos_, setting_autoplayVideos, "AutoPlay", "Automatically play the video");
 	{
-		let row = document.createElement("tr");
-		let header = document.createElement("th");
-		let title = document.createElement("label");
-		title.className = "block";
-		title.innerHTML = "Default Video Volume";
-		header.appendChild(title);
-		row.appendChild(header);
+		let tr = document.createElement("tr");
+		let th = document.createElement("th");
+		let label = document.createElement("label");
+		label.className = "block";
+		label.innerHTML = "Default Video Volume";
+		th.appendChild(label);
+		tr.appendChild(th);
 
 		let data = document.createElement("td");
 		let slider = document.createElement("input");
 		slider.type = "range";
 		slider.min = "0";
 		slider.max = "100";
-		slider.value = GM_getValue(defaultVideoVolume_, defaultVideoVolume) * 100;
+		slider.value = GM_getValue(setting_defaultVideoVolume_, setting_defaultVideoVolume) * 100;
 		slider.className = "slider";
 		let slider_info = document.createElement("p");
 		slider_info.style = "display: inline-block;";
 		slider_info.innerHTML = "Volume: " + slider.value + "%";
 		slider.oninput = function() {
 			slider_info.innerHTML = "Volume: " + slider.value + "%";
-			GM_setValue(defaultVideoVolume_, slider.value / 100);
+			GM_setValue(setting_defaultVideoVolume_, slider.value / 100);
 		}
 		data.appendChild(slider);
 		data.appendChild(slider_info);
-		row.appendChild(data);
-		vtbody.appendChild(row);
+		tr.appendChild(data);
+		tbody_options.appendChild(tr);
 	}
 	{
 		let row = document.createElement("tr");
@@ -618,36 +649,37 @@ if (isPage_opt) {
 		slider.type = "range";
 		slider.min = 0;
 		slider.max = 100;
-		slider.value = GM_getValue(viewportDependentHeight_, viewportDependentHeight);
+		slider.value = GM_getValue(setting_viewportDependentHeight_, setting_viewportDependentHeight);
 		slider.className = "slider";
 		let slider_info = document.createElement("p");
 		slider_info.style = "display: inline-block;";
 		slider_info.innerHTML = slider.value + "%";
 		slider.oninput = function() {
 			slider_info.innerHTML = slider.value + "%";
-			GM_setValue(viewportDependentHeight_, slider.value);
+			GM_setValue(setting_viewportDependentHeight_, slider.value);
 		}
 
-		data.appendChild(makeCB(useViewportDependentSize_, useViewportDependentSize));
+		data.appendChild(makeCB(setting_useViewportDependentSize_, setting_useViewportDependentSize));
 		data.appendChild(slider);
 		data.appendChild(slider_info);
 		row.appendChild(data);
-		vtbody.appendChild(row);
+		tbody_options.appendChild(row);
 	}
-	makeCB_form(stretchImgVid_,             stretchImgVid,             "Stretch Image/Video", "This overrides 'True Video Size'");
-	makeCB_form(trueVideoSize_,             trueVideoSize,             "True Video Size", "Resizes videos to their true size");
-	makeCB_form(enableFavOnEnter_,          enableFavOnEnter,          "Enable Fav On Enter", "Use the ENTER key on your keyboard to add a post to your favorites");
-	makeCB_form(hideBlacklistedThumbnails_, hideBlacklistedThumbnails, "Hide Blacklisted Thumbnails", "Hide blacklisted thumbnails on the main post page");
-	makeCB_form(forceDarkTheme_,            forceDarkTheme,            "Force Dark Theme", "Force rule34's dark theme on every page");
-	makeCB_form(betterDarkTheme_,           betterDarkTheme,           "Better Dark Theme", "(must enable 'Force Dark Theme') Use a custom CSS dark theme with the rule34's dark theme");
-	makeCB_form(removeBloat_,               removeBloat,               "Remove Bloat", "Removes: hentai clicker game AD, and other bullshit.");
-	makeCB_form(endlessScrolling_,          endlessScrolling,          "Endless Scrolling", "When you get to the bottom of the current page it will automatically append the content from the next page on the current page");
-	makeCB_form(favFilter_,                 favFilter,                 "Favorites Filter", "Adds a searchbox for tag(s) in favorites");
-	makeCB_form(showFavPosts_,              showFavPosts,              "Show Fav Posts", "Shows you which posts are in your favorites while browsing");
-	makeCB_form(showFavPosts2_,             showFavPosts2,             "Hide Fav Posts", "(must enable 'Show Fav Posts') Hides favorites while browsing");
-	makeCB_form(embedVideo_,                embedVideo,                "Embed Video", "Replace rule34's player with the default browser player");
-	makeCB_form(thumbFav_,                  thumbFav,                  "Thumb Fav", "Adds a fav button on each post while browsing");
-	makeCB_form(mainPageExtra_,             mainPageExtra,             "Main Page Extra", "Adds a button (on the main page) that expands to a form that allows you to bookmark tags and see super favorites");
+	makeCB_form(setting_stretchImgVid_,             setting_stretchImgVid,             "Stretch Image/Video", "This overrides 'True Video Size'");
+	makeCB_form(setting_trueVideoSize_,             setting_trueVideoSize,             "True Video Size", "Resizes videos to their true size");
+	makeCB_form(setting_enableFavOnEnter_,          setting_enableFavOnEnter,          "Enable Fav On Enter", "Use the ENTER key on your keyboard to add a post to your favorites");
+	makeCB_form(setting_hideBlacklistedThumbnails_, setting_hideBlacklistedThumbnails, "Hide Blacklisted Thumbnails", "Hide blacklisted thumbnails on the main post page");
+	makeCB_form(setting_forceDarkTheme_,            setting_forceDarkTheme,            "Force Dark Theme", "Force rule34's dark theme on every page");
+	makeCB_form(setting_betterDarkTheme_,           setting_betterDarkTheme,           "Better Dark Theme", "(must enable 'Force Dark Theme') Use a custom CSS dark theme with the rule34's dark theme");
+	makeCB_form(setting_removeBloat_,               setting_removeBloat,               "Remove Bloat", "Removes: hentai clicker game AD, and other bullshit.");
+	makeCB_form(setting_endlessScrolling_,          setting_endlessScrolling,          "Endless Scrolling", "When you get to the bottom of the current page it will automatically append the content from the next page on the current page");
+	makeCB_form(setting_favFilter_,                 setting_favFilter,                 "Favorites Filter", "Adds a searchbox for tag(s) in favorites");
+	makeCB_form(setting_showFavPosts_,              setting_showFavPosts,              "Show Fav Posts", "Shows you which posts are in your favorites while browsing");
+	makeCB_form(setting_showFavPosts2_,             setting_showFavPosts2,             "Hide Fav Posts", "(must enable 'Show Fav Posts') Hides favorites while browsing");
+	makeCB_form(setting_embedVideo_,                setting_embedVideo,                "Embed Video", "Replace rule34's player with the default browser player");
+	makeCB_form(setting_thumbFav_,                  setting_thumbFav,                  "Thumb Fav", "Adds a fav button on each post while browsing");
+	makeCB_form(setting_mainPageExtra_,             setting_mainPageExtra,             "Main Page Extra", "Adds a button (on the main page) that expands to a form that allows you to bookmark tags and see super favorites");
+	makeCB_form(setting_slideShow_,                 setting_slideShow,                 "Slideshow", "Adds a button in the top right corner, when browsing, to activate slideshow mode");
 }
 
 // favorites page
@@ -658,13 +690,13 @@ if (isPage_fav) {
 	//for (let i = 0; i < bodyc.length; i++) { if (bodyc[i].tagName === "BR") { bodyc[i].remove(); } }
 
 	// container for all the controls in favorites
-	let cont = document.createElement("div");
-	cont.id = "favcontrols";
-	cont.style = "margin: 2px 5px 10px 5px;"
-	document.getElementById("header").parentNode.insertBefore(cont, document.getElementById("header").nextSibling);
+	let div_favcontrols = document.createElement("div");
+	div_favcontrols.id = "favcontrols";
+	div_favcontrols.style = "margin: 2px 5px 10px 5px;"
+	document.getElementById("header").parentNode.insertBefore(div_favcontrols, document.getElementById("header").nextSibling);
 
-	if (favFilter) {
-		function removeContent() {
+	if (setting_favFilter) {
+		function slideShow_removeContent() {
 			let elements = document.getElementsByClassName("thumb");
 			while (elements[0]) { elements[0].remove(); }
 		}
@@ -752,7 +784,7 @@ if (isPage_fav) {
 		btn_clear.title = "Hide all content";
 		btn_clear.innerHTML = "Clear";
 		btn_clear.onclick = function() {
-			removeContent();
+			slideShow_removeContent();
 			imagesAdded = 0;
 			document.title = originalTitle;
 			txt_curmax.innerHTML = "";
@@ -815,14 +847,14 @@ if (isPage_fav) {
 	}
 }
 
-if (showFavPosts) {
+if (setting_showFavPosts) {
 
-	if (showFavPosts2) { document.documentElement.style.setProperty('--favdisplay', 'none'); }
+	if (setting_showFavPosts2) { document.documentElement.style.setProperty('--favdisplay', 'none'); }
 
 	// filtering
 	if (isPage_posts) {
 		let elements = document.querySelectorAll(".thumb");
-		for (let i = 0; i < elements.length; i++) { showFavPosts_check(elements[i]); }
+		for (let i = 0; i < elements.length; i++) { showFavPosts_elementCheck(elements[i]); }
 	}
 
 	if (isPage_fav) {
@@ -830,7 +862,7 @@ if (showFavPosts) {
 		// show fav posts
 		let elements = document.querySelectorAll(".thumb");
 		for (let i = 0; i < elements.length; i++) {
-			showFavPosts_check(elements[i]);
+			showFavPosts_elementCheck(elements[i]);
 			showFavPosts_injectRemoveCode(elements[i]);
 		}
 
@@ -891,12 +923,13 @@ if (showFavPosts) {
 	}
 }
 
-// endless scrolling
+// endless scrolling checkbox ; hide fav posts checkbox ; slideshow
 if (isPage_posts || isPage_fav) {
 
-	let div = document.createElement("div");
-	div.id = "trcont";
-	div.style = "position: fixed; top: 5px; right: 5px;";
+	// top right container
+	let div_trcont = document.createElement("div");
+	div_trcont.id = "trcont";
+	div_trcont.style = "position: fixed; top: 5px; right: 5px;";
 
 	let label = document.createElement("label");
 	label.className = "checkboxContainer";
@@ -904,42 +937,253 @@ if (isPage_posts || isPage_fav) {
 	label.id = "trcheckbox";
 	let input = document.createElement("input");
 	input.type = "checkbox";
-	input.checked = endlessScrolling;
-	input.addEventListener("change", function() { GM_setValue(endlessScrolling_, this.checked); endlessScrolling = this.checked; });
+	input.checked = setting_endlessScrolling;
+	input.addEventListener("change", function() { GM_setValue(setting_endlessScrolling_, this.checked); setting_endlessScrolling = this.checked; });
 	let span = document.createElement("span");
 	span.className = "checkmark";
 	label.appendChild(input);
 	label.appendChild(span);
-	div.append(label);
+	div_trcont.append(label);
 
-	if (showFavPosts) {
+	// hide fav posts checkbox
+	if (setting_showFavPosts) {
 		let label2 = document.createElement("label");
 		label2.className = "checkboxContainer";
 		label2.title = "Hide favorites";
 		label2.id = "trcheckbox";
 		let input2 = document.createElement("input");
 		input2.type = "checkbox";
-		input2.checked = showFavPosts2;
+		input2.checked = setting_showFavPosts2;
 		input2.addEventListener("change", function() {
-			GM_setValue(showFavPosts2_, this.checked);
-			showFavPosts2 = this.checked;
+			GM_setValue(setting_showFavPosts2_, this.checked);
+			setting_showFavPosts2 = this.checked;
 			document.documentElement.style.setProperty('--favdisplay', (input2.checked ? "none" : "inline"));
 		});
 		let span2 = document.createElement("span");
 		span2.className = "checkmark";
 		label2.appendChild(input2);
 		label2.appendChild(span2);
-		div.append(label2);
+		div_trcont.append(label2);
 	}
 
+	// slideshow
+	if (setting_slideShow && isPage_posts) {
 
-	let p = document.createElement("p");
-	p.id = "endlessScrolling_p";
-	p.style = "display: block; float: left;";
-	p.innerHTML = "";
-	div.append(p);
+		let div_slideShow = document.createElement("div");
+		div_slideShow.style  = "position: fixed; width: 100%; height: 100%; margin: 3px; top: 0; left: 0; right: 0; bottom: 0; z-index: 2; background: rgba(0, 0, 0, 0.6); border: 1px solid green; transform:";
+		div_slideShow.style.display = "none";
 
-	document.body.appendChild(div);
+		let button_slideShow_show = document.createElement("button");
+		button_slideShow_show.style = "cursor: pointer; width: 20px; height: 20px; background: #303030; padding: 0; margin: 2px; border: 1px solid green; color: lime";
+		button_slideShow_show.innerHTML = "▶️";
+		button_slideShow_show.title = "Show Slideshow";
+
+		let button_slideShow_hide = document.createElement("button");
+		button_slideShow_hide.style = "cursor: pointer; position: absolute; right: 2px; top: 2px; width: 20px; height: 20px; background: black; padding: 0; margin: 2px; border: 1px solid red; color: lime";
+		button_slideShow_hide.innerHTML = "❌";
+		button_slideShow_hide.title = "Close Slideshow";
+		
+		let cssStyle_slideShowButtons = "cursor: pointer; width: 20px; height: 20px; background: black; padding: 0; margin: 2px; border: 1px solid green; color: lime";
+		
+		let button_slideShow_back = document.createElement("button");
+		button_slideShow_back.innerHTML = "⏮️";
+		button_slideShow_back.style = cssStyle_slideShowButtons;
+		button_slideShow_back.title = "Previous Post (A/LEFT ARROW)"; 
+	
+		let button_slideShow_next = document.createElement("button");
+		button_slideShow_next.innerHTML = "⏭️";
+		button_slideShow_next.style = cssStyle_slideShowButtons;
+		button_slideShow_next.title = "Next Post (D/RIGHT ARROW)";
+		
+		let button_slideShow_fav = document.createElement("button");
+		button_slideShow_fav.innerHTML = "❤️";
+		button_slideShow_fav.style = cssStyle_slideShowButtons;
+		button_slideShow_fav.title = "Add to favorites (S/Numpad0)";
+		
+		let button_slideShow_fav2 = document.createElement("button");
+		button_slideShow_fav2.innerHTML = "💚";
+		button_slideShow_fav2.style = cssStyle_slideShowButtons;
+		button_slideShow_fav2.title = "Add to super favorites (W)";
+		
+		let currentPost_element = null;
+		let currentPost_element_id = null;
+		
+		function currentPost_element_update(element) {
+			currentPost_element = element;
+			currentPost_element_id = getPostID(currentPost_element);
+		}
+		
+		function slideShow_updateUI() {
+		
+			let isfav = favlist_contains(currentPost_element_id);
+			let isfav2 = favlist2_contains(currentPost_element_id);
+
+			button_slideShow_fav.style.display  = isfav  ? "none" : "inline-block";
+			button_slideShow_fav2.style.display = isfav2 ? "none" : "inline-block";
+
+			let RGB_lime    = "RGBA(0,   255,   0, 0.6)";
+			let RGB_green   = "RGBA(0,   128,   0, 0.6)"
+			let RGB_hotpink = "RGBA(255, 105, 180, 0.6)";
+			let RGB_purple  = "RGBA(128,   0, 128, 0.6)";
+
+			if (isfav && isfav2) { div_slideShow.style.background = "linear-gradient(to bottom, " + RGB_green + ", " + RGB_purple + ")"; }
+			else if (isfav)      { div_slideShow.style.background = "linear-gradient(to bottom, " + RGB_hotpink + ", " + RGB_purple + ")"; }
+			else if (isfav2)     { div_slideShow.style.background = "linear-gradient(to bottom, " + RGB_lime + ", " + RGB_green + ")"; }
+			else                 { div_slideShow.style.background = "rgba(0, 0, 0, 0.6)"; }
+			
+			showFavPosts_elementUpdate(currentPost_element, isfav, isfav2);
+		}
+		
+		function checkIfImage(url) { return(url.match(/\.(jpeg|jpg|gif|png)/) != null); }
+		function checkIfVideo(url) { return(url.match(/\.(mp4|webm)/) != null); }
+		
+		function slideShow_removeContent() {
+			let priv  = div_slideShow.querySelector("#slideShow_content");         if (priv)  { priv.remove();  }
+			let priv2 = div_slideShow.querySelector("#slideShow_content_preview"); if (priv2) { priv2.remove(); }
+		}
+		
+		function slideShow_showContent() {
+			// remove priv content
+			slideShow_removeContent();
+			
+			if (!currentPost_element || !currentPost_element_id) { console.log("nothing to slideshow :/ ???"); return; }
+			
+			// scroll into view
+			currentPost_element.scrollIntoView();
+			
+			// update buttons fav/fav2/bg
+			slideShow_updateUI();
+			
+			// get og image/video url
+			let contentURL = GetOG(currentPost_element_id);
+			
+			// load preview
+			let img_preview = currentPost_element.querySelector(".preview").cloneNode();
+			img_preview.style = "position: fixed; bottom: 1px; right: 1px; z-index: -1";
+			
+			let a_preview = document.createElement("a");
+			a_preview.id = "slideShow_content_preview";
+			a_preview.href = "index.php?page=post&s=view&id=" + currentPost_element_id;
+			a_preview.append(img_preview);
+			
+			div_slideShow.append(a_preview);
+			
+			// load og image/video
+			if (checkIfImage(contentURL)) {
+				let content = document.createElement("img");
+				content.id = "slideShow_content";
+				content.style = "display: block; margin: auto auto; width: auto; height: auto; max-width: calc(100% - 35px); max-height: calc(100% - 35px);";
+				content.src = contentURL;
+				div_slideShow.append(content);
+			}
+			else if (checkIfVideo(contentURL)) { // video
+				let content = document.createElement("video");
+				content.id = "slideShow_content";
+				content.style = "display: block; margin: auto auto; width: auto; height: auto; max-width: calc(100% - 35px); max-height: calc(100% - 35px);";
+				content.controls = true;
+				content.volume = setting_defaultVideoVolume;
+				content.autoplay = setting_autoplayVideos;
+				content.src = contentURL;
+				div_slideShow.append(content);
+			}
+			else {
+				console.log("idk if this is a video or image? :V --> " + contentURL);
+			}
+		}
+		
+		function slideShow_next() {
+			if (!currentPost_element.nextElementSibling) { return; }
+			currentPost_element_update(currentPost_element.nextElementSibling);
+			if (setting_showFavPosts2 && currentPost_element.classList.contains("fav")) { slideShow_next(); }
+		}
+		
+		function slideShow_back() {
+			if (!currentPost_element.previousElementSibling) { return; }
+			currentPost_element_update(currentPost_element.previousElementSibling);
+			if (setting_showFavPosts2 && currentPost_element.classList.contains("fav")) { slideShow_back(); }
+		}
+		
+		function slideShow_nextNshow() {
+			slideShow_next();
+			slideShow_showContent();
+		}
+		
+		function slideShow_backNshow() {
+			slideShow_back();
+			slideShow_showContent();
+		}
+		
+		function slideShow_fav()  { if (currentPost_element) { favPost(currentPost_element_id, function () { slideShow_updateUI(); }); } }
+		function slideShow_fav2() { if (currentPost_element) { favPost2(currentPost_element_id); slideShow_updateUI(); } }
+		
+		button_slideShow_next.addEventListener("click", function() { slideShow_nextNshow(); });
+		button_slideShow_back.addEventListener("click", function() { slideShow_backNshow(); });
+		button_slideShow_fav.addEventListener ("click", function() { slideShow_fav();  });
+		button_slideShow_fav2.addEventListener("click", function() { slideShow_fav2(); });
+		
+		div_slideShow.addEventListener("click", function() {  });
+		
+		// append all buttons and stuff
+		div_slideShow.append(button_slideShow_hide);
+		div_slideShow.append(button_slideShow_back);
+		div_slideShow.append(button_slideShow_next);
+		div_slideShow.append(button_slideShow_fav);
+		div_slideShow.append(button_slideShow_fav2);
+		
+		function slideShow_show() {
+			div_slideShow.style.display = "block"; // show slideshow
+			button_slideShow_show.style.display = "none"; // hide button
+			
+			// show first element
+			let spans = document.getElementsByClassName("thumb");
+			if (currentPost_element == null && spans.length >= 1) {
+				currentPost_element_update(spans[0]);
+				if (setting_showFavPosts2 && currentPost_element.classList.contains("fav")) { slideShow_next(); }
+			}
+			slideShow_showContent();
+			
+			// setup shortcut keys
+			document.onkeyup = function(e) {
+				if      (e.code === 'KeyS' || e.code === 'Numpad0')    { slideShow_fav();       }
+				else if (e.code === 'KeyW')                            { slideShow_fav2();      }
+				else if (e.code === 'Escape')                          { slideShow_hide();      }
+				else if (e.code === 'ArrowLeft'  || e.code === 'KeyA') { slideShow_backNshow(); }
+				else if (e.code === 'ArrowRight' || e.code === 'KeyD') { slideShow_nextNshow(); }
+				e.defaultPrevented = true;
+			};
+		}
+		
+		function slideShow_hide() {
+			// hide content
+			slideShow_removeContent();
+			
+			// remove shortcut keys
+			document.onkeyup = null;
+			
+			// rehook autocomplete
+			autocomplete_setup();
+			
+			div_slideShow.style.display = "none"; // hide slideshow
+			button_slideShow_show.style.display = "inline-block"; // show button
+		}
+		
+		button_slideShow_show.addEventListener("click", function() { slideShow_show(); }); 
+		button_slideShow_hide.addEventListener("click", function() { slideShow_hide(); });
+		
+		div_trcont.append(button_slideShow_show);
+		document.body.append(div_slideShow);
+    }
+
+	//
+	// ENDLESS SCROLLING
+	//
+	let p_endlessScroll = document.createElement("p");
+	p_endlessScroll.id = "endlessScrolling_p";
+	p_endlessScroll.style = "display: block; float: left;";
+	p_endlessScroll.innerHTML = "";
+	div_trcont.append(p_endlessScroll);
+
+	document.body.appendChild(div_trcont);
 
 	function isInViewport(myElement) {
 		var bounding = myElement.getBoundingClientRect();
@@ -973,11 +1217,12 @@ if (isPage_posts || isPage_fav) {
 		let max = maxMatch == null ? 0 : parseInt(maxMatch[1]);
 		let curMatch = /pid=([0-9]*)/gm.exec(add);
 		let cur = curMatch == null ? 0 : parseInt(curMatch[1]);
-		let paginator = document.getElementById("paginator");
+		let div_imageList = document.querySelector(".image-list");
+		let did_paginator = document.getElementById("paginator");
 
 		window.addEventListener("scroll", async function() {
-			if (reachedTheEnd || !endlessScrolling || !isInViewport(paginator)) { return; }
-			if (!endlessScrolling) { return; }
+			if (reachedTheEnd || !setting_endlessScrolling || !isInViewport(did_paginator)) { return; }
+			if (!setting_endlessScrolling) { return; }
 			cur += step;
 			let url = base + "&pid=" + cur;
 			document.title = "Loading...";
@@ -988,12 +1233,14 @@ if (isPage_posts || isPage_fav) {
 				let elements = Array.prototype.slice.call(doc.getElementsByClassName("thumb"), 0);
 				if (elements.length == 0) { reachedTheEnd = true; return; }
 				for (let i = 0; i < elements.length; i++) {
-					paginator.parentNode.insertBefore(elements[i], paginator);
-					if (hideBlacklistedThumbnails) { hideBlacklistedThumbnails_check(elements[i]); }
-					if (showFavPosts) { showFavPosts_check(elements[i]); showFavPosts_injectRemoveCode(elements[i]); }
-					if (thumbFav) { thumbFav_check(elements[i]); }
+					if (isPage_fav) { paginator.parentNode.insertBefore(elements[i], paginator); }
+					else { div_imageList.append(elements[i]); }
+
+					if (setting_hideBlacklistedThumbnails) { hideBlacklistedThumbnails_check(elements[i]); }
+					if (setting_showFavPosts) { showFavPosts_elementCheck(elements[i]); showFavPosts_injectRemoveCode(elements[i]); }
+					if (setting_thumbFav) { thumbFav_check(elements[i]); }
 				}
-				p.innerHTML = cur + " (" + ((cur + step) / step) + ")";
+				p_endlessScroll.innerHTML = cur + " (" + ((cur + step) / step) + ")";
 			}, false);
 		});
 	};
@@ -1007,7 +1254,7 @@ if (isPage_post) {
 	// set vars
 	let postID = document.location.href.split("id=")[1];
 
-	if (enableFavOnEnter) {
+	if (setting_enableFavOnEnter) {
 		document.onkeydown = function(e) {
 			var event = document.all ? window.event : e;
 			switch (e.target.tagName.toLowerCase()) {
@@ -1023,14 +1270,14 @@ if (isPage_post) {
 	}
 
 	// add custom css
-	GM_addStyle(postCss);
+	GM_addStyle(css_post);
 
 	// video settings
 	let vid = document.querySelector("#gelcomVideoPlayer");
 	if (vid) {
-		vid.volume = defaultVideoVolume;
-		if (autoplayVideos) { vid.autoplay = true; }
-		if (!stretchImgVid && trueVideoSize) {
+		vid.volume = setting_defaultVideoVolume;
+		if (!setting_embedVideo) { vid.autoplay = setting_autoplayVideos; }
+		if (!setting_stretchImgVid && setting_trueVideoSize) {
 			let size = document.querySelector("#stats > ul:nth-child(2) > li:nth-child(3)").innerHTML.split(": ")[1];
 			let wNh = size.split("x");
 			let w = wNh[0];
@@ -1038,7 +1285,7 @@ if (isPage_post) {
 			vid.style = "width: " + w + "px; max-width: 100%; height: " + h + "px;";
 		}
 	}
-
+	
 	// buttons and stuff
 	let navbar = document.getElementById("subnavbar");
 	let cont = document.createElement("div");
@@ -1065,7 +1312,7 @@ if (isPage_post) {
 	let btn_favclose = document.createElement("button");
 	btn_favclose.className = "custom-button";
 	btn_favclose.innerHTML = "❤️+❌favclose";
-	btn_favclose.onclick = function() { favPost(postID, true); };
+	btn_favclose.onclick = function() { favPost(postID, function() { window.close = true; }); };
 	cont.appendChild(btn_favclose);
 
 	let btn_prev = document.createElement("button");
@@ -1089,12 +1336,12 @@ if (isPage_post) {
 	navbar.appendChild(cont);
 
 	// show if a post is in fav
-	updateNavbar(postID);
+	updateSubnavbar(postID);
 
-	if (embedVideo) { embedDefaultVideo(); }
+	if (setting_embedVideo) { embedDefaultVideo(); }
 }
 
-if (isPage_main && mainPageExtra) {
+if (isPage_main && setting_mainPageExtra) {
 
 	function loadExtraContent() {
 		let favTagsDiv = document.createElement("div");
@@ -1199,7 +1446,7 @@ if (isPage_main && mainPageExtra) {
 
 			let img = document.createElement("img");
 			img.className = "preview";
-			img.style.border = "none";
+			img.style = "display: block; border: none; object-fit: fill; max-width: 200px; max-height: 200px";
 			img.alt = id;
 			img.src = thumbURL;
 			a.appendChild(img);
@@ -1228,11 +1475,10 @@ if (isPage_main && mainPageExtra) {
 	btn_expand.id = "expand-button";
 	btn_expand.innerHTML = "🔽";
 	btn_expand.title = "Expand";
-	btn_expand.style = expandButtonStyle;
+	btn_expand.style = 	"position: fixed; top: 5px; right: 5px; cursor: pointer; border: darkgreen 2px dashed; width: 20px; height: 20px; text-align: center;"
 	btn_expand.onclick = function() {
 		loadExtraContent();
 		btn_expand.remove();
 	}
 	document.body.appendChild(btn_expand);
 }
-
