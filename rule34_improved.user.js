@@ -513,6 +513,33 @@ function embedDefaultVideo() {
 	video_og.autoplay = setting_autoplayVideos;
 	video_og.style.cssText = div_gelcomVideoContainer.style.cssText;
 
+	let current = 0;
+	let MouseWheelHandler = function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+
+		e = window.event || e;
+		let delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+		current = current + delta;
+	
+		let curVol = video_og.volume;
+		if      (delta ==  1) { curVol += 0.05; }
+		else if (delta == -1) { curVol -= 0.05; }
+
+		if      (curVol > 1) { video_og.volume = curVol = 1; }
+		else if (curVol < 0) { video_og.volume = curVol = 0; }
+		else                 { video_og.volume = curVol;     }
+
+		return false;
+	};
+	
+	if (video_og.addEventListener) {
+		// IE9, Chrome, Safari, Opera
+		video_og.addEventListener("mousewheel", MouseWheelHandler, false);
+		// Firefox
+		video_og.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+	}
+
 	// get player src
 	let video_gelcomVideoPlayer = document.getElementById("gelcomVideoPlayer");
 	// let link = document.getElementById('stats').nextElementSibling.childNodes[3].childNodes[3].childNodes[0];
@@ -1083,6 +1110,34 @@ if (isPage_posts || isPage_fav) {
 				content.controls = true;
 				content.volume = setting_defaultVideoVolume;
 				content.autoplay = setting_autoplayVideos;
+
+				let current = 0;
+				let MouseWheelHandler = function (e) {
+					e.preventDefault();
+					e.stopPropagation();
+
+					e = window.event || e;
+					let delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+					current = current + delta;
+				
+					let curVol = content.volume;
+					if      (delta ==  1) { curVol += 0.05; }
+					else if (delta == -1) { curVol -= 0.05; }
+
+					if      (curVol > 1) { content.volume = curVol = 1; }
+					else if (curVol < 0) { content.volume = curVol = 0; }
+					else                 { content.volume = curVol;     }
+
+					return false;
+				};
+				
+				if (content.addEventListener) {
+					// IE9, Chrome, Safari, Opera
+					content.addEventListener("mousewheel", MouseWheelHandler, false);
+					// Firefox
+					content.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+				}
+
 				content.src = contentURL;
 				div_slideShow.append(content);
 			}
