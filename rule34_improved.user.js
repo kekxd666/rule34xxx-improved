@@ -1018,6 +1018,7 @@ if (isPage_posts || isPage_fav) {
 
 		let div_slideShow_btnCont = document.createElement("div");
 		div_slideShow_btnCont.style = "width: 175px; height: 34px; float: right;";
+		div_slideShow_btnCont.className = "slideShow_class_backNnext";
 
 		let button_slideShow_hide = document.createElement("button");
 		button_slideShow_hide.style = cssStyle_slideShowButtons;
@@ -1195,14 +1196,18 @@ if (isPage_posts || isPage_fav) {
 
 		let side = 0;
 		div_slideShow.addEventListener('mousemove', function(event) {
-			if (!event.target.classList.contains("slideShow_class_backNnext")) { return; }
-			if (event.pageX > (div_slideShow.offsetWidth/2)) { div_slideShow.style.cursor = "e-resize"; side = 1; }
-			else                                             { div_slideShow.style.cursor = "w-resize"; side = 2; }
+			if (event.target.classList.contains("slideShow_class_backNnext")) {
+				if (event.pageX > (div_slideShow.offsetWidth/2)) { div_slideShow.style.cursor = "e-resize"; side = 1; }
+				else                                             { div_slideShow.style.cursor = "w-resize"; side = 2; }
+			}
+			else {
+				div_slideShow.style.cursor = "auto";
+				side = 0;
+			}
 		});
 
 		div_slideShow.addEventListener('click', function(event) {
-			if (!event.target.classList.contains("slideShow_class_backNnext")) { return; }
-			if (event.buttons != 0) { return; }
+			if (!event.target.classList.contains("slideShow_class_backNnext") || event.buttons != 0) { return; }
 			if      (side == 1) { slideShow_nextNshow(); }
 			else if (side == 2) { slideShow_backNshow(); }
 		}, true);
