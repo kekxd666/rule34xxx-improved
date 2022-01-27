@@ -377,7 +377,11 @@ function favPost(id, callback) {
 	// wait for server to respond
 	let timer = setInterval(function() {
 		let div_notice = document.getElementById("notice");
-		if (div_notice.innerHTML.includes("You are not logged in")) { clearInterval(timer); return; }
+		if (div_notice.innerHTML.includes("You are not logged in")) {
+      clearInterval(timer);
+      document.title = id + ": no login?";
+      return;
+    }
 
 		if (!div_notice.innerHTML.includes("Post added to favorites") && !div_notice.innerHTML.includes("Post already in your favorites")) {
 			document.title = id + ": ...";
@@ -1001,8 +1005,9 @@ if (isPage_posts || isPage_fav) {
 	if (setting_slideShow && isPage_posts) {
 
 		let div_slideShow = document.createElement("div");
-		div_slideShow.style  = "position: fixed; width: 100%; height: 100%; margin: 3px; top: 0; left: 0; right: 0; bottom: 0; z-index: 2; background: rgba(0, 0, 0, 0.6); border: 1px solid green; transform:";
+		div_slideShow.style  = "position: fixed; width: 100%; height: 100%; margin: 3px; top: 0; left: 0; right: 0; bottom: 0; z-index: 2; background: rgba(0, 0, 0, 0.6)";
 		div_slideShow.style.display = "none";
+		div_slideShow.className = "slideShow_class_backNnext";
 
 		let button_slideShow_show = document.createElement("button");
 		button_slideShow_show.style = "cursor: pointer; width: 20px; height: 20px; background: #303030; padding: 0; margin: 2px; border: 1px solid green; color: lime";
@@ -1103,6 +1108,7 @@ if (isPage_posts || isPage_fav) {
 			if (checkIfImage(contentURL)) {
 				let content = document.createElement("img");
 				content.id = "slideShow_content";
+				content.className = "slideShow_class_backNnext";
 				content.style = "display: block; margin: auto auto; width: auto; height: auto; max-width: calc(100% - 35px); max-height: calc(100% - 35px);";
 				content.src = contentURL;
 				div_slideShow.append(content);
@@ -1110,6 +1116,7 @@ if (isPage_posts || isPage_fav) {
 			else if (checkIfVideo(contentURL)) { // video
 				let content = document.createElement("video");
 				content.id = "slideShow_content";
+				content.className = "slideShow_class_backNnext";
 				content.style = "display: block; margin: auto auto; width: auto; height: auto; max-width: calc(100% - 35px); max-height: calc(100% - 35px);";
 				content.controls = true;
 				content.volume = setting_defaultVideoVolume;
@@ -1181,6 +1188,20 @@ if (isPage_posts || isPage_fav) {
 		button_slideShow_back.addEventListener("click", function() { slideShow_backNshow(); });
 		button_slideShow_fav.addEventListener ("click", function() { slideShow_fav();  });
 		button_slideShow_fav2.addEventListener("click", function() { slideShow_fav2(); });
+
+		let side = 0;
+		div_slideShow.addEventListener('mousemove', function(event) {
+			if (!event.target.classList.contains("slideShow_class_backNnext")) { return; }
+			if (event.pageX > (div_slideShow.offsetWidth/2)) { div_slideShow.style.cursor = "e-resize"; side = 1; }
+			else                                             { div_slideShow.style.cursor = "w-resize"; side = 2; }
+		});
+
+		div_slideShow.addEventListener('click', function(event) {
+			if (!event.target.classList.contains("slideShow_class_backNnext")) { return; }
+			if (event.buttons != 0) { return; }
+			if      (side == 1) { slideShow_nextNshow(); }
+			else if (side == 2) { slideShow_backNshow(); }
+		}, true);
 		
 		div_slideShow.addEventListener("click", function() {  });
 		
