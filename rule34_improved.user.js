@@ -517,6 +517,7 @@ function embedDefaultVideo() {
 	video_og.volume = setting_defaultVideoVolume;
 	video_og.autoplay = setting_autoplayVideos;
 	video_og.style.cssText = div_gelcomVideoContainer.style.cssText;
+	video_og.addEventListener('volumechange', (event) => { GM_setValue(setting_defaultVideoVolume_, video_og.volume); setting_defaultVideoVolume = video_og.volume; });
 
 	if (setting_videoVolumeScroll) {
 		let current = 0;
@@ -1126,6 +1127,7 @@ if (isPage_posts || isPage_fav) {
 				content.controls = true;
 				content.volume = setting_defaultVideoVolume;
 				content.autoplay = setting_autoplayVideos;
+				content.addEventListener('volumechange', (event) => { GM_setValue(setting_defaultVideoVolume_, content.volume); setting_defaultVideoVolume = content.volume; });
 
 				if (setting_videoVolumeScroll) {
 					let current = 0;
@@ -1575,4 +1577,3 @@ if (isPage_main && setting_mainPageExtra) {
 	}
 	document.body.appendChild(btn_expand);
 }
-
