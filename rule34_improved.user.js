@@ -1121,7 +1121,7 @@ if (isPage_posts || isPage_fav) {
 			else if (checkIfVideo(contentURL)) { // video
 				let content = document.createElement("video");
 				content.id = "slideShow_content";
-				content.className = "slideShow_class_backNnext";
+				//content.className = "slideShow_class_backNnext";
 				content.style = "display: block; margin: auto auto; width: auto; height: auto; max-width: calc(100% - 35px); max-height: calc(100% - 35px);";
 				content.controls = true;
 				content.volume = setting_defaultVideoVolume;
