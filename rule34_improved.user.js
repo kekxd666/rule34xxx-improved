@@ -1014,12 +1014,16 @@ if (isPage_posts || isPage_fav) {
 		button_slideShow_show.innerHTML = "▶️";
 		button_slideShow_show.title = "Show Slideshow";
 
+		let cssStyle_slideShowButtons = "float: right; cursor: pointer; width: 30px; height: 30px; background: black; border-radius: 20px; padding: 0; margin: 2px; border: 2px solid green; color: lime";
+
+		let div_slideShow_btnCont = document.createElement("div");
+		div_slideShow_btnCont.style = "width: 175px; height: 34px; float: right;";
+
 		let button_slideShow_hide = document.createElement("button");
-		button_slideShow_hide.style = "cursor: pointer; position: absolute; right: 2px; top: 2px; width: 20px; height: 20px; background: black; padding: 0; margin: 2px; border: 1px solid red; color: lime";
+		button_slideShow_hide.style = cssStyle_slideShowButtons;
+		button_slideShow_hide.style.marginRight = "5px";
 		button_slideShow_hide.innerHTML = "❌";
 		button_slideShow_hide.title = "Close Slideshow";
-		
-		let cssStyle_slideShowButtons = "cursor: pointer; width: 20px; height: 20px; background: black; padding: 0; margin: 2px; border: 1px solid green; color: lime";
 		
 		let button_slideShow_back = document.createElement("button");
 		button_slideShow_back.innerHTML = "⏮️";
@@ -1206,11 +1210,13 @@ if (isPage_posts || isPage_fav) {
 		div_slideShow.addEventListener("click", function() {  });
 		
 		// append all buttons and stuff
-		div_slideShow.append(button_slideShow_hide);
-		div_slideShow.append(button_slideShow_back);
-		div_slideShow.append(button_slideShow_next);
-		div_slideShow.append(button_slideShow_fav);
-		div_slideShow.append(button_slideShow_fav2);
+		div_slideShow_btnCont.append(button_slideShow_hide);
+		div_slideShow_btnCont.append(button_slideShow_next);
+		div_slideShow_btnCont.append(button_slideShow_back);
+		div_slideShow_btnCont.append(button_slideShow_fav2);
+		div_slideShow_btnCont.append(button_slideShow_fav);
+		div_slideShow.append(div_slideShow_btnCont);
+		
 		
 		function slideShow_show() {
 			div_slideShow.style.display = "block"; // show slideshow
@@ -1564,3 +1570,4 @@ if (isPage_main && setting_mainPageExtra) {
 	}
 	document.body.appendChild(btn_expand);
 }
+
