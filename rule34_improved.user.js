@@ -26,7 +26,7 @@ function getSetting(settingName, settingDefault) {
 	return value;
 }
 
-var setting_autoplayVideos_            = "autoplayVideos";            var setting_autoplayVideos            = getSetting(setting_autoplayVideos_            , false);
+var setting_autoplayVideos_            = "autoplayVideos";            var setting_autoplayVideos            = getSetting(setting_autoplayVideos_            , true);
 var setting_defaultVideoVolume_        = "defaultVideoVolume";        var setting_defaultVideoVolume        = getSetting(setting_defaultVideoVolume_        , 1);
 var setting_useViewportDependentSize_  = "useViewportDependentSize";  var setting_useViewportDependentSize  = getSetting(setting_useViewportDependentSize_  , true);
 var setting_viewportDependentHeight_   = "viewportDependentHeight";   var setting_viewportDependentHeight   = getSetting(setting_viewportDependentHeight_   , 70);
