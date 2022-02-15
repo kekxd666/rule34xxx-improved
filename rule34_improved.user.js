@@ -1040,7 +1040,7 @@ if (isPage_posts || isPage_fav) {
 		let button_slideShow_fav = document.createElement("button");
 		button_slideShow_fav.innerHTML = "❤️";
 		button_slideShow_fav.style = cssStyle_slideShowButtons;
-		button_slideShow_fav.title = "Add to favorites (S/Numpad0)";
+		button_slideShow_fav.title = "Add to favorites (S/Enter)";
 		
 		let button_slideShow_fav2 = document.createElement("button");
 		button_slideShow_fav2.innerHTML = "💚";
@@ -1083,7 +1083,18 @@ if (isPage_posts || isPage_fav) {
 			let priv  = div_slideShow.querySelector("#slideShow_content");         if (priv)  { priv.remove();  }
 			let priv2 = div_slideShow.querySelector("#slideShow_content_preview"); if (priv2) { priv2.remove(); }
 		}
-		
+    
+		function slideShow_video_vol(content, delta) {
+			if (content.tagName != "VIDEO") { return; }
+			let curVol = content.volume;
+			if      (delta ==  1) { curVol += 0.05; }
+			else if (delta == -1) { curVol -= 0.05; }
+	
+			if      (curVol > 1) { content.volume = curVol = 1; }
+			else if (curVol < 0) { content.volume = curVol = 0; }
+			else                 { content.volume = curVol;     }
+		}
+    
 		function slideShow_showContent() {
 			// remove priv content
 			slideShow_removeContent();
@@ -1134,19 +1145,10 @@ if (isPage_posts || isPage_fav) {
 					let MouseWheelHandler = function (e) {
 						e.preventDefault();
 						e.stopPropagation();
-	
 						e = window.event || e;
 						let delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
 						current = current + delta;
-					
-						let curVol = content.volume;
-						if      (delta ==  1) { curVol += 0.05; }
-						else if (delta == -1) { curVol -= 0.05; }
-	
-						if      (curVol > 1) { content.volume = curVol = 1; }
-						else if (curVol < 0) { content.volume = curVol = 0; }
-						else                 { content.volume = curVol;     }
-	
+						slideShow_video_vol(content, delta);
 						return false;
 					};
 					
@@ -1200,7 +1202,7 @@ if (isPage_posts || isPage_fav) {
 		div_slideShow.addEventListener('mousemove', function(event) {
 			if (event.target.classList.contains("slideShow_class_backNnext")) {
 				if (event.pageX > (div_slideShow.offsetWidth/2)) { div_slideShow.style.cursor = "e-resize"; side = 1; }
-				else                                             { div_slideShow.style.cursor = "w-resize"; side = 2; }
+				else                                            { div_slideShow.style.cursor = "w-resize"; side = 2; }
 			}
 			else {
 				div_slideShow.style.cursor = "auto";
@@ -1239,12 +1241,22 @@ if (isPage_posts || isPage_fav) {
 			
 			// setup shortcut keys
 			document.onkeyup = function(e) {
-				if      (e.code === 'KeyS' || e.code === 'Numpad0')    { slideShow_fav();       }
+				if      (e.code === 'KeyS' || e.code === 'Enter')      { slideShow_fav();       }
 				else if (e.code === 'KeyW')                            { slideShow_fav2();      }
 				else if (e.code === 'Escape')                          { slideShow_hide();      }
 				else if (e.code === 'ArrowLeft'  || e.code === 'KeyA') { slideShow_backNshow(); }
 				else if (e.code === 'ArrowRight' || e.code === 'KeyD') { slideShow_nextNshow(); }
 				e.defaultPrevented = true;
+			};
+
+			document.onkeydown = function(e) {
+				if      (e.code === 'ArrowUp')   { slideShow_video_vol(document.getElementById("slideShow_content"),  1); }
+				else if (e.code === 'ArrowDown') { slideShow_video_vol(document.getElementById("slideShow_content"), -1); }
+				e.stopPropagation();
+				e.preventDefault();  
+				e.returnValue = false;
+				e.cancelBubble = true;
+				return false;
 			};
 		}
 		
@@ -1254,6 +1266,7 @@ if (isPage_posts || isPage_fav) {
 			
 			// remove shortcut keys
 			document.onkeyup = null;
+			document.onkeydown = null;
 			
 			// rehook autocomplete
 			autocomplete_setup();
