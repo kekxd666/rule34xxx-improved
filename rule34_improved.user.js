@@ -950,10 +950,25 @@ if (setting_showFavPosts) {
 			}
 		}
 		btn_updatefav.onclick = function() { getIds(); };
+    
+		// random post button
+		let btn_random = document.createElement("button");
+		btn_random.style = "display: block;";
+		btn_updatefav.title = "Open random post from favlist";
+		btn_random.innerHTML = "Random";
+		btn_random.onclick = function() {
+			let favlist = GM_getValue("favlist", []);
+			let randomItem = favlist[Math.floor(Math.random() * favlist.length)];
+			let url = "https://rule34.xxx/index.php?page=post&s=view&id=" + randomItem; 
+			window.open(url, '_blank');
+		};
+    
+    
 		// container for controls
 		let favlistCont = document.createElement("div");
 		favlistCont.style = "position: fixed; top: 30px; right: 5px;";
 		favlistCont.appendChild(btn_updatefav);
+		favlistCont.appendChild(btn_random);
 		favlistCont.appendChild(status);
 		document.body.appendChild(favlistCont);
 	}
