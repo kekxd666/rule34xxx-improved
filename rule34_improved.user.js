@@ -1545,7 +1545,7 @@ if (isPage_main && setting_mainPageExtra) {
 
 		let superFavDiv = document.createElement("div");
 		superFavDiv.className = "superFavCont";
-		superFavDiv.style = "height: auto; margin-bottom: 500px;";
+		superFavDiv.style = "height: auto; margin-bottom: 500px; width: calc(100% - 220px)";
 
 		let superFavDiv_h5 = document.createElement("h5");
 		superFavDiv_h5.style = "margin-left: 10px; text-decoration: underline;"
