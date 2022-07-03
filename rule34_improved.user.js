@@ -516,7 +516,7 @@ function embedDefaultVideo() {
 	video_og.controls = true;
 	video_og.volume = setting_defaultVideoVolume;
 	video_og.autoplay = setting_autoplayVideos;
-	video_og.style.cssText = div_gelcomVideoContainer.style.cssText;
+	video_og.style.cssText = div_gelcomVideoContainer.style.cssText + (setting_trueVideoSize ? "" : (" max-height: " + setting_viewportDependentHeight + "vh"));
 	video_og.addEventListener('volumechange', (event) => { GM_setValue(setting_defaultVideoVolume_, video_og.volume); setting_defaultVideoVolume = video_og.volume; });
 
 	if (setting_videoVolumeScroll) {
