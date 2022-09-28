@@ -19,7 +19,6 @@
 // - make slideshow work in favorites
 // - cleanup spaggettyyyyy code :P
 
-
 function getSetting(settingName, settingDefault) {
 	let value = GM_getValue(settingName, null);
 	if (value == null) { GM_setValue(settingName, settingDefault); value = settingDefault; }
@@ -129,7 +128,6 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 
 #delayRange { width: 25% !important; }
 
-
 .button-remove {
 	background-color: transparent;
 	border: none;
@@ -207,7 +205,8 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 `;
 
 var css_post = `
-#postbar { 
+#postbar {
+
 	margin: 0;
 	padding 30px;
 	border: solid 1px var(--c-link-soft);
@@ -248,14 +247,12 @@ var css_post = `
 	` + (setting_stretchImgVid ? "" : "max-") + `height: ` + setting_viewportDependentHeight + `vh !important;
 }`) : "");
 
-
 var cssStyle_heart = `
     display: inline;
 	text-align: center;
 	font-size: 20px;
 	opacity: 0.8;
 `;
-
 
 // get thumbnail post id
 function getPostID(element) {
@@ -273,7 +270,7 @@ function GetOG(id) {
 		let metas = doc.body.getElementsByTagName("meta");
 		for (let i = 0; i < metas.length; i++) { if (metas[i].getAttribute("property") == "og:image") { contentURL = metas[i].getAttribute("content"); break; } }
 	}, false);
-	
+
 	return contentURL;
 }
 
@@ -297,15 +294,15 @@ function showFavPosts_elementUpdate(element, isfav, isfav2) {
 		div_heart.innerHTML = "❤️";
 		element.appendChild(div_heart);
 		element.classList.add("fav");
-		
+
 		element.style.background = "linear-gradient(to bottom, hotpink, purple)";
-		
+
 		if (setting_thumbFav) {
 			element.onmouseenter = null;
 			element.onmouseleave = null;
 		}
 	}
-	
+
 	if (isfav2 && !element.classList.contains("sfav")) {
 		element.classList.add("sfav");
 		let div_heart2 = document.createElement("div");
@@ -314,12 +311,12 @@ function showFavPosts_elementUpdate(element, isfav, isfav2) {
 		div_heart2.innerHTML = "💚";
 		element.appendChild(div_heart2);
 		element.classList.add("sfav");
-		
+
 		element.style.background = "linear-gradient(to bottom, lime, green)";
 	}
-	
+
 	if (isfav && isfav2) { element.style.background = "linear-gradient(to bottom, green, purple)"; }
-	
+
 	if (isfav || isfav2) {
 		element.style = "display: var(--favdisplay);"
 		element.style.opacity = "0.4";
@@ -367,8 +364,6 @@ function updateSubnavbar(postID) {
 	updateSubnavbar_p2(postID);
 }
 
-
-
 // add post to favorites, like it & add it to favlist
 function favPost(id, callback) {
 	post_vote(id, 'up'); // like
@@ -413,7 +408,7 @@ function favPost(id, callback) {
 }
 
 function favPost2(postID) {
-	
+
 	if (favlist2_contains(postID)) { return; }
 
 	let link = GetOG(postID);
@@ -524,22 +519,22 @@ function embedDefaultVideo() {
 		let MouseWheelHandler = function (e) {
 			e.preventDefault();
 			e.stopPropagation();
-	
+
 			e = window.event || e;
 			let delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
 			current = current + delta;
-		
+
 			let curVol = video_og.volume;
 			if      (delta ==  1) { curVol += 0.05; }
 			else if (delta == -1) { curVol -= 0.05; }
-	
+
 			if      (curVol > 1) { video_og.volume = curVol = 1; }
 			else if (curVol < 0) { video_og.volume = curVol = 0; }
 			else                 { video_og.volume = curVol;     }
-	
+
 			return false;
 		};
-		
+
 		if (video_og.addEventListener) {
 			// IE9, Chrome, Safari, Opera
 			video_og.addEventListener("mousewheel", MouseWheelHandler, false);
@@ -601,6 +596,19 @@ if (setting_forceDarkTheme) {
 
 	// append even better dark theme css
 	if (setting_betterDarkTheme) { GM_addStyle(css_betterDarkTheme) }
+}
+
+// posts page
+if (isPage_posts) {
+	let elements = document.getElementsByName("tags");
+	for (let i = 0; i < elements.length; i++) {
+		let elem = elements[i];
+		let a = document.createElement("a");
+		a.id = "sortscore";
+		a.innerHTML = "sort:score";
+		a.href =  window.location.href + "+sort%3ascore";
+		elem.parentNode.insertBefore(a, elem.nextSibling);
+	}
 }
 
 // options page
@@ -856,7 +864,7 @@ if (isPage_fav) {
 				let url = base + "&pid=" + cur;
 				txt_curmax.innerHTML = url + " -- " + cur + "/" + max + " (" + ((cur / step) + 1) + "/" + ((max / step) + 1) + ")";
 				let match = input.value.split(" ");
-				
+
 				httpGet(url, function(response) {
 
 					document.title = "[" + imagesAdded + "] Loading...";
@@ -950,7 +958,7 @@ if (setting_showFavPosts) {
 			}
 		}
 		btn_updatefav.onclick = function() { getIds(); };
-    
+
 		// random post button
 		let btn_random = document.createElement("button");
 		btn_random.style = "display: block;";
@@ -959,11 +967,11 @@ if (setting_showFavPosts) {
 		btn_random.onclick = function() {
 			let favlist = GM_getValue("favlist", []);
 			let randomItem = favlist[Math.floor(Math.random() * favlist.length)];
-			let url = "https://rule34.xxx/index.php?page=post&s=view&id=" + randomItem; 
+			let url = "https://rule34.xxx/index.php?page=post&s=view&id=" + randomItem;
+
 			window.open(url, '_blank');
 		};
-    
-    
+
 		// container for controls
 		let favlistCont = document.createElement("div");
 		favlistCont.style = "position: fixed; top: 30px; right: 5px;";
@@ -1041,37 +1049,37 @@ if (isPage_posts || isPage_fav) {
 		button_slideShow_hide.style.marginRight = "5px";
 		button_slideShow_hide.innerHTML = "❌";
 		button_slideShow_hide.title = "Close Slideshow";
-		
+
 		let button_slideShow_back = document.createElement("button");
 		button_slideShow_back.innerHTML = "⏮️";
 		button_slideShow_back.style = cssStyle_slideShowButtons;
-		button_slideShow_back.title = "Previous Post (A/LEFT ARROW)"; 
-	
+		button_slideShow_back.title = "Previous Post (A/LEFT ARROW)";
+
 		let button_slideShow_next = document.createElement("button");
 		button_slideShow_next.innerHTML = "⏭️";
 		button_slideShow_next.style = cssStyle_slideShowButtons;
 		button_slideShow_next.title = "Next Post (D/RIGHT ARROW)";
-		
+
 		let button_slideShow_fav = document.createElement("button");
 		button_slideShow_fav.innerHTML = "❤️";
 		button_slideShow_fav.style = cssStyle_slideShowButtons;
 		button_slideShow_fav.title = "Add to favorites (S/Enter)";
-		
+
 		let button_slideShow_fav2 = document.createElement("button");
 		button_slideShow_fav2.innerHTML = "💚";
 		button_slideShow_fav2.style = cssStyle_slideShowButtons;
 		button_slideShow_fav2.title = "Add to super favorites (W)";
-		
+
 		let currentPost_element = null;
 		let currentPost_element_id = null;
-		
+
 		function currentPost_element_update(element) {
 			currentPost_element = element;
 			currentPost_element_id = getPostID(currentPost_element);
 		}
-		
+
 		function slideShow_updateUI() {
-		
+
 			let isfav = favlist_contains(currentPost_element_id);
 			let isfav2 = favlist2_contains(currentPost_element_id);
 
@@ -1087,55 +1095,55 @@ if (isPage_posts || isPage_fav) {
 			else if (isfav)      { div_slideShow.style.background = "linear-gradient(to bottom, " + RGB_hotpink + ", " + RGB_purple + ")"; }
 			else if (isfav2)     { div_slideShow.style.background = "linear-gradient(to bottom, " + RGB_lime + ", " + RGB_green + ")"; }
 			else                 { div_slideShow.style.background = "rgba(0, 0, 0, 0.6)"; }
-			
+
 			showFavPosts_elementUpdate(currentPost_element, isfav, isfav2);
 		}
-		
+
 		function checkIfImage(url) { return(url.match(/\.(jpeg|jpg|gif|png)/) != null); }
 		function checkIfVideo(url) { return(url.match(/\.(mp4|webm)/) != null); }
-		
+
 		function slideShow_removeContent() {
 			let priv  = div_slideShow.querySelector("#slideShow_content");         if (priv)  { priv.remove();  }
 			let priv2 = div_slideShow.querySelector("#slideShow_content_preview"); if (priv2) { priv2.remove(); }
 		}
-    
+
 		function slideShow_video_vol(content, delta) {
 			if (content.tagName != "VIDEO") { return; }
 			let curVol = content.volume;
 			if      (delta ==  1) { curVol += 0.05; }
 			else if (delta == -1) { curVol -= 0.05; }
-	
+
 			if      (curVol > 1) { content.volume = curVol = 1; }
 			else if (curVol < 0) { content.volume = curVol = 0; }
 			else                 { content.volume = curVol;     }
 		}
-    
+
 		function slideShow_showContent() {
 			// remove priv content
 			slideShow_removeContent();
-			
+
 			if (!currentPost_element || !currentPost_element_id) { console.log("nothing to slideshow :/ ???"); return; }
-			
+
 			// scroll into view
 			currentPost_element.scrollIntoView();
-			
+
 			// update buttons fav/fav2/bg
 			slideShow_updateUI();
-			
+
 			// get og image/video url
 			let contentURL = GetOG(currentPost_element_id);
-			
+
 			// load preview
 			let img_preview = currentPost_element.querySelector(".preview").cloneNode();
 			img_preview.style = "position: fixed; bottom: 1px; right: 1px; z-index: -1";
-			
+
 			let a_preview = document.createElement("a");
 			a_preview.id = "slideShow_content_preview";
 			a_preview.href = "index.php?page=post&s=view&id=" + currentPost_element_id;
 			a_preview.append(img_preview);
-			
+
 			div_slideShow.append(a_preview);
-			
+
 			// load og image/video
 			if (checkIfImage(contentURL)) {
 				let content = document.createElement("img");
@@ -1166,7 +1174,7 @@ if (isPage_posts || isPage_fav) {
 						slideShow_video_vol(content, delta);
 						return false;
 					};
-					
+
 					if (content.addEventListener) {
 						// IE9, Chrome, Safari, Opera
 						content.addEventListener("mousewheel", MouseWheelHandler, false);
@@ -1182,32 +1190,32 @@ if (isPage_posts || isPage_fav) {
 				console.log("idk if this is a video or image? :V --> " + contentURL);
 			}
 		}
-		
+
 		function slideShow_next() {
 			if (!currentPost_element.nextElementSibling) { return; }
 			currentPost_element_update(currentPost_element.nextElementSibling);
 			if (setting_showFavPosts2 && currentPost_element.classList.contains("fav")) { slideShow_next(); }
 		}
-		
+
 		function slideShow_back() {
 			if (!currentPost_element.previousElementSibling) { return; }
 			currentPost_element_update(currentPost_element.previousElementSibling);
 			if (setting_showFavPosts2 && currentPost_element.classList.contains("fav")) { slideShow_back(); }
 		}
-		
+
 		function slideShow_nextNshow() {
 			slideShow_next();
 			slideShow_showContent();
 		}
-		
+
 		function slideShow_backNshow() {
 			slideShow_back();
 			slideShow_showContent();
 		}
-		
+
 		function slideShow_fav()  { if (currentPost_element) { favPost(currentPost_element_id, function () { slideShow_updateUI(); }); } }
 		function slideShow_fav2() { if (currentPost_element) { favPost2(currentPost_element_id); slideShow_updateUI(); } }
-		
+
 		button_slideShow_next.addEventListener("click", function() { slideShow_nextNshow(); });
 		button_slideShow_back.addEventListener("click", function() { slideShow_backNshow(); });
 		button_slideShow_fav.addEventListener ("click", function() { slideShow_fav();  });
@@ -1230,9 +1238,9 @@ if (isPage_posts || isPage_fav) {
 			if      (side == 1) { slideShow_nextNshow(); }
 			else if (side == 2) { slideShow_backNshow(); }
 		}, true);
-		
+
 		div_slideShow.addEventListener("click", function() {  });
-		
+
 		// append all buttons and stuff
 		div_slideShow_btnCont.append(button_slideShow_hide);
 		div_slideShow_btnCont.append(button_slideShow_next);
@@ -1240,12 +1248,11 @@ if (isPage_posts || isPage_fav) {
 		div_slideShow_btnCont.append(button_slideShow_fav2);
 		div_slideShow_btnCont.append(button_slideShow_fav);
 		div_slideShow.append(div_slideShow_btnCont);
-		
-		
+
 		function slideShow_show() {
 			div_slideShow.style.display = "block"; // show slideshow
 			button_slideShow_show.style.display = "none"; // hide button
-			
+
 			// show first element
 			let spans = document.getElementsByClassName("thumb");
 			if (currentPost_element == null && spans.length >= 1) {
@@ -1253,7 +1260,7 @@ if (isPage_posts || isPage_fav) {
 				if (setting_showFavPosts2 && currentPost_element.classList.contains("fav")) { slideShow_next(); }
 			}
 			slideShow_showContent();
-			
+
 			// setup shortcut keys
 			document.onkeyup = function(e) {
 				if      (e.code === 'KeyS' || e.code === 'Enter')      { slideShow_fav();       }
@@ -1268,31 +1275,33 @@ if (isPage_posts || isPage_fav) {
 				if      (e.code === 'ArrowUp')   { slideShow_video_vol(document.getElementById("slideShow_content"),  1); }
 				else if (e.code === 'ArrowDown') { slideShow_video_vol(document.getElementById("slideShow_content"), -1); }
 				e.stopPropagation();
-				e.preventDefault();  
+				e.preventDefault();
+
 				e.returnValue = false;
 				e.cancelBubble = true;
 				return false;
 			};
 		}
-		
+
 		function slideShow_hide() {
 			// hide content
 			slideShow_removeContent();
-			
+
 			// remove shortcut keys
 			document.onkeyup = null;
 			document.onkeydown = null;
-			
+
 			// rehook autocomplete
 			autocomplete_setup();
-			
+
 			div_slideShow.style.display = "none"; // hide slideshow
 			button_slideShow_show.style.display = "inline-block"; // show button
 		}
-		
-		button_slideShow_show.addEventListener("click", function() { slideShow_show(); }); 
+
+		button_slideShow_show.addEventListener("click", function() { slideShow_show(); });
+
 		button_slideShow_hide.addEventListener("click", function() { slideShow_hide(); });
-		
+
 		div_trcont.append(button_slideShow_show);
 		document.body.append(div_slideShow);
     }
@@ -1408,7 +1417,7 @@ if (isPage_post) {
 			vid.style = "width: " + w + "px; max-width: 100%; height: " + h + "px;";
 		}
 	}
-	
+
 	// buttons and stuff
 	let navbar = document.getElementById("subnavbar");
 	let cont = document.createElement("div");
@@ -1469,7 +1478,7 @@ if (isPage_main && setting_mainPageExtra) {
 	function loadExtraContent() {
 		let favTagsDiv = document.createElement("div");
 		favTagsDiv.className = "tagbar";
-		favTagsDiv.style = "position: fixed; top: 5px; right: 5px; border: lime 1px dashed; padding: 4px; width: 180px;"
+		favTagsDiv.style = "position: fixed; top: 5px; right: 5px; border: lime 1px dashed; padding: 4px; width: 380px;"
 
 		let favTagsDiv_h5 = document.createElement("h5");
 		favTagsDiv_h5.innerHTML = "Favorite Tags";
@@ -1589,7 +1598,7 @@ if (isPage_main && setting_mainPageExtra) {
 
 			superFavDiv.appendChild(span);
 		}
-		
+
 		document.body.appendChild(favTagsDiv);
 		document.body.appendChild(superFavDiv);
 	}
