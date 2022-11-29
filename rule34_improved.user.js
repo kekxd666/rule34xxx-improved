@@ -267,8 +267,11 @@ function GetThumb(id) {
 		let doc = new DOMParser().parseFromString(response, "text/html");
 		let as = doc.body.getElementsByTagName("a");
 		for (let i = 0; i < as.length; i++) {
-      if (as[i].getAttribute("href").includes("http://saucenao.com/search.php?"))
-      { contentURL = as[i].getAttribute("href").split("&url=", 2)[1]; break; } }
+			if (as[i].getAttribute("href").includes("http://saucenao.com/search.php?")) {
+				contentURL = as[i].getAttribute("href").split("&url=", 2)[1];
+				break;
+			}
+		}
 	}, false);
 
 	return contentURL;
@@ -620,13 +623,13 @@ if (isPage_posts) {
 		let a = document.createElement("a");
 		a.id = "sortscore";
 		a.innerHTML = "sort:score";
-    a.style = "display: block";
+		a.style = "display: block";
 		a.href =  window.location.href + "+sort%3ascore";
 		elem.parentNode.insertBefore(a, elem.nextSibling);
 		let a2 = document.createElement("a");
 		a2.id = "animated";
 		a2.innerHTML = "animated";
-    a2.style = "display: block";
+		a2.style = "display: block";
 		a2.href =  window.location.href + "+animated";
 		elem.parentNode.insertBefore(a2, elem.nextSibling);
 	}
@@ -1500,7 +1503,7 @@ if (isPage_main && setting_mainPageExtra) {
 		let favTagsDiv = document.createElement("div");
 		favTagsDiv.className = "tagbar";
 		//favTagsDiv.style = "position: fixed; top: 5px; right: 5px; border: lime 1px dashed; padding: 4px; width: 380px;"
-    favTagsDiv.style = "height: auto; margin: 10px 100px; border: 1px solid #103010; padding: 5px; border-radius: 3px";
+		favTagsDiv.style = "height: auto; margin: 10px 100px; border: 1px solid #103010; padding: 5px; border-radius: 3px";
 
 		let favTagsDiv_h5 = document.createElement("h5");
 		favTagsDiv_h5.innerHTML = "Favorite Tags";
@@ -1511,7 +1514,6 @@ if (isPage_main && setting_mainPageExtra) {
 			div.className = "favtag";
 
 			let a = document.createElement("a");
-
 			let rm = document.createElement("button");
 			rm.innerHTML = "-"
 			rm.title = "Remove";
