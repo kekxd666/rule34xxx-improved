@@ -45,6 +45,7 @@ var setting_thumbFav_                  = "thumbFav";                  var settin
 var setting_mainPageExtra_             = "mainPageExtra";             var setting_mainPageExtra             = getSetting(setting_mainPageExtra_             , true);
 var setting_slideShow_                 = "slideShow";                 var setting_slideShow                 = getSetting(setting_slideShow_                 , true);
 var setting_videoVolumeScroll_         = "videoVolumeScroll";         var setting_videoVolumeScroll         = getSetting(setting_videoVolumeScroll_         , true);
+var setting_loopVideo_                 = "loopVideo";                 var setting_loopVideo                 = getSetting(setting_loopVideo_                 , false);
 
 var css_root = `:root { --favdisplay: inline; }`;
 GM_addStyle(css_root);
@@ -390,10 +391,10 @@ function favPost(id, callback) {
 	let timer = setInterval(function() {
 		let div_notice = document.getElementById("notice");
 		if (div_notice.innerHTML.includes("You are not logged in")) {
-      clearInterval(timer);
-      document.title = id + ": no login?";
-      return;
-    }
+			clearInterval(timer);
+			document.title = id + ": no login?";
+			return;
+		}
 
 		if (!div_notice.innerHTML.includes("Post added to favorites") && !div_notice.innerHTML.includes("Post already in your favorites")) {
 			document.title = id + ": ...";
@@ -748,6 +749,7 @@ if (isPage_opt) {
 	makeCB_form(setting_mainPageExtra_,             setting_mainPageExtra,             "Main Page Extra", "Adds a button (on the main page) that expands to a form that allows you to bookmark tags and see super favorites");
 	makeCB_form(setting_slideShow_,                 setting_slideShow,                 "Slideshow", "Adds a button in the top right corner, when browsing, to activate slideshow mode");
 	makeCB_form(setting_videoVolumeScroll_,         setting_videoVolumeScroll,         "Video Volume Scroll", "Control video volume with mouse scroll wheel, must 'Embed Video' if viewing from post's page...");
+	makeCB_form(setting_loopVideo_,                 setting_loopVideo,                 "Loop video", "Make the player loop the video.")
 }
 
 // favorites page
@@ -934,16 +936,19 @@ if (setting_showFavPosts) {
 			showFavPosts_injectRemoveCode(elements[i]);
 		}
 
+		let favlist_len = GM_getValue("favlist", []).length;
+
 		// stuff to update list
 		// status
 		let status = document.createElement("div");
 		status.id = "favlistStatus";
 		status.style = "display: block;";
 		status.title = "processed\nfavlist count\nadded";
+		status.innerHTML = favlist_len;
 		// update button
 		let btn_updatefav = document.createElement("button");
 		btn_updatefav.style = "display: block;";
-		btn_updatefav.title = "Updates favorites list (" + GM_getValue("favlist", []).length + " ID(s))";
+		btn_updatefav.title = "Updates favorites list (" + favlist_len + " ID(s))";
 		btn_updatefav.innerHTML = "Update";
 		async function getIds() {
 			let reg = /pid=([0-9]*)/gm;
@@ -975,7 +980,7 @@ if (setting_showFavPosts) {
 							added++;
 						}
 						c++;
-						status.innerHTML = c + "<br>" + favlist.length + "<br>" + added;
+						status.innerHTML = "count: " + c + "<br>" + "len: " + favlist.length + "<br>" + "new: " + added;
 					}
 				}, false);
 				GM_setValue("favlist", favlist);
@@ -1328,7 +1333,7 @@ if (isPage_posts || isPage_fav) {
 
 		div_trcont.append(button_slideShow_show);
 		document.body.append(div_slideShow);
-    }
+	}
 
 	//
 	// ENDLESS SCROLLING
@@ -1439,6 +1444,15 @@ if (isPage_post) {
 			let w = wNh[0];
 			let h = wNh[1];
 			vid.style = "width: " + w + "px; max-width: 100%; height: " + h + "px;";
+		}
+		if (setting_loopVideo) { // for me this code doesn't work :/
+			if (typeof vid.loop == 'boolean') {
+				vid.loop = true;
+			}
+			vid.addEventListener('ended', function () {
+				this.currentTime = 0;
+				this.play();
+			}, false);
 		}
 	}
 
@@ -1554,6 +1568,14 @@ if (isPage_main && setting_mainPageExtra) {
 			GM_setValue("taglist", tl);
 		}
 
+		function openAllItems() {
+			let taglist = GM_getValue("taglist", []);
+			for (let i = 0; i < taglist.length; i++) {
+				let url = "index.php?page=post&s=list&tags=" + taglist[i];
+				window.open(url, '_blank');
+			}
+		}
+
 		input.addEventListener("keydown", function(event) { if (event.key === 'Enter' ) { add(); } });
 
 		let btn_add = document.createElement("button");
@@ -1568,9 +1590,16 @@ if (isPage_main && setting_mainPageExtra) {
 		btn_sort.onclick = function() { sortItems(); };
 		btn_sort.title = "Sort";
 
+		let btn_openAll = document.createElement("button");
+		btn_openAll.style = "padding: 1px; color: lime; cursor: pointer;"
+		btn_openAll.innerHTML = "🔗";
+		btn_openAll.onclick = function() { openAllItems(); };
+		btn_openAll.title = "Open All";
+
 		favTagsDiv.appendChild(input);
 		favTagsDiv.appendChild(btn_add);
 		favTagsDiv.appendChild(btn_sort);
+		favTagsDiv.appendChild(btn_openAll);
 
 		// add fav tags
 		let tl = GM_getValue("taglist", []);
