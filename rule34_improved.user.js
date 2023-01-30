@@ -1413,7 +1413,7 @@ if (isPage_posts || isPage_fav) {
 if (isPage_post) {
 
 	// set vars
-	let postID = document.location.href.split("id=")[1];
+	let postID = document.location.href.split("id=")[1].split("&")[0];
 
 	if (setting_enableFavOnEnter) {
 		document.onkeydown = function(e) {
