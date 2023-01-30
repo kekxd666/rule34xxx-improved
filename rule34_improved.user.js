@@ -257,7 +257,7 @@ var cssStyle_heart = `
 
 // get thumbnail post id
 function getPostID(element) {
-	let id = element.id.replace('s', '');
+	let id = element.id.replace('s', '').replace('p', '');
 	if (id != "") { return id; }
 	return element.childNodes[0].id.replace('p', '');
 }
@@ -456,11 +456,12 @@ function httpGet(url, callback, async) {
 function sleep(milliseconds) { return new Promise(resolve => setTimeout(resolve, milliseconds)); }
 var originalTitle = document.title;
 
-var isPage_post = document.location.href.includes("index.php?page=post&s=view");
+var isPage_post  = document.location.href.includes("index.php?page=post&s=view");
 var isPage_posts = document.location.href.includes("index.php?page=post&s=list");
-var isPage_fav = document.location.href.includes("index.php?page=favorites&s=view");
-var isPage_opt = document.location.href.includes("index.php?page=account&s=options");
-var isPage_main = (document.location.href == "http://rule34.xxx/" || document.location.href == "https://rule34.xxx/");
+var isPage_pool  = document.location.href.includes("index.php?page=pool&s=show");
+var isPage_fav   = document.location.href.includes("index.php?page=favorites&s=view");
+var isPage_opt   = document.location.href.includes("index.php?page=account&s=options");
+var isPage_main  = (document.location.href == "http://rule34.xxx/" || document.location.href == "https://rule34.xxx/");
 
 // add extra code to remove the id from favlist, when you press the remove button on the favorites page
 function showFavPosts_injectRemoveCode(element) {
@@ -922,7 +923,7 @@ if (setting_showFavPosts) {
 	if (setting_showFavPosts2) { document.documentElement.style.setProperty('--favdisplay', 'none'); }
 
 	// filtering
-	if (isPage_posts) {
+	if (isPage_posts || isPage_pool) {
 		let elements = document.querySelectorAll(".thumb");
 		for (let i = 0; i < elements.length; i++) { showFavPosts_elementCheck(elements[i]); }
 	}
