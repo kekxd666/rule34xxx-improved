@@ -966,24 +966,26 @@ if (setting_showFavPosts) {
 
 			let c = 0;
 			let added = 0;
+			let favlist = GM_getValue("favlist", []);
 
 			// start search
 			for (; cur <= max; cur += step) {
 				let url = base + "&pid=" + cur;
-				let favlist = GM_getValue("favlist", []);
-				httpGet(url, function(response) {
-					let doc = new DOMParser().parseFromString(response, "text/html");
-					let elements = doc.getElementsByClassName("thumb");
-					for (let i = 0; i < elements.length; i++) {
-						let id = elements[i].childNodes[0].id.replace('p', '');
-						if (!favlist.includes(id)) {
-							favlist.push(id);
-							added++;
-						}
-						c++;
-						status.innerHTML = "count: " + c + "<br>" + "len: " + favlist.length + "<br>" + "new: " + added;
+				const response = await fetch(url);
+				const html = await response.text();
+				let doc = new DOMParser().parseFromString(html, "text/html");
+				let elements = doc.getElementsByClassName("thumb");
+				for (let i = 0; i < elements.length; i++) {
+					let id = elements[i].childNodes[0].id.replace('p', '');
+					if (!favlist.includes(id)) {
+						favlist.push(id);
+						added++;
 					}
-				}, false);
+					c++;
+					let stat_info = "count: " + c + "<br>" + "len: " + favlist.length + "<br>" + "new: " + added;
+					status.innerHTML = stat_info;
+					console.log(stat_info);
+				}
 				GM_setValue("favlist", favlist);
 			}
 		}
