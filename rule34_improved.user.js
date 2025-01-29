@@ -1647,31 +1647,28 @@ if (isPage_posts || isPage_fav) {
                 }, false);
             });
         } else {
-            window.addEventListener("scroll", async function() {
-                if (reachedTheEnd || !setting_endlessScrolling || !isInViewport(paginator)) {
-                    return;
-                }
-                if (!setting_endlessScrolling) {
-                    return;
-                }
+          window.addEventListener("scroll", async function() {
+                if (reachedTheEnd || !setting_endlessScrolling || !isInViewport(paginator)) { return; }
+                if (!setting_endlessScrolling) { return; }
                 cur += step;
                 let url = base + "&pid=" + cur;
                 document.title = "Loading...";
                 httpGet(url, function(response) {
-                    document.title = originalTitle;
-                    let doc = new DOMParser().parseFromString(response, "text/html");
-                    let elements = Array.prototype.slice.call(doc.getElementsByClassName("thumb"), 0);
-                    if (elements.length == 0) {
-                        reachedTheEnd = true;
-                        return;
-                    }
-                    for (let i = 0; i < elements.length; i++) {
-                        div_imageList.appendChild(elements[i]);
-                        processMedia();
-                    }
-                    p_endlessScroll.innerHTML = cur + " (" + ((cur + step) / step) + ")";
+                  document.title = originalTitle;
+                  let doc = new DOMParser().parseFromString(response, "text/html");
+                  //let elements = doc.getElementsByClassName("thumb");
+                  let elements = Array.prototype.slice.call(doc.getElementsByClassName("thumb"), 0);
+                  if (elements.length == 0) { reachedTheEnd = true; return; }
+                  for (let i = 0; i < elements.length; i++) {
+                    div_imageList.append(elements[i]);
+
+                    if (setting_hideBlacklistedThumbnails) { hideBlacklistedThumbnails_check(elements[i]); }
+                    if (setting_showFavPosts) { showFavPosts_elementCheck(elements[i]); }
+                    if (setting_thumbFav) { thumbFav_check(elements[i]); }
+                  }
+                  p_endlessScroll.innerHTML = cur + " (" + ((cur + step) / step) + ")";
                 }, false);
-            });
+              });
         }
 
 
