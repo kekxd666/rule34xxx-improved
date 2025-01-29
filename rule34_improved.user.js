@@ -259,7 +259,8 @@ var cssStyle_heart = `
 function getPostID(element) {
 	let id = element.id.replace('s', '').replace('p', '');
 	if (id != "") { return id; }
-	return element.childNodes[0].id.replace('p', '');
+  const link = element.querySelector("a");
+  return link.id.replace('p', '');
 }
 
 function GetThumb(id) {
@@ -466,16 +467,20 @@ var isPage_main  = (document.location.href == "http://rule34.xxx/" || document.l
 // add extra code to remove the id from favlist, when you press the remove button on the favorites page
 function showFavPosts_injectRemoveCode(element) {
 
-	if (!isPage_fav) { return;}
+	if (!isPage_fav) { return; }
 
-	let a_remove = element.childNodes[2];
-	if (a_remove == undefined || a_remove == null) { return; }
-	a_remove.remove();
+  const parent = element.parentElement;
 
-	let id = element.childNodes[0].id.replace('p', '');
+  if (parent.querySelector(".button-remove") != null) { return; }
 
-	let button_remove = document.createElement("button");
+  const a_remove = parent.childNodes[5];
+  if (a_remove != null) { a_remove.remove(); }
+
+  let id = getPostID(element);
+
+  let button_remove = document.createElement("button");
 	button_remove.className = "button-remove";
+  button_remove.style = "padding-top: 15px;";
 	button_remove.title = "remove: " + id;
 	button_remove.innerHTML = "❌REMOVE❌";
 	button_remove.onclick = function() {
@@ -483,7 +488,7 @@ function showFavPosts_injectRemoveCode(element) {
 		GM_setValue("favlist", favlist.filter(e => e !== id));
 		document.location = 'index.php?page=favorites&s=delete&id=' + id;
 	};
-	element.appendChild(button_remove);
+	parent.appendChild(button_remove);
 }
 
 // if blacklisted remove
@@ -918,24 +923,32 @@ if (isPage_fav) {
 	}
 }
 
+function processMedia() {
+  if (setting_showFavPosts) {
+    if (setting_showFavPosts2) { document.documentElement.style.setProperty('--favdisplay', 'none'); }
+
+    // filtering
+    if (isPage_posts || isPage_pool) {
+      let elements = document.querySelectorAll(".thumb");
+      for (let i = 0; i < elements.length; i++) { showFavPosts_elementCheck(elements[i]); }
+    }
+
+    if (isPage_fav) {
+
+      // show fav posts
+      let elements = document.querySelectorAll(".thumb");
+      for (let i = 0; i < elements.length; i++) {
+        showFavPosts_injectRemoveCode(elements[i]);
+        showFavPosts_elementCheck(elements[i]);
+      }
+    }
+  }
+}
+
+processMedia();
+
 if (setting_showFavPosts) {
-
-	if (setting_showFavPosts2) { document.documentElement.style.setProperty('--favdisplay', 'none'); }
-
-	// filtering
-	if (isPage_posts || isPage_pool) {
-		let elements = document.querySelectorAll(".thumb");
-		for (let i = 0; i < elements.length; i++) { showFavPosts_elementCheck(elements[i]); }
-	}
-
 	if (isPage_fav) {
-
-		// show fav posts
-		let elements = document.querySelectorAll(".thumb");
-		for (let i = 0; i < elements.length; i++) {
-			showFavPosts_elementCheck(elements[i]);
-			showFavPosts_injectRemoveCode(elements[i]);
-		}
 
 		let favlist_len = GM_getValue("favlist", []).length;
 
@@ -976,7 +989,7 @@ if (setting_showFavPosts) {
 				let doc = new DOMParser().parseFromString(html, "text/html");
 				let elements = doc.getElementsByClassName("thumb");
 				for (let i = 0; i < elements.length; i++) {
-					let id = elements[i].childNodes[0].id.replace('p', '');
+					let id = getPostID(elements[i]);
 					if (!favlist.includes(id)) {
 						favlist.push(id);
 						added++;
@@ -1332,8 +1345,6 @@ if (isPage_posts || isPage_fav) {
 
 		button_slideShow_show.addEventListener("click", function() { slideShow_show(); });
 
-		button_slideShow_hide.addEventListener("click", function() { slideShow_hide(); });
-
 		div_trcont.append(button_slideShow_show);
 		document.body.append(div_slideShow);
 	}
@@ -1382,10 +1393,35 @@ if (isPage_posts || isPage_fav) {
 		let curMatch = /pid=([0-9]*)/gm.exec(add);
 		let cur = curMatch == null ? 0 : parseInt(curMatch[1]);
 		let div_imageList = document.querySelector(".image-list");
-		let did_paginator = document.getElementById("paginator");
+		let paginator = document.getElementById("paginator");
+    let content = document.querySelector("#content");
 
-		window.addEventListener("scroll", async function() {
-			if (reachedTheEnd || !setting_endlessScrolling || !isInViewport(did_paginator)) { return; }
+    let scrollend = document.createElement("div");
+    scrollend.id = "scrollend";
+    document.body.appendChild(scrollend);
+
+    if (isPage_fav) {
+      	window.addEventListener("scroll", async function() {
+        if (reachedTheEnd || !setting_endlessScrolling || !isInViewport(scrollend)) { return; }
+        if (!setting_endlessScrolling) { return; }
+        cur += step;
+        let url = base + "&pid=" + cur;
+        document.title = "Loading...";
+        httpGet(url, function(response) {
+          document.title = originalTitle;
+          let doc = new DOMParser().parseFromString(response, "text/html");
+          const dcon = doc.querySelector("#content");
+          for (let i = 0; i < dcon.childNodes.length; i++) {
+            content.appendChild(dcon);
+          }
+          processMedia();
+          p_endlessScroll.innerHTML = cur + " (" + ((cur + step) / step) + ")";
+        }, false);
+      });
+    }
+    else {
+      window.addEventListener("scroll", async function() {
+			if (reachedTheEnd || !setting_endlessScrolling || !isInViewport(paginator)) { return; }
 			if (!setting_endlessScrolling) { return; }
 			cur += step;
 			let url = base + "&pid=" + cur;
@@ -1393,20 +1429,18 @@ if (isPage_posts || isPage_fav) {
 			httpGet(url, function(response) {
 				document.title = originalTitle;
 				let doc = new DOMParser().parseFromString(response, "text/html");
-				//let elements = doc.getElementsByClassName("thumb");
 				let elements = Array.prototype.slice.call(doc.getElementsByClassName("thumb"), 0);
 				if (elements.length == 0) { reachedTheEnd = true; return; }
 				for (let i = 0; i < elements.length; i++) {
-					if (isPage_fav) { paginator.parentNode.insertBefore(elements[i], paginator); }
-					else { div_imageList.append(elements[i]); }
-
-					if (setting_hideBlacklistedThumbnails) { hideBlacklistedThumbnails_check(elements[i]); }
-					if (setting_showFavPosts) { showFavPosts_elementCheck(elements[i]); showFavPosts_injectRemoveCode(elements[i]); }
-					if (setting_thumbFav) { thumbFav_check(elements[i]); }
+          div_imageList.appendChild(elements[i]);
+          processMedia();
 				}
 				p_endlessScroll.innerHTML = cur + " (" + ((cur + step) / step) + ")";
 			}, false);
 		});
+    }
+
+
 	};
 
 	main_scroll();
