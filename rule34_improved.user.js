@@ -622,6 +622,10 @@ function embedDefaultVideo() {
         setting_defaultVideoVolume = video_og.volume;
     });
 
+    if (setting_loopVideo) {
+        video_og.loop = true;
+    }
+
     if (setting_videoVolumeScroll) {
         let current = 0;
         let MouseWheelHandler = function(e) {
@@ -1725,14 +1729,8 @@ if (isPage_post) {
             let h = wNh[1];
             vid.style = "width: " + w + "px; max-width: 100%; height: " + h + "px;";
         }
-        if (setting_loopVideo) { // for me this code doesn't work :/
-            if (typeof vid.loop == 'boolean') {
-                vid.loop = true;
-            }
-            vid.addEventListener('ended', function() {
-                this.currentTime = 0;
-                this.play();
-            }, false);
+        if (setting_loopVideo) {
+            video.loop = true;
         }
     }
 
