@@ -1575,6 +1575,10 @@ if (isPage_posts || isPage_fav) {
             slideShow_show();
         });
 
+        button_slideShow_hide.addEventListener("click", function() {
+            slideShow_hide();
+        });
+
         div_trcont.append(button_slideShow_show);
         document.body.append(div_slideShow);
     }
