@@ -17,7 +17,8 @@
 // TODO:
 // - add video support for "super favorites"
 // - make slideshow work in favorites
-// - cleanup spaggettyyyyy code :P
+// - fix endlessScrolling for other people's favorites
+// - make slideshow prefetch a few posts after content so it's not slow
 
 function getSetting(settingName, settingDefault) {
     let value = GM_getValue(settingName, null);
