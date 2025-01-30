@@ -945,7 +945,7 @@ if (isPage_fav) {
         // slider
         let slider = document.createElement("input");
         slider.type = "range";
-        slider.min = "100";
+        slider.min = "0";
         slider.max = "4000";
         slider.value = 1000;
         slider.className = "slider";
@@ -1099,6 +1099,9 @@ if (setting_showFavPosts) {
         btn_updatefav.style = "display: block;";
         btn_updatefav.title = "Updates favorites list (" + favlist_len + " ID(s))";
         btn_updatefav.innerHTML = "Update";
+
+        const slider = document.getElementById("delayRange");
+
         async function getIds() {
             let reg = /pid=([0-9]*)/gm;
             let base = /(.*)&pid=/gm.exec(document.location.href) == null ? document.location.href : /(.*)&pid=/gm.exec(document.location.href)[1];
@@ -1137,6 +1140,8 @@ if (setting_showFavPosts) {
                     console.log(stat_info);
                 }
                 GM_setValue("favlist", favlist);
+
+                await sleep(slider.value);
             }
         }
         btn_updatefav.onclick = function() {
