@@ -76,6 +76,7 @@ var css_root = `
 :root { --favdisplay: inline; }
 
 .fav {
+    opacity: 0.4;
     box-sizing: border-box;
     background-clip: padding-box;
     padding: 5px;
@@ -84,6 +85,7 @@ var css_root = `
 }
 
 .sfav {
+    opacity: 0.4;
     box-sizing: border-box;
     background-clip: padding-box;
     padding: 5px;
@@ -92,6 +94,7 @@ var css_root = `
 }
 
 .fav.sfav {
+    opacity: 0.4;
     background-clip: padding-box;
     background: linear-gradient(to bottom, green, purple) !important;
     border-top: 3px dashed lime;
