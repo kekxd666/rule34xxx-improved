@@ -72,7 +72,51 @@ var setting_videoVolumeScroll = getSetting(setting_videoVolumeScroll_, true);
 var setting_loopVideo_ = "loopVideo";
 var setting_loopVideo = getSetting(setting_loopVideo_, false);
 
-var css_root = `:root { --favdisplay: inline; }`;
+var css_root = `
+:root { --favdisplay: inline; }
+
+.fav {
+    box-sizing: border-box;
+    background-clip: padding-box;
+    padding: 5px;
+    background: rgba(121, 28, 106, 0.5);
+    border: 3px dashed hotpink;
+}
+
+.sfav {
+    box-sizing: border-box;
+    background-clip: padding-box;
+    padding: 5px;
+    background: rgba(28, 121, 47, 0.5);
+    border: 3px dashed lime;
+}
+
+.fav.sfav {
+    background-clip: padding-box;
+    background: linear-gradient(to bottom, green, purple) !important;
+    border-top: 3px dashed lime;
+    border-left: 3px dashed lime;
+    border-right: 3px dashed hotpink;
+    border-bottom: 3px dashed hotpink;
+}
+
+.thumbFav {
+    position: absolute;
+    top: 20%;
+    left: 80%;
+    width: 20%;
+    height: 20%;
+    color: hotpink;
+    text-align: center;
+    font: bold 19px arial, serif;
+    border: 3px solid hotpink;
+    background-color: rgba(20, 20, 20, 0.8);
+    transform: translate(-50%, -50%);
+    display: none;
+    border-radius: 50%;
+}
+
+`;
 GM_addStyle(css_root);
 
 var css_betterDarkTheme = `
@@ -228,6 +272,7 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 .checkboxContainer input:checked ~ .checkmark { background-color: lime; }
 .checkboxContainer input:checked ~ .checkmark:after { display: block; }
 
+
 `;
 
 var css_post = `
@@ -273,12 +318,6 @@ var css_post = `
 	` + (setting_stretchImgVid ? "" : "max-") + `height: ` + setting_viewportDependentHeight + `vh !important;
 }`) : "");
 
-var cssStyle_heart = `
-    display: inline;
-	text-align: center;
-	font-size: 20px;
-	opacity: 0.8;
-`;
 
 // get thumbnail post id
 function getPostID(element) {
@@ -344,15 +383,8 @@ function favlist2_contains(postID) {
 
 function showFavPosts_elementUpdate(element, isfav, isfav2) {
     if (isfav && !element.classList.contains("fav")) {
+        element.style.position = "relative";
         element.classList.add("fav");
-        let div_heart = document.createElement("div");
-        div_heart.style = cssStyle_heart;
-        div_heart.title = "Post is in Favorites.";
-        div_heart.innerHTML = "❤️";
-        element.appendChild(div_heart);
-        element.classList.add("fav");
-
-        element.style.background = "linear-gradient(to bottom, hotpink, purple)";
 
         if (setting_thumbFav) {
             element.onmouseenter = null;
@@ -362,23 +394,11 @@ function showFavPosts_elementUpdate(element, isfav, isfav2) {
 
     if (isfav2 && !element.classList.contains("sfav")) {
         element.classList.add("sfav");
-        let div_heart2 = document.createElement("div");
-        div_heart2.style = cssStyle_heart;
-        div_heart2.title = "Post is in Favorites.";
-        div_heart2.innerHTML = "💚";
-        element.appendChild(div_heart2);
-        element.classList.add("sfav");
-
-        element.style.background = "linear-gradient(to bottom, lime, green)";
     }
 
-    if (isfav && isfav2) {
-        element.style.background = "linear-gradient(to bottom, green, purple)";
-    }
 
     if (isfav || isfav2) {
         element.style = "display: var(--favdisplay);"
-        element.style.opacity = "0.4";
     }
 }
 
@@ -583,8 +603,8 @@ function thumbFav_check(element) {
 
     let button_favOnPost = document.createElement('button');
     button_favOnPost.innerHTML = "♥";
+    button_favOnPost.className = "thumbFav";
     button_favOnPost.title = "Add to favorites";
-    button_favOnPost.style = "position: absolute; top: 20%; left: 80%; width: 20%; height: 20%; color: rgb(255, 255, 255); font: bold 19px arial, serif; border: 3px solid red; background-color: rgba(20, 20, 20, 0.8); transform: translate(-50%, -50%); display: none;"
 
     element.appendChild(button_favOnPost);
 
@@ -1958,7 +1978,7 @@ if (isPage_main && setting_mainPageExtra) {
             let btn_rm = document.createElement("Remove");
             btn_rm.innerHTML = "❌REMOVE❌";
             btn_rm.title = "Remove from Super Favorites"
-            btn_rm.style = "cursor: pointer;"
+            btn_rm.style = "cursor: pointer; margin-top: 10px; display: block;"
             btn_rm.onclick = function() {
                 favlist.splice(i, 1);
                 GM_setValue("favlist2", favlist);
