@@ -1081,12 +1081,12 @@ if (isPage_fav) {
     }
 }
 
+if (setting_showFavPosts && setting_showFavPosts2) {
+    document.documentElement.style.setProperty('--favdisplay', 'none');
+}
+
 function processMedia() {
     if (setting_showFavPosts) {
-        if (setting_showFavPosts2) {
-            document.documentElement.style.setProperty('--favdisplay', 'none');
-        }
-
         // filtering
         if (isPage_posts || isPage_pool) {
             let elements = document.querySelectorAll(".thumb");
@@ -1102,6 +1102,7 @@ function processMedia() {
             for (let i = 0; i < elements.length; i++) {
                 showFavPosts_injectRemoveCode(elements[i]);
                 showFavPosts_elementCheck(elements[i]);
+                thumbFav_check(elements[i]);
             }
         }
     }
