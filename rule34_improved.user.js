@@ -15,9 +15,9 @@
 // If you want to edit settings, go to the options page of your account...
 
 // TODO:
+// - this whole code needs to be refactored it's ugly (code order, inconsistent naming, need to SOC every func - rm repeating code)... makes it really unmaintainable xd lmao
 // - add video support for "super favorites"
 // - make slideshow work in favorites
-// - fix endlessScrolling for other people's favorites
 // - make slideshow prefetch a few posts after content so it's not slow
 
 function getSetting(settingName, settingDefault) {
