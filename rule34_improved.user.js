@@ -567,9 +567,8 @@ function showFavPosts_injectRemoveCode(element) {
     }
 
     const a_remove = parent.childNodes[5];
-    if (a_remove != null) {
-        a_remove.remove();
-    }
+    if (a_remove == null) { return; }
+    a_remove.remove();
 
     let id = getPostID(element);
 
