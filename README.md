@@ -6,20 +6,20 @@ Navigate to your account options page to view and customize all of your options.
 ###### Tested on: [Violent Monkey](https://violentmonkey.github.io/get-it/) (recommended)
 
 ## Features (Options):
+- Favorites Filter
+- Endless Scrolling
+- Show Fav Posts
+- Hide Fav Posts
+- Hide Blacklisted Thumbnails
+- Enable Fav On Enter
 - AutoPlay
 - Default Video Volume
 - Image/Video Height
 - Stretch Image/Video
 - True Video Size
-- Enable Fav On Enter
-- Hide Blacklisted Thumbnails
 - Force Dark Theme
 - Better Dark Theme
 - Remove Bloat
-- Endless Scrolling
-- Favorites Filter
-- Show Fav Posts
-- Hide Fav Posts
 - Embed Video
 - Thumb Fav
 - Main Page Extra (Tag Bookmark, Superfav Gallery)
