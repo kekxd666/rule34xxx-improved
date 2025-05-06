@@ -561,7 +561,7 @@ function showFavPosts_injectRemoveCode(element) {
     button_remove.className = "button-remove";
     button_remove.style = "padding-top: 15px;";
     button_remove.title = "remove: " + id;
-    button_remove.innerHTML = "❌REMOVE❌";
+    button_remove.innerHTML = "❌ Remove";
     button_remove.onclick = function() {
         let favlist = GM_getValue("favlist", []);
         GM_setValue("favlist", favlist.filter(e => e !== id));
@@ -1844,11 +1844,13 @@ if (isPage_main && setting_mainPageExtra) {
 
         function favTagsDiv_add(text) {
             let div = document.createElement("div");
+            div.style = "padding-bottom: 5px;"
             div.className = "favtag";
 
             let a = document.createElement("a");
             let rm = document.createElement("button");
-            rm.innerHTML = "-"
+            rm.style = "cursor: pointer; background: none; border: none;";
+            rm.innerHTML = "❌";
             rm.title = "Remove";
             rm.onclick = function() {
                 let taglist = GM_getValue("taglist", []);
@@ -1955,7 +1957,7 @@ if (isPage_main && setting_mainPageExtra) {
             a.appendChild(img);
 
             let btn_rm = document.createElement("Remove");
-            btn_rm.innerHTML = "❌REMOVE❌";
+            btn_rm.innerHTML = "❌ Remove";
             btn_rm.title = "Remove from Super Favorites"
             btn_rm.style = "cursor: pointer; margin-top: 10px; display: block;"
             btn_rm.onclick = function() {
@@ -1994,4 +1996,3 @@ if (isPage_main && setting_mainPageExtra) {
     }
 
 }
-
