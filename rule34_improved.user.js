@@ -65,6 +65,8 @@ var setting_thumbFav_ = "thumbFav";
 var setting_thumbFav = getSetting(setting_thumbFav_, true);
 var setting_mainPageExtra_ = "mainPageExtra";
 var setting_mainPageExtra = getSetting(setting_mainPageExtra_, true);
+var setting_mainPageExtraAutoExpand_ = "mainPageExtraAutoExpand";
+var setting_mainPageExtraAutoExpand = getSetting(setting_mainPageExtraAutoExpand_, true);
 var setting_slideShow_ = "slideShow";
 var setting_slideShow = getSetting(setting_slideShow_, true);
 var setting_videoVolumeScroll_ = "videoVolumeScroll";
@@ -887,6 +889,7 @@ if (isPage_opt) {
     makeCB_form(setting_embedVideo_, setting_embedVideo, "Embed Video", "Replace rule34's player with the default browser player");
     makeCB_form(setting_thumbFav_, setting_thumbFav, "Thumb Fav", "Adds a fav button on each post while browsing");
     makeCB_form(setting_mainPageExtra_, setting_mainPageExtra, "Main Page Extra", "Adds a button (on the main page) that expands to a form that allows you to bookmark tags and see super favorites");
+    makeCB_form(setting_mainPageExtraAutoExpand_, setting_mainPageExtraAutoExpand, "Auto Expand Main Page Extra", "Auto click the button that shows forms for bookmarking tags & viewing super favorites");
     makeCB_form(setting_slideShow_, setting_slideShow, "Slideshow", "Adds a button in the top right corner, when browsing, to activate slideshow mode");
     makeCB_form(setting_videoVolumeScroll_, setting_videoVolumeScroll, "Video Volume Scroll", "Control video volume with mouse scroll wheel, must 'Embed Video' if viewing from post's page...");
     makeCB_form(setting_loopVideo_, setting_loopVideo, "Loop video", "Make the player loop the video.")
@@ -1998,14 +2001,21 @@ if (isPage_main && setting_mainPageExtra) {
         document.body.appendChild(superFavDiv);
     }
 
+    function expand_extra_content() {
+        loadExtraContent();
+        btn_expand.remove();
+    }
+
     let btn_expand = document.createElement("btn_expand");
     btn_expand.id = "expand-button";
     btn_expand.innerHTML = "🔽";
     btn_expand.title = "Expand";
     btn_expand.style = "position: fixed; top: 5px; right: 5px; cursor: pointer; border: darkgreen 2px dashed; width: 20px; height: 20px; text-align: center;"
-    btn_expand.onclick = function() {
-        loadExtraContent();
-        btn_expand.remove();
-    }
+    btn_expand.onclick = function() { expand_extra_content(); }
     document.body.appendChild(btn_expand);
+
+    if (setting_mainPageExtraAutoExpand) {
+        expand_extra_content();
+    }
+
 }
