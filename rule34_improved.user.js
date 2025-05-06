@@ -22,57 +22,32 @@
 
 function getSetting(settingName, settingDefault) {
     let value = GM_getValue(settingName, null);
-    if (value == null) {
-        GM_setValue(settingName, settingDefault);
-        value = settingDefault;
-    }
+    if (value == null) { GM_setValue(settingName, settingDefault); value = settingDefault; }
     return value;
 }
 
-var setting_autoplayVideos_ = "autoplayVideos";
-var setting_autoplayVideos = getSetting(setting_autoplayVideos_, true);
-var setting_defaultVideoVolume_ = "defaultVideoVolume";
-var setting_defaultVideoVolume = getSetting(setting_defaultVideoVolume_, 1);
-var setting_useViewportDependentSize_ = "useViewportDependentSize";
-var setting_useViewportDependentSize = getSetting(setting_useViewportDependentSize_, true);
-var setting_viewportDependentHeight_ = "viewportDependentHeight";
-var setting_viewportDependentHeight = getSetting(setting_viewportDependentHeight_, 70);
-var setting_stretchImgVid_ = "stretchImgVid";
-var setting_stretchImgVid = getSetting(setting_stretchImgVid_, true);
-var setting_trueVideoSize_ = "trueVideoSize";
-var setting_trueVideoSize = getSetting(setting_trueVideoSize_, false);
-var setting_enableFavOnEnter_ = "enableFavOnEnter";
-var setting_enableFavOnEnter = getSetting(setting_enableFavOnEnter_, true);
-var setting_hideBlacklistedThumbnails_ = "hideBlacklistedThumbnails";
-var setting_hideBlacklistedThumbnails = getSetting(setting_hideBlacklistedThumbnails_, true);
-var setting_forceDarkTheme_ = "forceDarkTheme";
-var setting_forceDarkTheme = getSetting(setting_forceDarkTheme_, true);
-var setting_betterDarkTheme_ = "betterDarkTheme";
-var setting_betterDarkTheme = getSetting(setting_betterDarkTheme_, true);
-var setting_removeBloat_ = "removeBloat";
-var setting_removeBloat = getSetting(setting_removeBloat_, true);
-var setting_endlessScrolling_ = "endlessScrolling";
-var setting_endlessScrolling = getSetting(setting_endlessScrolling_, true);
-var setting_favFilter_ = "favFilter";
-var setting_favFilter = getSetting(setting_favFilter_, true);
-var setting_showFavPosts_ = "showFavPosts";
-var setting_showFavPosts = getSetting(setting_showFavPosts_, true);
-var setting_showFavPosts2_ = "showFavPosts2";
-var setting_showFavPosts2 = getSetting(setting_showFavPosts2_, false);
-var setting_embedVideo_ = "embedVideo";
-var setting_embedVideo = getSetting(setting_embedVideo_, true);
-var setting_thumbFav_ = "thumbFav";
-var setting_thumbFav = getSetting(setting_thumbFav_, true);
-var setting_mainPageExtra_ = "mainPageExtra";
-var setting_mainPageExtra = getSetting(setting_mainPageExtra_, true);
-var setting_mainPageExtraAutoExpand_ = "mainPageExtraAutoExpand";
-var setting_mainPageExtraAutoExpand = getSetting(setting_mainPageExtraAutoExpand_, true);
-var setting_slideShow_ = "slideShow";
-var setting_slideShow = getSetting(setting_slideShow_, true);
-var setting_videoVolumeScroll_ = "videoVolumeScroll";
-var setting_videoVolumeScroll = getSetting(setting_videoVolumeScroll_, true);
-var setting_loopVideo_ = "loopVideo";
-var setting_loopVideo = getSetting(setting_loopVideo_, false);
+var setting_autoplayVideos_            = "autoplayVideos";            var setting_autoplayVideos             = getSetting(setting_autoplayVideos_,            true);
+var setting_defaultVideoVolume_        = "defaultVideoVolume";        var setting_defaultVideoVolume         = getSetting(setting_defaultVideoVolume_,        1);
+var setting_useViewportDependentSize_  = "useViewportDependentSize";  var setting_useViewportDependentSize   = getSetting(setting_useViewportDependentSize_,  true);
+var setting_viewportDependentHeight_   = "viewportDependentHeight";   var setting_viewportDependentHeight    = getSetting(setting_viewportDependentHeight_,   70);
+var setting_stretchImgVid_             = "stretchImgVid";             var setting_stretchImgVid              = getSetting(setting_stretchImgVid_,             true);
+var setting_trueVideoSize_             = "trueVideoSize";             var setting_trueVideoSize              = getSetting(setting_trueVideoSize_,             false);
+var setting_enableFavOnEnter_          = "enableFavOnEnter";          var setting_enableFavOnEnter           = getSetting(setting_enableFavOnEnter_,          true);
+var setting_hideBlacklistedThumbnails_ = "hideBlacklistedThumbnails"; var setting_hideBlacklistedThumbnails  = getSetting(setting_hideBlacklistedThumbnails_, true);
+var setting_forceDarkTheme_            = "forceDarkTheme";            var setting_forceDarkTheme             = getSetting(setting_forceDarkTheme_,            true);
+var setting_betterDarkTheme_           = "betterDarkTheme";           var setting_betterDarkTheme            = getSetting(setting_betterDarkTheme_,           true);
+var setting_removeBloat_               = "removeBloat";               var setting_removeBloat                = getSetting(setting_removeBloat_,               true);
+var setting_endlessScrolling_          = "endlessScrolling";          var setting_endlessScrolling           = getSetting(setting_endlessScrolling_,          true);
+var setting_favFilter_                 = "favFilter";                 var setting_favFilter                  = getSetting(setting_favFilter_,                 true);
+var setting_showFavPosts_              = "showFavPosts";              var setting_showFavPosts               = getSetting(setting_showFavPosts_,              true);
+var setting_showFavPosts2_             = "showFavPosts2";             var setting_showFavPosts2              = getSetting(setting_showFavPosts2_,             false);
+var setting_embedVideo_                = "embedVideo";                var setting_embedVideo                 = getSetting(setting_embedVideo_,                true);
+var setting_thumbFav_                  = "thumbFav";                  var setting_thumbFav                   = getSetting(setting_thumbFav_,                  true);
+var setting_mainPageExtra_             = "mainPageExtra";             var setting_mainPageExtra              = getSetting(setting_mainPageExtra_,             true);
+var setting_mainPageExtraAutoExpand_   = "mainPageExtraAutoExpand";   var setting_mainPageExtraAutoExpand    = getSetting(setting_mainPageExtraAutoExpand_,   true);
+var setting_slideShow_                 = "slideShow";                 var setting_slideShow                  = getSetting(setting_slideShow_,                 true);
+var setting_videoVolumeScroll_         = "videoVolumeScroll";         var setting_videoVolumeScroll          = getSetting(setting_videoVolumeScroll_,         true);
+var setting_loopVideo_                 = "loopVideo";                 var setting_loopVideo                  = getSetting(setting_loopVideo_,                 false);
 
 var css_root = `
 :root { --favdisplay: inline; }
@@ -146,26 +121,26 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 .awesomplete>input { display: block }
 .awesomplete>ul:empty { display:none }
 .awesomplete>ul {
-	position: absolute;
-	z-index: 1;
-	min-width: 100%;
-	box-sizing: border-box;
-	list-style: none;
-	padding: 0;
-	margin: 0;
-	background: black;
-	padding: 3px;
-	margin: 0;
-	color: hotpink;
-	background: linear-gradient(to top left, #002404, black);
-	border-color: lime;
-	border-width: 1px;
-	text-shadow: none;
+    position: absolute;
+    z-index: 1;
+    min-width: 100%;
+    box-sizing: border-box;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: black;
+    padding: 3px;
+    margin: 0;
+    color: hotpink;
+    background: linear-gradient(to top left, #002404, black);
+    border-color: lime;
+    border-width: 1px;
+    text-shadow: none;
 }
 @supports(transform:scale(0)) {
-	.awesomplete>ul { transition:.1s cubic-bezier(1,1,1,1); transform-origin:1.43em -.43em; }
-	.awesomplete>ul[hidden],
-	.awesomplete>ul:empty { opacity: 0; transform: scale(0); display: block; ransition-timing-function: ease; }
+    .awesomplete>ul { transition:.1s cubic-bezier(1,1,1,1); transform-origin:1.43em -.43em; }
+    .awesomplete>ul[hidden],
+    .awesomplete>ul:empty { opacity: 0; transform: scale(0); display: block; ransition-timing-function: ease; }
 }
 .awesomplete>ul:before { display: none }
 .awesomplete>ul>li                       { cursor:pointer; color: hotpink; background: transparent; border: 1px solid transparent; position: relative; padding: 1px; }
@@ -176,110 +151,110 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 .awesomplete li[aria-selected=true] mark { cursor:pointer; color: lime; background: transparent; }
 
 .r34imp_slider {
-	margin: 0 5px 0 5px;
-	padding: 0;
-	display: inline-block;
-	-webkit-appearance: none;
-	width: 60%;
-	height: 10px;
-	border-radius: 5px;
-	border: solid 1px green;
-	background: #101010;
-	opacity: 0.8;
-	-webkit-transition: .1s;
-	transition: opacity .1s;
+    margin: 0 5px 0 5px;
+    padding: 0;
+    display: inline-block;
+    -webkit-appearance: none;
+    width: 60%;
+    height: 10px;
+    border-radius: 5px;
+    border: solid 1px green;
+    background: #101010;
+    opacity: 0.8;
+    -webkit-transition: .1s;
+    transition: opacity .1s;
 }
 
 .r34imp_slider:hover { opacity: 1; }
 
 .r34imp_slider::-webkit-slider-thumb {
-	-webkit-appearance: none;
-	appearance: none;
-	width: 10px;
-	height: 10px;
-	border-radius: 50%;
-	background: #4CAF50;
-	cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
 }
 
 .r34imp_slider::-moz-range-thumb {
-	width: 15px;
-	height: 15px;
-	border-radius: 50%;
-	background: #4CAF50;
-	cursor: pointer;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
 }
 
 #delayRange { width: 25% !important; }
 
 .button-remove {
-	background-color: transparent;
-	border: none;
-	color: gray;
-	cursor: pointer;
+    background-color: transparent;
+    border: none;
+    color: gray;
+    cursor: pointer;
 }
 
 .button-remove:active {
-  filter: none !important;
-	color: black;
-	background-color: gray;
-	border-radius: 5px;
+    filter: none !important;
+    color: black;
+    background-color: gray;
+    border-radius: 5px;
 }
 
 .checkboxContainer {
-	display: inline-block;
-	position: relative;
-	padding-left: 15px;
-	margin-bottom: 5px;
-	margin-right: 5px;
-	cursor: pointer;
-	font-size: 22px;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-	height: 35px;
-	width: 20px;
+    display: inline-block;
+    position: relative;
+    padding-left: 15px;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    height: 35px;
+    width: 20px;
 }
 
 #trcheckbox {
-	width: 15px;
-	height: 15px;
-	right: 1px;
-	top: 1px;
-	padding: 0;
-	margin: 0px 15px 0px px;
+    width: 15px;
+    height: 15px;
+    right: 1px;
+    top: 1px;
+    padding: 0;
+    margin: 0px 15px 0px px;
 }
 
 #trcheckbox .checkmark {
-	height: 13px;
-	width: 13px;
-	padding: 0 !important;
-	margin: 0 !important;
+    height: 13px;
+    width: 13px;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 /* Hide the browser's default checkbox */
 .checkboxContainer input {
-	top: 4px;
-	left: 6px;
-	position: absolute;
-	opacity: 0;
-	cursor: pointer;
-	height: 0;
-	width: 0;
+    top: 4px;
+    left: 6px;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
 }
 
 /* Create a custom checkbox */
 .checkmark {
-	position: absolute;
-	top: 3px;
-	left: 5px;
-	height: 25px;
-	width: 25px;
-	background-color: #202020;
-	border: 2px green solid;
-	border-radius: 3px;
-	transition: all .2s ease;
+    position: absolute;
+    top: 3px;
+    left: 5px;
+    height: 25px;
+    width: 25px;
+    background-color: #202020;
+    border: 2px green solid;
+    border-radius: 3px;
+    transition: all .2s ease;
 }
 
 .checkboxContainer:hover input ~ .checkmark { background-color: #404040; }
@@ -291,44 +266,44 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 
 var css_post = `
 #postbar {
-	margin: 0;
-	padding 30px;
-	border: solid 1px var(--c-link-soft);
-	display: inline-block;
-	width: auto;
-	background-color: var(--c-bg-highlight);
+    margin: 0;
+    padding 30px;
+    border: solid 1px var(--c-link-soft);
+    display: inline-block;
+    width: auto;
+    background-color: var(--c-bg-highlight);
 }
 
 .custom-button {
-	background-color: transparent;
-	cursor: pointer;
-	width: auto;
-	padding: 3px;
-	margin: 1px;
-	border-radius: 20px;
+    background-color: transparent;
+    cursor: pointer;
+    width: auto;
+    padding: 3px;
+    margin: 1px;
+    border-radius: 20px;
 }
 .custom-button:hover  { background-color: rgba(100,255,100,.2); }
 .custom-button:active { background-color: rgba(255,255,255,1);  }
 
 #isinfav, #isinfav2 {
-	display: inline-block;
-	margin-left: 10px;
-	font-size: 18px;
-	background-color: pink;
-	border: 1px deeppink solid;
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 18px;
+    background-color: pink;
+    border: 1px deeppink solid;
 }
 
 ` + (setting_useViewportDependentSize ?
-    ((setting_stretchImgVid ? `
+        ((setting_stretchImgVid ? `
 #gelcomVideoContainer {
-	width: auto !important;
-	max-width: 100% !important;
-	height: ` + setting_viewportDependentHeight + `vh !important;
+    width: auto !important;
+    max-width: 100% !important;
+    height: ` + setting_viewportDependentHeight + `vh !important;
 }` : "") + `
 #image {
-	width: auto !important;
-	max-width: 100% !important;
-	` + (setting_stretchImgVid ? "" : "max-") + `height: ` + setting_viewportDependentHeight + `vh !important;
+    width: auto !important;
+    max-width: 100% !important;
+    ` + (setting_stretchImgVid ? "" : "max-") + `height: ` + setting_viewportDependentHeight + `vh !important;
 }`) : "");
 
 
@@ -1536,7 +1511,7 @@ if (isPage_posts || isPage_fav) {
             }
         }, true);
 
-        div_slideShow.addEventListener("click", function() {});
+        div_slideShow.addEventListener("click", function() { });
 
         // append all buttons and stuff
         div_slideShow_btnCont.append(button_slideShow_hide);
@@ -1695,28 +1670,28 @@ if (isPage_posts || isPage_fav) {
                 }, false);
             });
         } else {
-          window.addEventListener("scroll", async function() {
+            window.addEventListener("scroll", async function() {
                 if (reachedTheEnd || !setting_endlessScrolling || !isInViewport(paginator)) { return; }
                 if (!setting_endlessScrolling) { return; }
                 cur += step;
                 let url = base + "&pid=" + cur;
                 document.title = "Loading...";
                 httpGet(url, function(response) {
-                  document.title = originalTitle;
-                  let doc = new DOMParser().parseFromString(response, "text/html");
-                  //let elements = doc.getElementsByClassName("thumb");
-                  let elements = Array.prototype.slice.call(doc.getElementsByClassName("thumb"), 0);
-                  if (elements.length == 0) { reachedTheEnd = true; return; }
-                  for (let i = 0; i < elements.length; i++) {
-                    div_imageList.append(elements[i]);
+                    document.title = originalTitle;
+                    let doc = new DOMParser().parseFromString(response, "text/html");
+                    //let elements = doc.getElementsByClassName("thumb");
+                    let elements = Array.prototype.slice.call(doc.getElementsByClassName("thumb"), 0);
+                    if (elements.length == 0) { reachedTheEnd = true; return; }
+                    for (let i = 0; i < elements.length; i++) {
+                        div_imageList.append(elements[i]);
 
-                    if (setting_hideBlacklistedThumbnails) { hideBlacklistedThumbnails_check(elements[i]); }
-                    if (setting_showFavPosts) { showFavPosts_elementCheck(elements[i]); }
-                    if (setting_thumbFav) { thumbFav_check(elements[i]); }
-                  }
-                  p_endlessScroll.innerHTML = cur + " (" + ((cur + step) / step) + ")";
+                        if (setting_hideBlacklistedThumbnails) { hideBlacklistedThumbnails_check(elements[i]); }
+                        if (setting_showFavPosts) { showFavPosts_elementCheck(elements[i]); }
+                        if (setting_thumbFav) { thumbFav_check(elements[i]); }
+                    }
+                    p_endlessScroll.innerHTML = cur + " (" + ((cur + step) / step) + ")";
                 }, false);
-              });
+            });
         }
 
 
