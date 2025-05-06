@@ -48,6 +48,7 @@ var setting_mainPageExtraAutoExpand_   = "mainPageExtraAutoExpand";   var settin
 var setting_slideShow_                 = "slideShow";                 var setting_slideShow                  = getSetting(setting_slideShow_,                 true);
 var setting_videoVolumeScroll_         = "videoVolumeScroll";         var setting_videoVolumeScroll          = getSetting(setting_videoVolumeScroll_,         true);
 var setting_loopVideo_                 = "loopVideo";                 var setting_loopVideo                  = getSetting(setting_loopVideo_,                 false);
+var setting_taglistquick_              = "taglistquick";              var setting_taglistquick               = getSetting(setting_taglistquick_,              ["sort:score", "animated"]);
 
 var css_root = `
 :root { --favdisplay: inline; }
@@ -739,25 +740,7 @@ if (setting_forceDarkTheme) {
     }
 }
 
-// posts page
-if (isPage_posts) {
-    let elements = document.getElementsByName("tags");
-    for (let i = 0; i < elements.length; i++) {
-        let elem = elements[i];
-        let a = document.createElement("a");
-        a.id = "sortscore";
-        a.innerHTML = "sort:score";
-        a.style = "display: block";
-        a.href = window.location.href + "+sort%3ascore";
-        elem.parentNode.insertBefore(a, elem.nextSibling);
-        let a2 = document.createElement("a");
-        a2.id = "animated";
-        a2.innerHTML = "animated";
-        a2.style = "display: block";
-        a2.href = window.location.href + "+animated";
-        elem.parentNode.insertBefore(a2, elem.nextSibling);
-    }
-}
+
 
 // options page
 if (isPage_opt) {
@@ -1821,216 +1804,308 @@ if (isPage_post) {
     }
 }
 
-if (isPage_main && setting_mainPageExtra) {
 
-    function loadExtraContent() {
-
-
-        let main_flexbox = document.createElement("div");
-        main_flexbox.style = "display: flex; flex-direction: row; justify-content: center;"
-        document.body.prepend(main_flexbox);
-
-        main_flexbox.append(document.getElementById("static-index"));
-
-
-        let favTagsDiv = document.createElement("div");
-        favTagsDiv.className = "tagbar";
-        //favTagsDiv.style = "position: fixed; top: 5px; right: 5px; border: lime 1px dashed; padding: 4px; width: 380px;"
-        favTagsDiv.style = "height: auto; margin: 10px 100px; padding: 5px; border-radius: 3px";
-
-        let favTagsDiv_h5 = document.createElement("h5");
-        favTagsDiv_h5.innerHTML = "Favorite Tags";
-        favTagsDiv.appendChild(favTagsDiv_h5);
-
-        function favTagsDiv_add(text) {
-            let div = document.createElement("div");
-            div.style = "padding-bottom: 5px;"
-            div.className = "favtag";
-
-            let a = document.createElement("a");
-            let rm = document.createElement("button");
-            rm.style = "cursor: pointer; background: none; border: none;";
-            rm.innerHTML = "❌";
-            rm.title = "Remove";
-            rm.onclick = function() {
-                let taglist = GM_getValue("taglist", []);
-                GM_setValue("taglist", taglist.filter(e => e !== text));
-                div.remove();
-            }
-
-            a.innerHTML = text;
-            a.href = "index.php?page=post&s=list&tags=" + text;
-            div.appendChild(rm);
-            div.appendChild(a);
-            favTagsDiv.appendChild(div);
-        }
-
-        let input = document.getElementById("tags");
-        input.style = "width: 70%; display: inline-block;";
-        input.type = "text";
-
-        function add() {
-            let value = input.value.trim();
-            if (!value) { return; }
-            let taglist = GM_getValue("taglist", []);
-            if (!taglist.includes(value)) {
-                taglist.push(value);
-                GM_setValue("taglist", taglist);
-                favTagsDiv_add(value);
-                input.value = "";
-            }
-        }
-
-        function sortItems() {
-            let elements = document.getElementsByClassName("favtag");
-            while (elements[0]) {
-                elements[0].remove();
-            }
-            let tl = GM_getValue("taglist", []);
-            tl.sort();
-            for (let i = 0; i < tl.length; i++) {
-                favTagsDiv_add(tl[i]);
-            }
-            GM_setValue("taglist", tl);
-        }
-
-        input.addEventListener("keydown", function(event) {
-            if (event.ctrlKey && event.key === 'Enter') {
-                add();
-            }
-        });
-
-        let btn_add = document.createElement("button");
-        btn_add.className = "r34imp_button";
-        btn_add.innerHTML = "🔖 Bookmark";
-        btn_add.onclick = function() {
-            add();
-        };
-        btn_add.title = "Bookmark search query (CTRL+ENTER)";
-
-        let btn_sort = document.createElement("button");
-        btn_sort.className = "r34imp_button";
-        btn_sort.innerHTML = "🔢 Sort";
-        btn_sort.onclick = function() {
-            sortItems();
-        };
-        btn_sort.title = "Sort";
-
-        input.after(btn_add);
-        favTagsDiv.appendChild(btn_sort);
-
-        // add fav tags
-        let tl = GM_getValue("taglist", []);
-        for (let i = 0; i < tl.length; i++) {
-            favTagsDiv_add(tl[i]);
-        }
-
-        let superFavDiv = document.createElement("div");
-        superFavDiv.className = "superFavCont";
-        superFavDiv.style = "height: auto; margin-bottom: 500px; width: auto";
-
-        let superFavDiv_h5 = document.createElement("h5");
-        superFavDiv_h5.style = "margin-left: 10px; text-decoration: underline;"
-        superFavDiv_h5.innerHTML = "Super Favorites";
-        superFavDiv.appendChild(superFavDiv_h5);
-
-        let favlist = GM_getValue("favlist2", []);
-        for (let i = 0; i < favlist.length; i++) {
-            let id = favlist[i][0];
-            let thumbURL = favlist[i][1];
-
-            let span = document.createElement("span");
-            span.id = "s" + id;
-            span.style = "border: none; position: relative; padding-left: 10px; padding-right: 2px; margin: 5px; width: 210px; height: 210px";
-            span.className = "thumb sfav";
-
-            let a = document.createElement("a");
-            a.style.border = "none";
-            a.id = "p" + id;
-            a.href = "index.php?page=post&s=view&id=" + id;
-
-            let img = document.createElement("img");
-            img.className = "preview";
-            img.style = "display: block; border: none; object-fit: fill; max-width: 200px; max-height: 200px";
-            img.alt = id;
-            img.src = thumbURL;
-            a.appendChild(img);
-
-            let btn_rm = document.createElement("Remove");
-            btn_rm.innerHTML = "❌ Remove";
-            btn_rm.title = "Remove from Super Favorites"
-            btn_rm.style = "cursor: pointer; margin-top: 10px; display: block;"
-            btn_rm.onclick = function() {
-                favlist.splice(i, 1);
-                GM_setValue("favlist2", favlist);
-                span.remove();
-            }
-
-            span.appendChild(a);
-            span.appendChild(btn_rm);
-
-            superFavDiv.appendChild(span);
-        }
-
-        main_flexbox.appendChild(favTagsDiv);
-        document.body.append(main_flexbox);
-
-        document.body.appendChild(superFavDiv);
-    }
-
-    function expand_extra_content() {
-        loadExtraContent();
-        btn_expand.remove();
-    }
-
-    let btn_expand = document.createElement("btn_expand");
-    btn_expand.id = "expand-button";
-    btn_expand.innerHTML = "🔽 Show Extra Content";
-    btn_expand.title = "Expand";
-    btn_expand.style = "position: fixed; top: 5px; right: 5px; cursor: pointer; border: darkgreen 2px dashed; width: 150px; height: 20px; text-align: center; padding: 5px;"
-    btn_expand.onclick = function() { expand_extra_content(); }
-    document.body.appendChild(btn_expand);
-
-    if (setting_mainPageExtraAutoExpand) {
-        expand_extra_content();
-    }
-
-}
 
 
 if (setting_mainPageExtra) {
-    let input = document.querySelector("#post-list input[type=text][name='tags']");
 
-    if (input == null) {
-        input = document.querySelector("#post-view input[type=text][name='tags']");
-    }
+    if (isPage_main) {
 
-    if (input != null) {
+        function loadExtraContent() {
+            let main_flexbox = document.createElement("div");
+            main_flexbox.style = "display: flex; flex-direction: row; justify-content: center;"
+            document.body.prepend(main_flexbox);
 
-        function add() {
-            let value = input.value.trim();
-            if (!value) { return; }
-            let taglist = GM_getValue("taglist", []);
-            if (!taglist.includes(value)) {
-                taglist.push(value);
-                GM_setValue("taglist", taglist);
+            main_flexbox.append(document.getElementById("static-index"));
+
+            let tagbar = document.createElement("div");
+            tagbar.className = "tagbar";
+            tagbar.style = "height: auto; margin: 10px 100px; padding: 5px; border-radius: 3px";
+            let favTagsDiv_h5 = document.createElement("h5");
+            favTagsDiv_h5.innerHTML = "Bookmarked/Favorite Tags (CTRL+ENTER)";
+            tagbar.appendChild(favTagsDiv_h5);
+
+            let tagbarquick = document.createElement("div");
+            tagbarquick.className = "tagbarquick";
+            tagbarquick.style = "height: auto; margin: 10px 100px; padding: 5px; border-radius: 3px";
+            let tagbarquick_h5 = document.createElement("h5");
+            tagbarquick_h5.innerHTML = "Quick Append Search (CTRL+SHIFT+ENTER)";
+            tagbarquick.appendChild(tagbarquick_h5);
+
+            function tagbar_add(text) {
+                let div = document.createElement("div");
+                div.style = "padding-bottom: 5px;"
+                div.className = "favtag";
+
+                let a = document.createElement("a");
+                let rm = document.createElement("button");
+                rm.style = "cursor: pointer; background: none; border: none;";
+                rm.innerHTML = "❌";
+                rm.title = "Remove";
+                rm.onclick = function() {
+                    let taglist = GM_getValue("taglist", []);
+                    GM_setValue("taglist", taglist.filter(e => e !== text));
+                    div.remove();
+                }
+
+                a.innerHTML = text;
+                a.href = "index.php?page=post&s=list&tags=" + text;
+                div.appendChild(rm);
+                div.appendChild(a);
+                tagbar.appendChild(div);
             }
+
+            function tagbar_sort() {
+                let elements = document.getElementsByClassName("favtag");
+                while (elements[0]) { elements[0].remove(); }
+                let tl = GM_getValue("taglist", []);
+                tl.sort();
+                for (let i = 0; i < tl.length; i++) { tagbar_add(tl[i]); }
+                GM_setValue("taglist", tl);
+            }
+
+            function tagbarquick_add(text) {
+                let div = document.createElement("div");
+                div.style = "padding-bottom: 5px;"
+                div.className = "favtagquick";
+
+                let a = document.createElement("a");
+                let rm = document.createElement("button");
+                rm.style = "cursor: pointer; background: none; border: none;";
+                rm.innerHTML = "❌";
+                rm.title = "Remove";
+                rm.onclick = function() {
+                    let taglist = GM_getValue("taglistquick", []);
+                    GM_setValue("taglistquick", taglist.filter(e => e !== text));
+                    div.remove();
+                }
+
+                a.innerHTML = text;
+                a.href = "index.php?page=post&s=list&tags=" + text;
+                div.appendChild(rm);
+                div.appendChild(a);
+                tagbarquick.appendChild(div);
+            }
+
+            function tagbarquick_sort() {
+                let elements = document.getElementsByClassName("favtagquick");
+                while (elements[0]) { elements[0].remove(); }
+                let tl = GM_getValue("taglistquick", []);
+                tl.sort();
+                for (let i = 0; i < tl.length; i++) { tagbarquick_add(tl[i]); }
+                GM_setValue("taglistquick", tl);
+            }
+
+            let input = document.getElementById("tags");
+
+            function taglist_add() {
+                let value = input.value.trim();
+                if (!value) { return; }
+                let taglist = GM_getValue("taglist", []);
+                if (!taglist.includes(value)) {
+                    taglist.push(value);
+                    GM_setValue("taglist", taglist);
+                    tagbar_add(value);
+                    input.value = "";
+                }
+            }
+
+            function taglistquick_add() {
+                let value = input.value.trim();
+                if (!value) { return; }
+                let taglist = GM_getValue("taglistquick", []);
+                if (!taglist.includes(value)) {
+                    taglist.push(value);
+                    GM_setValue("taglistquick", taglist);
+                    tagbarquick_add(value);
+                    input.value = "";
+                }
+            }
+
+            let form = input.closest("form");
+            input.addEventListener("keydown", function(event) {
+                 if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { taglistquick_add(); }
+                 else if (event.ctrlKey && event.key === 'Enter') { taglist_add(); }
+                 else if (event.key === 'Enter') { form.submit(); }
+            });
+
+            let btn_bookmark = document.createElement("button");
+            btn_bookmark.className = "r34imp_button";
+            btn_bookmark.innerHTML = "🔖 Bookmark";
+            btn_bookmark.onclick = function(e) {
+                e.preventDefault();
+                taglist_add();
+            };
+            btn_bookmark.title = "Bookmark search query (CTRL+ENTER)";
+
+            let btn_bookmark2 = document.createElement("button");
+            btn_bookmark2.className = "r34imp_button";
+            btn_bookmark2.innerHTML = "🔖 Add QAS";
+            btn_bookmark2.onclick = function(e) {
+                e.preventDefault();
+                taglistquick_add();
+            };
+            btn_bookmark2.title = "Add quick append search (CTRL+SHIFT+ENTER)";
+
+            let btn_tagbar_sort = document.createElement("button");
+            btn_tagbar_sort.className = "r34imp_button";
+            btn_tagbar_sort.innerHTML = "🔢 Sort";
+            btn_tagbar_sort.onclick = function() { tagbar_sort(); };
+            btn_tagbar_sort.title = "Sort";
+
+            let btn_tagbarquick_sort = document.createElement("button");
+            btn_tagbarquick_sort.className = "r34imp_button";
+            btn_tagbarquick_sort.innerHTML = "🔢 Sort";
+            btn_tagbarquick_sort.onclick = function() { tagbarquick_sort(); };
+            btn_tagbarquick_sort.title = "Sort";
+
+            input.after(btn_bookmark);
+            btn_bookmark.after(btn_bookmark2);
+            tagbar.appendChild(btn_tagbar_sort);
+            tagbarquick.appendChild(btn_tagbarquick_sort);
+
+            // populate
+            let tl = GM_getValue("taglist", []);
+            for (let i = 0; i < tl.length; i++) { tagbar_add(tl[i]); }
+
+            let tlq = GM_getValue("taglistquick", []);
+            for (let i = 0; i < tlq.length; i++) { tagbarquick_add(tlq[i]); }
+
+            let superFavDiv = document.createElement("div");
+            superFavDiv.className = "superFavCont";
+            superFavDiv.style = "height: auto; margin-bottom: 500px; width: auto";
+
+            let superFavDiv_h5 = document.createElement("h5");
+            superFavDiv_h5.style = "margin-left: 10px; text-decoration: underline;"
+            superFavDiv_h5.innerHTML = "Super Favorites";
+            superFavDiv.appendChild(superFavDiv_h5);
+
+            let favlist = GM_getValue("favlist2", []);
+            for (let i = 0; i < favlist.length; i++) {
+                let id = favlist[i][0];
+                let thumbURL = favlist[i][1];
+
+                let span = document.createElement("span");
+                span.id = "s" + id;
+                span.style = "border: none; position: relative; padding-left: 10px; padding-right: 2px; margin: 5px; width: 210px; height: 210px";
+                span.className = "thumb sfav";
+
+                let a = document.createElement("a");
+                a.style.border = "none";
+                a.id = "p" + id;
+                a.href = "index.php?page=post&s=view&id=" + id;
+
+                let img = document.createElement("img");
+                img.className = "preview";
+                img.style = "display: block; border: none; object-fit: fill; max-width: 200px; max-height: 200px";
+                img.alt = id;
+                img.src = thumbURL;
+                a.appendChild(img);
+
+                let btn_rm = document.createElement("Remove");
+                btn_rm.innerHTML = "❌ Remove";
+                btn_rm.title = "Remove from Super Favorites"
+                btn_rm.style = "cursor: pointer; margin-top: 10px; display: block;"
+                btn_rm.onclick = function() {
+                    favlist.splice(i, 1);
+                    GM_setValue("favlist2", favlist);
+                    span.remove();
+                }
+
+                span.appendChild(a);
+                span.appendChild(btn_rm);
+
+                superFavDiv.appendChild(span);
+            }
+
+            main_flexbox.appendChild(tagbar);
+            main_flexbox.appendChild(tagbarquick);
+            document.body.append(main_flexbox);
+
+            document.body.appendChild(superFavDiv);
         }
 
-        let btn_add = document.createElement("button");
-        btn_add.className = "r34imp_button";
-        btn_add.innerHTML = "🔖 Bookmark";
-        btn_add.onclick = function(e) {
-            e.preventDefault();
-            add();
-        };
+        function expand_extra_content() {
+            loadExtraContent();
+            btn_expand.remove();
+        }
 
-        input.addEventListener("keydown", function(event) {
-            if (event.ctrlKey && event.key === 'Enter') {
-                add();
+        let btn_expand = document.createElement("btn_expand");
+        btn_expand.id = "expand-button";
+        btn_expand.innerHTML = "🔽 Show Extra Content";
+        btn_expand.title = "Expand";
+        btn_expand.style = "position: fixed; top: 5px; right: 5px; cursor: pointer; border: darkgreen 2px dashed; width: 150px; height: 20px; text-align: center; padding: 5px;"
+        btn_expand.onclick = function() { expand_extra_content(); }
+        document.body.appendChild(btn_expand);
+
+        if (setting_mainPageExtraAutoExpand) {
+            expand_extra_content();
+        }
+
+    }
+
+    if (isPage_posts || isPage_post) {
+
+        let input = document.querySelector("#post-list input[type=text][name='tags']");
+        if (input == null) { input = document.querySelector("#post-view input[type=text][name='tags']"); }
+
+        if (input != null) {
+
+            let btn_bookmark = document.createElement("button");
+            btn_bookmark.className = "r34imp_button";
+            btn_bookmark.innerHTML = "🔖 Bookmark";
+
+            let btn_bookmark2 = document.createElement("button");
+            btn_bookmark2.className = "r34imp_button";
+            btn_bookmark2.innerHTML = "🔖 Add QAS";
+
+            function taglist_add() {
+                let value = input.value.trim();
+                if (!value) { return; }
+                let taglist = GM_getValue("taglist", []);
+                if (!taglist.includes(value)) {
+                    taglist.push(value);
+                    GM_setValue("taglist", taglist);
+                }
             }
-        });
 
-        input.after(btn_add);
+            function tagbarquick_add(e) {
+                let a = document.createElement("a");
+                a.innerHTML = e;
+                a.style = "display: block";
+                a.href = window.location.href + "+" + e;
+                btn_bookmark2.after(a);
+            }
+
+            function taglistquick_add() {
+                let value = input.value.trim();
+                if (!value) { return; }
+                let taglist = GM_getValue("taglistquick", []);
+                if (!taglist.includes(value)) {
+                    taglist.push(value);
+                    GM_setValue("taglistquick", taglist);
+                    tagbarquick_add(value);
+                }
+            }
+
+            btn_bookmark.onclick = function(e) { e.preventDefault(); taglist_add(); };
+            btn_bookmark2.onclick = function(e) { e.preventDefault(); taglistquick_add(); };
+
+            let form = input.closest("form");
+            input.addEventListener("keydown", function(event) {
+                if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { taglistquick_add(); }
+                else if (event.ctrlKey && event.key === 'Enter') { taglist_add(); }
+                else if (event.key === 'Enter') { form.submit(); }
+            });
+
+            input.after(btn_bookmark);
+            btn_bookmark.after(btn_bookmark2);
+
+            // populate
+            let taglistquick = GM_getValue("taglistquick", []);
+            for (let i = 0; i < taglistquick.length; i++) {
+                tagbarquick_add(taglistquick[i]);
+            }
+        }
     }
 }
