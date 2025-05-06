@@ -106,6 +106,11 @@ var css_root = `
     margin: 3px;
 }
 
+.r34imp_slideshow_current {
+    border: 5px dotted red !important;
+    box-sizing: border-box;
+}
+
 `;
 GM_addStyle(css_root);
 
@@ -1263,8 +1268,17 @@ if (isPage_posts || isPage_fav) {
         let currentPost_element_id = null;
 
         function currentPost_element_update(element) {
+
+            if (currentPost_element != null) {
+                currentPost_element.classList.remove("r34imp_slideshow_current")
+            }
+
             currentPost_element = element;
+            currentPost_element.classList.add("r34imp_slideshow_current")
+
             currentPost_element_id = getPostID(currentPost_element);
+
+
         }
 
         function slideShow_updateUI() {
@@ -1343,6 +1357,7 @@ if (isPage_posts || isPage_fav) {
 
             // scroll into view
             currentPost_element.scrollIntoView();
+
 
             // update buttons fav/fav2/bg
             slideShow_updateUI();
@@ -2111,3 +2126,4 @@ if (setting_mainPageExtra) {
         }
     }
 }
+
