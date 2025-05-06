@@ -2054,10 +2054,12 @@ if (setting_mainPageExtra) {
             let btn_bookmark = document.createElement("button");
             btn_bookmark.className = "r34imp_button";
             btn_bookmark.innerHTML = "🔖 Bookmark";
+            btn_bookmark.title = "Bookmark search query (CTRL+ENTER)";
 
             let btn_bookmark2 = document.createElement("button");
             btn_bookmark2.className = "r34imp_button";
             btn_bookmark2.innerHTML = "🔖 Add QAS";
+            btn_bookmark2.title = "Add quick append search (CTRL+SHIFT+ENTER)";
 
             function taglist_add() {
                 let value = input.value.trim();
