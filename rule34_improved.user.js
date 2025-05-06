@@ -1996,3 +1996,41 @@ if (isPage_main && setting_mainPageExtra) {
     }
 
 }
+
+
+if (setting_mainPageExtra) {
+    let input = document.querySelector("#post-list input[type=text][name='tags']");
+
+    if (input == null) {
+        input = document.querySelector("#post-view input[type=text][name='tags']");
+    }
+
+    if (input != null) {
+
+        function add() {
+            let value = input.value.trim();
+            if (!value) { return; }
+            let taglist = GM_getValue("taglist", []);
+            if (!taglist.includes(value)) {
+                taglist.push(value);
+                GM_setValue("taglist", taglist);
+            }
+        }
+
+        let btn_add = document.createElement("button");
+        btn_add.className = "r34imp_button";
+        btn_add.innerHTML = "🔖 Bookmark";
+        btn_add.onclick = function(e) {
+            e.preventDefault();
+            add();
+        };
+
+        input.addEventListener("keydown", function(event) {
+            if (event.ctrlKey && event.key === 'Enter') {
+                add();
+            }
+        });
+
+        input.after(btn_add);
+    }
+}
