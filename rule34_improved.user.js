@@ -121,6 +121,15 @@ var css_root = `
     border-radius: 50%;
 }
 
+.r34imp_button {
+    padding: 1px;
+    color: lime;
+    background-color: #7fff0020;
+    cursor: pointer;
+    border-color: green;
+    margin: 3px;
+}
+
 `;
 GM_addStyle(css_root);
 
@@ -211,7 +220,7 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 }
 
 .button-remove:active {
-    filter: none !important;
+  filter: none !important;
 	color: black;
 	background-color: gray;
 	border-radius: 5px;
@@ -1841,10 +1850,19 @@ if (isPage_post) {
 if (isPage_main && setting_mainPageExtra) {
 
     function loadExtraContent() {
+
+
+        let main_flexbox = document.createElement("div");
+        main_flexbox.style = "display: flex; flex-direction: row; justify-content: center;"
+        document.body.prepend(main_flexbox);
+
+        main_flexbox.append(document.getElementById("static-index"));
+
+
         let favTagsDiv = document.createElement("div");
         favTagsDiv.className = "tagbar";
         //favTagsDiv.style = "position: fixed; top: 5px; right: 5px; border: lime 1px dashed; padding: 4px; width: 380px;"
-        favTagsDiv.style = "height: auto; margin: 10px 100px; border: 1px solid #103010; padding: 5px; border-radius: 3px";
+        favTagsDiv.style = "height: auto; margin: 10px 100px; padding: 5px; border-radius: 3px";
 
         let favTagsDiv_h5 = document.createElement("h5");
         favTagsDiv_h5.innerHTML = "Favorite Tags";
@@ -1871,19 +1889,18 @@ if (isPage_main && setting_mainPageExtra) {
             favTagsDiv.appendChild(div);
         }
 
-        let input = document.createElement("input");
-        input.style = "width: 93%; display: inline-block;";
+        let input = document.getElementById("tags");
+        input.style = "width: 70%; display: inline-block;";
         input.type = "text";
 
         function add() {
-            if (!input.value) {
-                return;
-            }
+            let value = input.value.trim();
+            if (!value) { return; }
             let taglist = GM_getValue("taglist", []);
-            if (!taglist.includes(input.value)) {
-                taglist.push(input.value);
+            if (!taglist.includes(value)) {
+                taglist.push(value);
                 GM_setValue("taglist", taglist);
-                favTagsDiv_add(input.value);
+                favTagsDiv_add(value);
                 input.value = "";
             }
         }
@@ -1901,48 +1918,30 @@ if (isPage_main && setting_mainPageExtra) {
             GM_setValue("taglist", tl);
         }
 
-        function openAllItems() {
-            let taglist = GM_getValue("taglist", []);
-            for (let i = 0; i < taglist.length; i++) {
-                let url = "index.php?page=post&s=list&tags=" + taglist[i];
-                window.open(url, '_blank');
-            }
-        }
-
         input.addEventListener("keydown", function(event) {
-            if (event.key === 'Enter') {
+            if (event.ctrlKey && event.key === 'Enter') {
                 add();
             }
         });
 
         let btn_add = document.createElement("button");
-        btn_add.style = "padding: 1px; color: lime; cursor: pointer;"
-        btn_add.innerHTML = "🔽";
+        btn_add.className = "r34imp_button";
+        btn_add.innerHTML = "🔖 Bookmark";
         btn_add.onclick = function() {
             add();
         };
-        btn_add.title = "Add";
+        btn_add.title = "Bookmark search query (CTRL+ENTER)";
 
         let btn_sort = document.createElement("button");
-        btn_sort.style = "padding: 1px; color: lime; cursor: pointer;"
-        btn_sort.innerHTML = "🧮";
+        btn_sort.className = "r34imp_button";
+        btn_sort.innerHTML = "🔢 Sort";
         btn_sort.onclick = function() {
             sortItems();
         };
         btn_sort.title = "Sort";
 
-        let btn_openAll = document.createElement("button");
-        btn_openAll.style = "padding: 1px; color: lime; cursor: pointer;"
-        btn_openAll.innerHTML = "🔗";
-        btn_openAll.onclick = function() {
-            openAllItems();
-        };
-        btn_openAll.title = "Open All";
-
-        favTagsDiv.appendChild(input);
-        favTagsDiv.appendChild(btn_add);
+        input.after(btn_add);
         favTagsDiv.appendChild(btn_sort);
-        favTagsDiv.appendChild(btn_openAll);
 
         // add fav tags
         let tl = GM_getValue("taglist", []);
@@ -1997,7 +1996,9 @@ if (isPage_main && setting_mainPageExtra) {
             superFavDiv.appendChild(span);
         }
 
-        document.body.appendChild(favTagsDiv);
+        main_flexbox.appendChild(favTagsDiv);
+        document.body.append(main_flexbox);
+
         document.body.appendChild(superFavDiv);
     }
 
@@ -2008,9 +2009,9 @@ if (isPage_main && setting_mainPageExtra) {
 
     let btn_expand = document.createElement("btn_expand");
     btn_expand.id = "expand-button";
-    btn_expand.innerHTML = "🔽";
+    btn_expand.innerHTML = "🔽 Show Extra Content";
     btn_expand.title = "Expand";
-    btn_expand.style = "position: fixed; top: 5px; right: 5px; cursor: pointer; border: darkgreen 2px dashed; width: 20px; height: 20px; text-align: center;"
+    btn_expand.style = "position: fixed; top: 5px; right: 5px; cursor: pointer; border: darkgreen 2px dashed; width: 150px; height: 20px; text-align: center; padding: 5px;"
     btn_expand.onclick = function() { expand_extra_content(); }
     document.body.appendChild(btn_expand);
 
@@ -2019,3 +2020,4 @@ if (isPage_main && setting_mainPageExtra) {
     }
 
 }
+
