@@ -175,7 +175,7 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 .awesomplete li:hover mark               { cursor:pointer; color: lime; background: transparent; }
 .awesomplete li[aria-selected=true] mark { cursor:pointer; color: lime; background: transparent; }
 
-.slider {
+.r34imp_slider {
 	margin: 0 5px 0 5px;
 	padding: 0;
 	display: inline-block;
@@ -190,9 +190,9 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 	transition: opacity .1s;
 }
 
-.slider:hover { opacity: 1; }
+.r34imp_slider:hover { opacity: 1; }
 
-.slider::-webkit-slider-thumb {
+.r34imp_slider::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	appearance: none;
 	width: 10px;
@@ -202,7 +202,7 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 	cursor: pointer;
 }
 
-.slider::-moz-range-thumb {
+.r34imp_slider::-moz-range-thumb {
 	width: 15px;
 	height: 15px;
 	border-radius: 50%;
@@ -291,7 +291,6 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 
 var css_post = `
 #postbar {
-
 	margin: 0;
 	padding 30px;
 	border: solid 1px var(--c-link-soft);
@@ -839,7 +838,7 @@ if (isPage_opt) {
         slider.min = "0";
         slider.max = "100";
         slider.value = GM_getValue(setting_defaultVideoVolume_, setting_defaultVideoVolume) * 100;
-        slider.className = "slider";
+        slider.className = "r34imp_slider";
         let slider_info = document.createElement("p");
         slider_info.style = "display: inline-block;";
         slider_info.innerHTML = "Volume: " + slider.value + "%";
@@ -869,7 +868,7 @@ if (isPage_opt) {
         slider.min = 0;
         slider.max = 100;
         slider.value = GM_getValue(setting_viewportDependentHeight_, setting_viewportDependentHeight);
-        slider.className = "slider";
+        slider.className = "r34imp_slider";
         let slider_info = document.createElement("p");
         slider_info.style = "display: inline-block;";
         slider_info.innerHTML = slider.value + "%";
@@ -987,7 +986,7 @@ if (isPage_fav) {
         slider.min = "0";
         slider.max = "4000";
         slider.value = 1000;
-        slider.className = "slider";
+        slider.className = "r34imp_slider";
         slider.id = "delayRange";
 
         // slider speed label
