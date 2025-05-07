@@ -50,6 +50,7 @@ var setting_mainPageExtraAutoExpand_   = "mainPageExtraAutoExpand";   var settin
 var setting_slideShow_                 = "slideShow";                 var setting_slideShow                  = getSetting(setting_slideShow_,                 true);
 var setting_videoVolumeScroll_         = "videoVolumeScroll";         var setting_videoVolumeScroll          = getSetting(setting_videoVolumeScroll_,         true);
 var setting_loopVideo_                 = "loopVideo";                 var setting_loopVideo                  = getSetting(setting_loopVideo_,                 false);
+var setting_biggerThumbs_              = "biggerThumbs";              var setting_biggerThumbs               = getSetting(setting_biggerThumbs_,              true);
 var setting_taglistpins_               = "taglistpins";               var setting_taglistpins                = getSetting(setting_taglistpins_,               ["sort:score", "animated"]);
 
 // #endregion
@@ -317,6 +318,11 @@ var css_post = `
     max-width: 100% !important;
     ` + (setting_stretchImgVid ? "" : "max-") + `height: ` + setting_viewportDependentHeight + `vh !important;
 }`) : "");
+
+
+if (setting_biggerThumbs) {
+    GM_addStyle(".thumb { width: 250px !important; height: 250px !important; }")
+}
 
 // #endregion
 
@@ -2209,5 +2215,6 @@ document.addEventListener('keydown', function(e) {
     }
 });
 // #endregion
+
 
 
