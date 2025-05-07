@@ -2133,7 +2133,10 @@ if (setting_mainPageExtra) {
             // populate
             let taglistpins = GM_getValue("taglistpins", []);
             for (let i = 0; i < taglistpins.length; i++) {
-                tagbarpins_add(taglistpins[i]);
+                let pin = taglistpins[i];
+                if (!document.location.href.includes(pin)) {
+                    tagbarpins_add(taglistpins[i]);
+                }
             }
         }
     }
@@ -2206,4 +2209,5 @@ document.addEventListener('keydown', function(e) {
     }
 });
 // #endregion
+
 
