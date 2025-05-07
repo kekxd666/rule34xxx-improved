@@ -1837,14 +1837,14 @@ if (setting_mainPageExtra) {
 
             let tagbar = document.createElement("div");
             tagbar.className = "tagbar";
-            tagbar.style = "height: auto; margin: 10px 100px; padding: 5px; border-radius: 3px";
+            tagbar.style = "height: auto; margin-top: 20px; padding: 5px; border-radius: 3px";
             let favTagsDiv_h5 = document.createElement("h5");
             favTagsDiv_h5.innerHTML = "📑 Tag Bookmarks (CTRL+ENTER)";
             tagbar.appendChild(favTagsDiv_h5);
 
             let tagbarpins = document.createElement("div");
             tagbarpins.className = "tagbarpins";
-            tagbarpins.style = "height: auto; margin: 10px 100px; padding: 5px; border-radius: 3px";
+            tagbarpins.style = "height: auto; margin-top: 20px; padding: 5px; border-radius: 3px";
             let tagbarpins_h5 = document.createElement("h5");
             tagbarpins_h5.innerHTML = "📌 Pinned Favorites (CTRL+SHIFT+ENTER)";
             tagbarpins.appendChild(tagbarpins_h5);
