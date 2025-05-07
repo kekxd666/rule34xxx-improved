@@ -1832,47 +1832,15 @@ if (setting_mainPageExtra) {
             tagbar.className = "tagbar";
             tagbar.style = "height: auto; margin: 10px 100px; padding: 5px; border-radius: 3px";
             let favTagsDiv_h5 = document.createElement("h5");
-            favTagsDiv_h5.innerHTML = "Bookmarked/Favorite Tags (CTRL+ENTER)";
+            favTagsDiv_h5.innerHTML = "📑 Tag Bookmarks (CTRL+ENTER)";
             tagbar.appendChild(favTagsDiv_h5);
 
             let tagbarpins = document.createElement("div");
             tagbarpins.className = "tagbarpins";
             tagbarpins.style = "height: auto; margin: 10px 100px; padding: 5px; border-radius: 3px";
             let tagbarpins_h5 = document.createElement("h5");
-            tagbarpins_h5.innerHTML = "Pinned Favorites (CTRL+SHIFT+ENTER)";
+            tagbarpins_h5.innerHTML = "📌 Pinned Favorites (CTRL+SHIFT+ENTER)";
             tagbarpins.appendChild(tagbarpins_h5);
-
-            function tagbar_add(text) {
-                let div = document.createElement("div");
-                div.style = "padding-bottom: 5px;"
-                div.className = "favtag";
-
-                let a = document.createElement("a");
-                let rm = document.createElement("button");
-                rm.style = "cursor: pointer; background: none; border: none;";
-                rm.innerHTML = "❌";
-                rm.title = "Remove";
-                rm.onclick = function() {
-                    let taglist = GM_getValue("taglist", []);
-                    GM_setValue("taglist", taglist.filter(e => e !== text));
-                    div.remove();
-                }
-
-                a.innerHTML = text;
-                a.href = "index.php?page=post&s=list&tags=" + text;
-                div.appendChild(rm);
-                div.appendChild(a);
-                tagbar.appendChild(div);
-            }
-
-            function tagbar_sort() {
-                let elements = document.getElementsByClassName("favtag");
-                while (elements[0]) { elements[0].remove(); }
-                let tl = GM_getValue("taglist", []);
-                tl.sort();
-                for (let i = 0; i < tl.length; i++) { tagbar_add(tl[i]); }
-                GM_setValue("taglist", tl);
-            }
 
             function tagbarpins_add(text) {
                 let div = document.createElement("div");
@@ -1900,16 +1868,24 @@ if (setting_mainPageExtra) {
             function tagbarpins_sort() {
                 let elements = document.getElementsByClassName("favtagpin");
                 while (elements[0]) { elements[0].remove(); }
-                let tl = GM_getValue("taglistpin", []);
+                let tl = GM_getValue("taglistpins", []);
                 tl.sort();
                 for (let i = 0; i < tl.length; i++) { tagbarpins_add(tl[i]); }
                 GM_setValue("taglistpins", tl);
             }
 
+            function tagbar_sort() {
+                let elements = document.getElementsByClassName("favtag");
+                while (elements[0]) { elements[0].remove(); }
+                let tl = GM_getValue("taglist", []);
+                tl.sort();
+                for (let i = 0; i < tl.length; i++) { tagbar_add(tl[i]); }
+                GM_setValue("taglist", tl);
+            }
+
             let input = document.getElementById("tags");
 
-            function taglist_add() {
-                let value = input.value.trim();
+            function taglist_add(value) {
                 if (!value) { return; }
                 let taglist = GM_getValue("taglist", []);
                 if (!taglist.includes(value)) {
@@ -1920,8 +1896,7 @@ if (setting_mainPageExtra) {
                 }
             }
 
-            function taglistpins_add() {
-                let value = input.value.trim();
+            function taglistpins_add(value) {
                 if (!value) { return; }
                 let taglist = GM_getValue("taglistpins", []);
                 if (!taglist.includes(value)) {
@@ -1932,9 +1907,44 @@ if (setting_mainPageExtra) {
                 }
             }
 
+            function taglist_add_txt(value) { taglist_add(input.value.trim()); }
+            function taglistpins_add_txt() { taglistpins_add_txt(input.value.trim()); }
+
+            function tagbar_add(text) {
+                let div = document.createElement("div");
+                div.style = "padding-bottom: 5px;"
+                div.className = "favtag";
+
+                let a = document.createElement("a");
+                let rm = document.createElement("button");
+                rm.style = "cursor: pointer; background: none; border: none;";
+                rm.innerHTML = "❌";
+                rm.title = "Remove";
+                rm.onclick = function() {
+                    let taglist = GM_getValue("taglist", []);
+                    GM_setValue("taglist", taglist.filter(e => e !== text));
+                    div.remove();
+                }
+
+                let pin = document.createElement("button");
+                pin.style = "cursor: pointer; background: none; border: none;";
+                pin.innerHTML = "📌";
+                pin.title = "Pin";
+                pin.onclick = function() {
+                    taglistpins_add(text);
+                }
+
+                a.innerHTML = text;
+                a.href = "index.php?page=post&s=list&tags=" + text;
+                div.appendChild(rm);
+                div.appendChild(pin);
+                div.appendChild(a);
+                tagbar.appendChild(div);
+            }
+
             input.addEventListener("keydown", function(event) {
-                 if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { taglistpins_add(); }
-                 else if (event.ctrlKey && event.key === 'Enter') { taglist_add(); }
+                 if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { taglistpins_add_txt(); }
+                 else if (event.ctrlKey && event.key === 'Enter') { taglist_add_txt(); }
             });
 
             let btn_bookmark = document.createElement("button");
@@ -1942,7 +1952,7 @@ if (setting_mainPageExtra) {
             btn_bookmark.innerHTML = "🔖 Bookmark";
             btn_bookmark.onclick = function(e) {
                 e.preventDefault();
-                taglist_add();
+                taglist_add_txt();
             };
             btn_bookmark.title = "Bookmark search query (CTRL+ENTER)";
 
@@ -1951,7 +1961,7 @@ if (setting_mainPageExtra) {
             btn_bookmark2.innerHTML = "📌 Pin";
             btn_bookmark2.onclick = function(e) {
                 e.preventDefault();
-                taglistpins_add();
+                taglistpins_add_txt();
             };
             btn_bookmark2.title = "Add to pins (CTRL+SHIFT+ENTER)";
 
@@ -2196,3 +2206,4 @@ document.addEventListener('keydown', function(e) {
     }
 });
 // #endregion
+
