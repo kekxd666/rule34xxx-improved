@@ -50,7 +50,7 @@ var setting_mainPageExtraAutoExpand_   = "mainPageExtraAutoExpand";   var settin
 var setting_slideShow_                 = "slideShow";                 var setting_slideShow                  = getSetting(setting_slideShow_,                 true);
 var setting_videoVolumeScroll_         = "videoVolumeScroll";         var setting_videoVolumeScroll          = getSetting(setting_videoVolumeScroll_,         true);
 var setting_loopVideo_                 = "loopVideo";                 var setting_loopVideo                  = getSetting(setting_loopVideo_,                 false);
-var setting_taglistquick_              = "taglistquick";              var setting_taglistquick               = getSetting(setting_taglistquick_,              ["sort:score", "animated"]);
+var setting_taglistpins_               = "taglistpins";               var setting_taglistpins                = getSetting(setting_taglistpins_,               ["sort:score", "animated"]);
 
 // #endregion
 
@@ -1835,12 +1835,12 @@ if (setting_mainPageExtra) {
             favTagsDiv_h5.innerHTML = "Bookmarked/Favorite Tags (CTRL+ENTER)";
             tagbar.appendChild(favTagsDiv_h5);
 
-            let tagbarquick = document.createElement("div");
-            tagbarquick.className = "tagbarquick";
-            tagbarquick.style = "height: auto; margin: 10px 100px; padding: 5px; border-radius: 3px";
-            let tagbarquick_h5 = document.createElement("h5");
-            tagbarquick_h5.innerHTML = "Quick Append Search (CTRL+SHIFT+ENTER)";
-            tagbarquick.appendChild(tagbarquick_h5);
+            let tagbarpins = document.createElement("div");
+            tagbarpins.className = "tagbarpins";
+            tagbarpins.style = "height: auto; margin: 10px 100px; padding: 5px; border-radius: 3px";
+            let tagbarpins_h5 = document.createElement("h5");
+            tagbarpins_h5.innerHTML = "Pinned Favorites (CTRL+SHIFT+ENTER)";
+            tagbarpins.appendChild(tagbarpins_h5);
 
             function tagbar_add(text) {
                 let div = document.createElement("div");
@@ -1874,10 +1874,10 @@ if (setting_mainPageExtra) {
                 GM_setValue("taglist", tl);
             }
 
-            function tagbarquick_add(text) {
+            function tagbarpins_add(text) {
                 let div = document.createElement("div");
                 div.style = "padding-bottom: 5px;"
-                div.className = "favtagquick";
+                div.className = "favtagpin";
 
                 let a = document.createElement("a");
                 let rm = document.createElement("button");
@@ -1885,8 +1885,8 @@ if (setting_mainPageExtra) {
                 rm.innerHTML = "❌";
                 rm.title = "Remove";
                 rm.onclick = function() {
-                    let taglist = GM_getValue("taglistquick", []);
-                    GM_setValue("taglistquick", taglist.filter(e => e !== text));
+                    let taglist = GM_getValue("taglistpins", []);
+                    GM_setValue("taglistpins", taglist.filter(e => e !== text));
                     div.remove();
                 }
 
@@ -1894,16 +1894,16 @@ if (setting_mainPageExtra) {
                 a.href = "index.php?page=post&s=list&tags=" + text;
                 div.appendChild(rm);
                 div.appendChild(a);
-                tagbarquick.appendChild(div);
+                tagbarpins.appendChild(div);
             }
 
-            function tagbarquick_sort() {
-                let elements = document.getElementsByClassName("favtagquick");
+            function tagbarpins_sort() {
+                let elements = document.getElementsByClassName("favtagpin");
                 while (elements[0]) { elements[0].remove(); }
-                let tl = GM_getValue("taglistquick", []);
+                let tl = GM_getValue("taglistpin", []);
                 tl.sort();
-                for (let i = 0; i < tl.length; i++) { tagbarquick_add(tl[i]); }
-                GM_setValue("taglistquick", tl);
+                for (let i = 0; i < tl.length; i++) { tagbarpins_add(tl[i]); }
+                GM_setValue("taglistpins", tl);
             }
 
             let input = document.getElementById("tags");
@@ -1920,20 +1920,20 @@ if (setting_mainPageExtra) {
                 }
             }
 
-            function taglistquick_add() {
+            function taglistpins_add() {
                 let value = input.value.trim();
                 if (!value) { return; }
-                let taglist = GM_getValue("taglistquick", []);
+                let taglist = GM_getValue("taglistpins", []);
                 if (!taglist.includes(value)) {
                     taglist.push(value);
-                    GM_setValue("taglistquick", taglist);
-                    tagbarquick_add(value);
+                    GM_setValue("taglistpins", taglist);
+                    tagbarpins_add(value);
                     input.value = "";
                 }
             }
 
             input.addEventListener("keydown", function(event) {
-                 if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { taglistquick_add(); }
+                 if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { taglistpins_add(); }
                  else if (event.ctrlKey && event.key === 'Enter') { taglist_add(); }
             });
 
@@ -1948,12 +1948,12 @@ if (setting_mainPageExtra) {
 
             let btn_bookmark2 = document.createElement("button");
             btn_bookmark2.className = "r34imp_button";
-            btn_bookmark2.innerHTML = "🔖 Add QAS";
+            btn_bookmark2.innerHTML = "📌 Pin";
             btn_bookmark2.onclick = function(e) {
                 e.preventDefault();
-                taglistquick_add();
+                taglistpins_add();
             };
-            btn_bookmark2.title = "Add quick append search (CTRL+SHIFT+ENTER)";
+            btn_bookmark2.title = "Add to pins (CTRL+SHIFT+ENTER)";
 
             let btn_tagbar_sort = document.createElement("button");
             btn_tagbar_sort.className = "r34imp_button";
@@ -1961,23 +1961,23 @@ if (setting_mainPageExtra) {
             btn_tagbar_sort.onclick = function() { tagbar_sort(); };
             btn_tagbar_sort.title = "Sort";
 
-            let btn_tagbarquick_sort = document.createElement("button");
-            btn_tagbarquick_sort.className = "r34imp_button";
-            btn_tagbarquick_sort.innerHTML = "🔢 Sort";
-            btn_tagbarquick_sort.onclick = function() { tagbarquick_sort(); };
-            btn_tagbarquick_sort.title = "Sort";
+            let btn_tagbarpins_sort = document.createElement("button");
+            btn_tagbarpins_sort.className = "r34imp_button";
+            btn_tagbarpins_sort.innerHTML = "🔢 Sort";
+            btn_tagbarpins_sort.onclick = function() { tagbarpins_sort(); };
+            btn_tagbarpins_sort.title = "Sort";
 
             input.after(btn_bookmark);
             btn_bookmark.after(btn_bookmark2);
             tagbar.appendChild(btn_tagbar_sort);
-            tagbarquick.appendChild(btn_tagbarquick_sort);
+            tagbarpins.appendChild(btn_tagbarpins_sort);
 
             // populate
             let tl = GM_getValue("taglist", []);
             for (let i = 0; i < tl.length; i++) { tagbar_add(tl[i]); }
 
-            let tlq = GM_getValue("taglistquick", []);
-            for (let i = 0; i < tlq.length; i++) { tagbarquick_add(tlq[i]); }
+            let tlq = GM_getValue("taglistpins", []);
+            for (let i = 0; i < tlq.length; i++) { tagbarpins_add(tlq[i]); }
 
             let superFavDiv = document.createElement("div");
             superFavDiv.className = "superFavCont";
@@ -2027,7 +2027,7 @@ if (setting_mainPageExtra) {
             }
 
             main_flexbox.appendChild(tagbar);
-            main_flexbox.appendChild(tagbarquick);
+            main_flexbox.appendChild(tagbarpins);
             document.body.append(main_flexbox);
 
             document.body.appendChild(superFavDiv);
@@ -2066,8 +2066,8 @@ if (setting_mainPageExtra) {
 
             let btn_bookmark2 = document.createElement("button");
             btn_bookmark2.className = "r34imp_button";
-            btn_bookmark2.innerHTML = "🔖 Add QAS";
-            btn_bookmark2.title = "Add quick append search (CTRL+SHIFT+ENTER)";
+            btn_bookmark2.innerHTML = "📌 Pin";
+            btn_bookmark2.title = "Add to pins (CTRL+SHIFT+ENTER)";
 
             function taglist_add() {
                 let value = input.value.trim();
@@ -2079,7 +2079,7 @@ if (setting_mainPageExtra) {
                 }
             }
 
-            function tagbarquick_add(e) {
+            function tagbarpins_add(e) {
                 let a = document.createElement("a");
                 a.innerHTML = e;
                 a.style = "display: block";
@@ -2087,22 +2087,22 @@ if (setting_mainPageExtra) {
                 btn_bookmark2.after(a);
             }
 
-            function taglistquick_add() {
+            function taglistpins_add() {
                 let value = input.value.trim();
                 if (!value) { return; }
-                let taglist = GM_getValue("taglistquick", []);
+                let taglist = GM_getValue("taglistpins", []);
                 if (!taglist.includes(value)) {
                     taglist.push(value);
-                    GM_setValue("taglistquick", taglist);
-                    tagbarquick_add(value);
+                    GM_setValue("taglistpins", taglist);
+                    tagbarpins_add(value);
                 }
             }
 
             btn_bookmark.onclick = function(e) { e.preventDefault(); taglist_add(); };
-            btn_bookmark2.onclick = function(e) { e.preventDefault(); taglistquick_add(); };
+            btn_bookmark2.onclick = function(e) { e.preventDefault(); taglistpins_add(); };
 
             input.addEventListener("keydown", function(event) {
-                if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { taglistquick_add(); }
+                if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { taglistpins_add(); }
                 else if (event.ctrlKey && event.key === 'Enter') { taglist_add(); }
                 else if (event.key === 'Escape') { document.activeElement.blur(); document.body.focus(); }
             });
@@ -2111,9 +2111,9 @@ if (setting_mainPageExtra) {
             btn_bookmark.after(btn_bookmark2);
 
             // populate
-            let taglistquick = GM_getValue("taglistquick", []);
-            for (let i = 0; i < taglistquick.length; i++) {
-                tagbarquick_add(taglistquick[i]);
+            let taglistpins = GM_getValue("taglistpins", []);
+            for (let i = 0; i < taglistpins.length; i++) {
+                tagbarpins_add(taglistpins[i]);
             }
         }
     }
