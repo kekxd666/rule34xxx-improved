@@ -1173,427 +1173,425 @@ if (setting_showFavPosts) {
     }
 }
 
-// endless scrolling checkbox ; hide fav posts checkbox ; slideshow
-if (isPage_posts || isPage_fav) {
 
-    // top right container
-    let div_trcont = document.createElement("div");
-    div_trcont.id = "trcont";
-    div_trcont.style = "position: fixed; top: 5px; right: 5px;";
+//
+// ===[ TR CONTAINER ]
+//
 
-    let label = document.createElement("label");
-    label.className = "checkboxContainer";
-    label.title = "Enable endless scrolling";
-    label.id = "trcheckbox";
-    let input = document.createElement("input");
-    input.type = "checkbox";
-    input.checked = setting_endlessScrolling;
-    input.addEventListener("change", function() {
-        GM_setValue(setting_endlessScrolling_, this.checked);
-        setting_endlessScrolling = this.checked;
-    });
-    let span = document.createElement("span");
-    span.className = "checkmark";
-    label.appendChild(input);
-    label.appendChild(span);
-    div_trcont.append(label);
+// top right container
+let div_trcont = document.createElement("div");
+div_trcont.id = "trcont";
+div_trcont.style = "position: fixed; top: 5px; right: 5px;";
+if (!(isPage_posts || isPage_fav)) { div_trcont.style = "display: none;" }
 
-    // hide fav posts checkbox
-    if (setting_showFavPosts) {
-        let label2 = document.createElement("label");
-        label2.className = "checkboxContainer";
-        label2.title = "Hide favorites";
-        label2.id = "trcheckbox";
-        let input2 = document.createElement("input");
-        input2.type = "checkbox";
-        input2.checked = setting_showFavPosts2;
-        input2.addEventListener("change", function() {
-            GM_setValue(setting_showFavPosts2_, this.checked);
-            setting_showFavPosts2 = this.checked;
-            document.documentElement.style.setProperty('--favdisplay', (input2.checked ? "none" : "inline"));
-        });
-        let span2 = document.createElement("span");
-        span2.className = "checkmark";
-        label2.appendChild(input2);
-        label2.appendChild(span2);
-        div_trcont.append(label2);
+let div_trcont_endless_scroll = document.createElement("label");
+div_trcont_endless_scroll.className = "checkboxContainer";
+div_trcont_endless_scroll.title = "Enable endless scrolling";
+div_trcont_endless_scroll.id = "trcheckbox";
+let div_trcont_endless_scroll_input = document.createElement("input");
+div_trcont_endless_scroll_input.type = "checkbox";
+div_trcont_endless_scroll_input.checked = setting_endlessScrolling;
+div_trcont_endless_scroll_input.addEventListener("change", function() {
+    GM_setValue(setting_endlessScrolling_, this.checked);
+    setting_endlessScrolling = this.checked;
+});
+let div_trcont_endless_scroll_span = document.createElement("span");
+div_trcont_endless_scroll_span.className = "checkmark";
+div_trcont_endless_scroll.appendChild(div_trcont_endless_scroll_input);
+div_trcont_endless_scroll.appendChild(div_trcont_endless_scroll_span);
+div_trcont.append(div_trcont_endless_scroll);
+
+// hide fav posts checkbox
+let div_trcont_hide_favs = document.createElement("label");
+div_trcont_hide_favs.className = "checkboxContainer";
+div_trcont_hide_favs.title = "Hide favorites";
+div_trcont_hide_favs.id = "trcheckbox";
+let div_trcont_hide_favs_input = document.createElement("input");
+div_trcont_hide_favs_input.type = "checkbox";
+div_trcont_hide_favs_input.checked = setting_showFavPosts2;
+div_trcont_hide_favs_input.addEventListener("change", function() {
+    GM_setValue(setting_showFavPosts2_, this.checked);
+    setting_showFavPosts2 = this.checked;
+    document.documentElement.style.setProperty('--favdisplay', (div_trcont_hide_favs_input.checked ? "none" : "inline"));
+});
+let div_trcont_hide_favs_span = document.createElement("span");
+div_trcont_hide_favs_span.className = "checkmark";
+div_trcont_hide_favs.appendChild(div_trcont_hide_favs_input);
+div_trcont_hide_favs.appendChild(div_trcont_hide_favs_span);
+div_trcont.append(div_trcont_hide_favs);
+if (!setting_showFavPosts) { div_trcont_hide_favs.style = "display: none;" }
+
+
+let div_slideShow_showing = false;
+
+let div_slideShow = document.createElement("div");
+div_slideShow.style = "position: fixed; width: 100%; height: 100%; margin: 3px; top: 0; left: 0; right: 0; bottom: 0; z-index: 2; background: rgba(0, 0, 0, 0.6)";
+div_slideShow.style.display = "none";
+div_slideShow.className = "slideShow_class_backNnext";
+
+let button_slideShow_show = document.createElement("button");
+button_slideShow_show.style = "cursor: pointer; width: 20px; height: 20px; background: #303030; padding: 0; margin: 2px; border: 1px solid green; color: lime";
+button_slideShow_show.innerHTML = "▶️";
+button_slideShow_show.title = "Show Slideshow";
+
+let cssStyle_slideShowButtons = "float: right; cursor: pointer; width: 30px; height: 30px; background: black; border-radius: 20px; padding: 0; margin: 2px; border: 2px solid green; color: lime";
+
+let div_slideShow_btnCont = document.createElement("div");
+div_slideShow_btnCont.style = "width: 250px; height: 34px; float: right;";
+div_slideShow_btnCont.className = "slideShow_class_backNnext";
+
+let button_slideShow_hide = document.createElement("button");
+button_slideShow_hide.style = cssStyle_slideShowButtons;
+button_slideShow_hide.style.marginRight = "5px";
+button_slideShow_hide.innerHTML = "❌";
+button_slideShow_hide.title = "Close Slideshow";
+
+let button_slideShow_back = document.createElement("button");
+button_slideShow_back.innerHTML = "⏮️";
+button_slideShow_back.style = cssStyle_slideShowButtons;
+button_slideShow_back.title = "Previous Post (A/LEFT ARROW)";
+
+let button_slideShow_next = document.createElement("button");
+button_slideShow_next.innerHTML = "⏭️";
+button_slideShow_next.style = cssStyle_slideShowButtons;
+button_slideShow_next.title = "Next Post (D/RIGHT ARROW)";
+
+let button_slideShow_fav = document.createElement("button");
+button_slideShow_fav.innerHTML = "❤️";
+button_slideShow_fav.style = cssStyle_slideShowButtons;
+button_slideShow_fav.title = "Add to favorites (S/Enter)";
+
+let button_slideShow_fav2 = document.createElement("button");
+button_slideShow_fav2.innerHTML = "💚";
+button_slideShow_fav2.style = cssStyle_slideShowButtons;
+button_slideShow_fav2.title = "Add to super favorites (W)";
+
+let button_slideShow_help = document.createElement("button");
+button_slideShow_help.innerHTML = "ℹ️";
+button_slideShow_help.style = cssStyle_slideShowButtons;
+button_slideShow_help.title = "Show Help";
+
+let currentPost_element = null;
+let currentPost_element_id = null;
+
+function currentPost_element_update(element) {
+    if (currentPost_element != null) { currentPost_element.classList.remove("r34imp_slideshow_current") }
+    currentPost_element = element;
+    currentPost_element.classList.add("r34imp_slideshow_current")
+    currentPost_element_id = getPostID(currentPost_element);
+}
+
+function slideShow_updateUI() {
+
+    let isfav = favlist_contains(currentPost_element_id);
+    let isfav2 = favlist2_contains(currentPost_element_id);
+
+    button_slideShow_fav.style.display = isfav ? "none" : "inline-block";
+    button_slideShow_fav2.style.display = isfav2 ? "none" : "inline-block";
+
+    let RGB_lime = "RGBA(0,   255,   0, 0.6)";
+    let RGB_green = "RGBA(0,   128,   0, 0.6)"
+    let RGB_hotpink = "RGBA(255, 105, 180, 0.6)";
+    let RGB_purple = "RGBA(128,   0, 128, 0.6)";
+
+    if (isfav && isfav2) {
+        div_slideShow.style.background = "linear-gradient(to bottom, " + RGB_green + ", " + RGB_purple + ")";
+    } else if (isfav) {
+        div_slideShow.style.background = "linear-gradient(to bottom, " + RGB_hotpink + ", " + RGB_purple + ")";
+    } else if (isfav2) {
+        div_slideShow.style.background = "linear-gradient(to bottom, " + RGB_lime + ", " + RGB_green + ")";
+    } else {
+        div_slideShow.style.background = "rgba(0, 0, 0, 0.6)";
     }
 
-    // slideshow
-    if (setting_slideShow && isPage_posts) {
+    showFavPosts_elementUpdate(currentPost_element, isfav, isfav2);
+}
 
-        let div_slideShow = document.createElement("div");
-        div_slideShow.style = "position: fixed; width: 100%; height: 100%; margin: 3px; top: 0; left: 0; right: 0; bottom: 0; z-index: 2; background: rgba(0, 0, 0, 0.6)";
-        div_slideShow.style.display = "none";
-        div_slideShow.className = "slideShow_class_backNnext";
+function checkIfImage(url) {
+    return (url.match(/\.(jpeg|jpg|gif|png)/) != null);
+}
 
-        let button_slideShow_show = document.createElement("button");
-        button_slideShow_show.style = "cursor: pointer; width: 20px; height: 20px; background: #303030; padding: 0; margin: 2px; border: 1px solid green; color: lime";
-        button_slideShow_show.innerHTML = "▶️";
-        button_slideShow_show.title = "Show Slideshow";
+function checkIfVideo(url) {
+    return (url.match(/\.(mp4|webm)/) != null);
+}
 
-        let cssStyle_slideShowButtons = "float: right; cursor: pointer; width: 30px; height: 30px; background: black; border-radius: 20px; padding: 0; margin: 2px; border: 2px solid green; color: lime";
+function slideShow_removeContent() {
+    let priv = div_slideShow.querySelector("#slideShow_content");
+    if (priv) {
+        priv.remove();
+    }
+    let priv2 = div_slideShow.querySelector("#slideShow_content_preview");
+    if (priv2) {
+        priv2.remove();
+    }
+}
 
-        let div_slideShow_btnCont = document.createElement("div");
-        div_slideShow_btnCont.style = "width: 175px; height: 34px; float: right;";
-        div_slideShow_btnCont.className = "slideShow_class_backNnext";
+function slideShow_video_vol(content, delta) {
+    if (content.tagName != "VIDEO") {
+        return;
+    }
+    let curVol = content.volume;
+    if (delta == 1) {
+        curVol += 0.05;
+    } else if (delta == -1) {
+        curVol -= 0.05;
+    }
 
-        let button_slideShow_hide = document.createElement("button");
-        button_slideShow_hide.style = cssStyle_slideShowButtons;
-        button_slideShow_hide.style.marginRight = "5px";
-        button_slideShow_hide.innerHTML = "❌";
-        button_slideShow_hide.title = "Close Slideshow";
+    if (curVol > 1) {
+        content.volume = curVol = 1;
+    } else if (curVol < 0) {
+        content.volume = curVol = 0;
+    } else {
+        content.volume = curVol;
+    }
+}
 
-        let button_slideShow_back = document.createElement("button");
-        button_slideShow_back.innerHTML = "⏮️";
-        button_slideShow_back.style = cssStyle_slideShowButtons;
-        button_slideShow_back.title = "Previous Post (A/LEFT ARROW)";
+function slideShow_showContent() {
+    // remove priv content
+    slideShow_removeContent();
 
-        let button_slideShow_next = document.createElement("button");
-        button_slideShow_next.innerHTML = "⏭️";
-        button_slideShow_next.style = cssStyle_slideShowButtons;
-        button_slideShow_next.title = "Next Post (D/RIGHT ARROW)";
+    if (!currentPost_element || !currentPost_element_id) {
+        console.log("nothing to slideshow :/ ???");
+        return;
+    }
 
-        let button_slideShow_fav = document.createElement("button");
-        button_slideShow_fav.innerHTML = "❤️";
-        button_slideShow_fav.style = cssStyle_slideShowButtons;
-        button_slideShow_fav.title = "Add to favorites (S/Enter)";
-
-        let button_slideShow_fav2 = document.createElement("button");
-        button_slideShow_fav2.innerHTML = "💚";
-        button_slideShow_fav2.style = cssStyle_slideShowButtons;
-        button_slideShow_fav2.title = "Add to super favorites (W)";
-
-        let currentPost_element = null;
-        let currentPost_element_id = null;
-
-        function currentPost_element_update(element) {
-
-            if (currentPost_element != null) {
-                currentPost_element.classList.remove("r34imp_slideshow_current")
-            }
-
-            currentPost_element = element;
-            currentPost_element.classList.add("r34imp_slideshow_current")
-
-            currentPost_element_id = getPostID(currentPost_element);
+    // scroll into view
+    currentPost_element.scrollIntoView();
 
 
-        }
+    // update buttons fav/fav2/bg
+    slideShow_updateUI();
 
-        function slideShow_updateUI() {
+    // get og image/video url
+    let contentURL = GetOG(currentPost_element_id);
 
-            let isfav = favlist_contains(currentPost_element_id);
-            let isfav2 = favlist2_contains(currentPost_element_id);
+    // load preview
+    let img_preview = currentPost_element.querySelector(".preview").cloneNode();
+    img_preview.style = "position: fixed; bottom: 1px; right: 1px; z-index: -1";
 
-            button_slideShow_fav.style.display = isfav ? "none" : "inline-block";
-            button_slideShow_fav2.style.display = isfav2 ? "none" : "inline-block";
+    let a_preview = document.createElement("a");
+    a_preview.id = "slideShow_content_preview";
+    a_preview.href = "index.php?page=post&s=view&id=" + currentPost_element_id;
+    a_preview.append(img_preview);
 
-            let RGB_lime = "RGBA(0,   255,   0, 0.6)";
-            let RGB_green = "RGBA(0,   128,   0, 0.6)"
-            let RGB_hotpink = "RGBA(255, 105, 180, 0.6)";
-            let RGB_purple = "RGBA(128,   0, 128, 0.6)";
+    div_slideShow.append(a_preview);
 
-            if (isfav && isfav2) {
-                div_slideShow.style.background = "linear-gradient(to bottom, " + RGB_green + ", " + RGB_purple + ")";
-            } else if (isfav) {
-                div_slideShow.style.background = "linear-gradient(to bottom, " + RGB_hotpink + ", " + RGB_purple + ")";
-            } else if (isfav2) {
-                div_slideShow.style.background = "linear-gradient(to bottom, " + RGB_lime + ", " + RGB_green + ")";
-            } else {
-                div_slideShow.style.background = "rgba(0, 0, 0, 0.6)";
-            }
-
-            showFavPosts_elementUpdate(currentPost_element, isfav, isfav2);
-        }
-
-        function checkIfImage(url) {
-            return (url.match(/\.(jpeg|jpg|gif|png)/) != null);
-        }
-
-        function checkIfVideo(url) {
-            return (url.match(/\.(mp4|webm)/) != null);
-        }
-
-        function slideShow_removeContent() {
-            let priv = div_slideShow.querySelector("#slideShow_content");
-            if (priv) {
-                priv.remove();
-            }
-            let priv2 = div_slideShow.querySelector("#slideShow_content_preview");
-            if (priv2) {
-                priv2.remove();
-            }
-        }
-
-        function slideShow_video_vol(content, delta) {
-            if (content.tagName != "VIDEO") {
-                return;
-            }
-            let curVol = content.volume;
-            if (delta == 1) {
-                curVol += 0.05;
-            } else if (delta == -1) {
-                curVol -= 0.05;
-            }
-
-            if (curVol > 1) {
-                content.volume = curVol = 1;
-            } else if (curVol < 0) {
-                content.volume = curVol = 0;
-            } else {
-                content.volume = curVol;
-            }
-        }
-
-        function slideShow_showContent() {
-            // remove priv content
-            slideShow_removeContent();
-
-            if (!currentPost_element || !currentPost_element_id) {
-                console.log("nothing to slideshow :/ ???");
-                return;
-            }
-
-            // scroll into view
-            currentPost_element.scrollIntoView();
-
-
-            // update buttons fav/fav2/bg
-            slideShow_updateUI();
-
-            // get og image/video url
-            let contentURL = GetOG(currentPost_element_id);
-
-            // load preview
-            let img_preview = currentPost_element.querySelector(".preview").cloneNode();
-            img_preview.style = "position: fixed; bottom: 1px; right: 1px; z-index: -1";
-
-            let a_preview = document.createElement("a");
-            a_preview.id = "slideShow_content_preview";
-            a_preview.href = "index.php?page=post&s=view&id=" + currentPost_element_id;
-            a_preview.append(img_preview);
-
-            div_slideShow.append(a_preview);
-
-            // load og image/video
-            if (checkIfImage(contentURL)) {
-                let content = document.createElement("img");
-                content.id = "slideShow_content";
-                content.className = "slideShow_class_backNnext";
-                content.style = "display: block; margin: auto auto; width: auto; height: auto; max-width: calc(100% - 35px); max-height: calc(100% - 35px);";
-                content.src = contentURL;
-                div_slideShow.append(content);
-            } else if (checkIfVideo(contentURL)) { // video
-                let content = document.createElement("video");
-                content.id = "slideShow_content";
-                //content.className = "slideShow_class_backNnext";
-                content.style = "display: block; margin: auto auto; width: auto; height: auto; max-width: calc(100% - 35px); max-height: calc(100% - 35px);";
-                content.controls = true;
-                content.volume = setting_defaultVideoVolume;
-                content.autoplay = setting_autoplayVideos;
-                content.addEventListener('volumechange', (event) => {
-                    GM_setValue(setting_defaultVideoVolume_, content.volume);
-                    setting_defaultVideoVolume = content.volume;
-                });
-
-                if (setting_videoVolumeScroll) {
-                    let current = 0;
-                    let MouseWheelHandler = function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        e = window.event || e;
-                        let delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-                        current = current + delta;
-                        slideShow_video_vol(content, delta);
-                        return false;
-                    };
-
-                    if (content.addEventListener) {
-                        // IE9, Chrome, Safari, Opera
-                        content.addEventListener("mousewheel", MouseWheelHandler, false);
-                        // Firefox
-                        content.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
-                    }
-                }
-
-                content.src = contentURL;
-                div_slideShow.append(content);
-            } else {
-                console.log("idk if this is a video or image? :V --> " + contentURL);
-            }
-        }
-
-        function slideShow_next() {
-            if (!currentPost_element.nextElementSibling) {
-                return;
-            }
-            currentPost_element_update(currentPost_element.nextElementSibling);
-            if (setting_showFavPosts2 && currentPost_element.classList.contains("fav")) {
-                slideShow_next();
-            }
-        }
-
-        function slideShow_back() {
-            if (!currentPost_element.previousElementSibling) {
-                return;
-            }
-            currentPost_element_update(currentPost_element.previousElementSibling);
-            if (setting_showFavPosts2 && currentPost_element.classList.contains("fav")) {
-                slideShow_back();
-            }
-        }
-
-        function slideShow_nextNshow() {
-            slideShow_next();
-            slideShow_showContent();
-        }
-
-        function slideShow_backNshow() {
-            slideShow_back();
-            slideShow_showContent();
-        }
-
-        function slideShow_fav() {
-            if (currentPost_element) {
-                favPost(currentPost_element_id, function() {
-                    slideShow_updateUI();
-                });
-            }
-        }
-
-        function slideShow_fav2() {
-            if (currentPost_element) {
-                favPost2(currentPost_element_id);
-                slideShow_updateUI();
-            }
-        }
-
-        button_slideShow_next.addEventListener("click", function() {
-            slideShow_nextNshow();
-        });
-        button_slideShow_back.addEventListener("click", function() {
-            slideShow_backNshow();
-        });
-        button_slideShow_fav.addEventListener("click", function() {
-            slideShow_fav();
-        });
-        button_slideShow_fav2.addEventListener("click", function() {
-            slideShow_fav2();
+    // load og image/video
+    if (checkIfImage(contentURL)) {
+        let content = document.createElement("img");
+        content.id = "slideShow_content";
+        content.className = "slideShow_class_backNnext";
+        content.style = "display: block; margin: auto auto; width: auto; height: auto; max-width: calc(100% - 35px); max-height: calc(100% - 35px);";
+        content.src = contentURL;
+        div_slideShow.append(content);
+    } else if (checkIfVideo(contentURL)) { // video
+        let content = document.createElement("video");
+        content.id = "slideShow_content";
+        //content.className = "slideShow_class_backNnext";
+        content.style = "display: block; margin: auto auto; width: auto; height: auto; max-width: calc(100% - 35px); max-height: calc(100% - 35px);";
+        content.controls = true;
+        content.volume = setting_defaultVideoVolume;
+        content.autoplay = setting_autoplayVideos;
+        content.addEventListener('volumechange', (event) => {
+            GM_setValue(setting_defaultVideoVolume_, content.volume);
+            setting_defaultVideoVolume = content.volume;
         });
 
-        let side = 0;
-        div_slideShow.addEventListener('mousemove', function(event) {
-            if (event.target.classList.contains("slideShow_class_backNnext")) {
-                if (event.pageX > (div_slideShow.offsetWidth / 2)) {
-                    div_slideShow.style.cursor = "e-resize";
-                    side = 1;
-                } else {
-                    div_slideShow.style.cursor = "w-resize";
-                    side = 2;
-                }
-            } else {
-                div_slideShow.style.cursor = "auto";
-                side = 0;
-            }
-        });
-
-        div_slideShow.addEventListener('click', function(event) {
-            if (!event.target.classList.contains("slideShow_class_backNnext") || event.buttons != 0) {
-                return;
-            }
-            if (side == 1) {
-                slideShow_nextNshow();
-            } else if (side == 2) {
-                slideShow_backNshow();
-            }
-        }, true);
-
-        div_slideShow.addEventListener("click", function() { });
-
-        // append all buttons and stuff
-        div_slideShow_btnCont.append(button_slideShow_hide);
-        div_slideShow_btnCont.append(button_slideShow_next);
-        div_slideShow_btnCont.append(button_slideShow_back);
-        div_slideShow_btnCont.append(button_slideShow_fav2);
-        div_slideShow_btnCont.append(button_slideShow_fav);
-        div_slideShow.append(div_slideShow_btnCont);
-
-        function slideShow_show() {
-            div_slideShow.style.display = "block"; // show slideshow
-            button_slideShow_show.style.display = "none"; // hide button
-
-            // show first element
-            let spans = document.getElementsByClassName("thumb");
-            if (currentPost_element == null && spans.length >= 1) {
-                currentPost_element_update(spans[0]);
-                if (setting_showFavPosts2 && currentPost_element.classList.contains("fav")) {
-                    slideShow_next();
-                }
-            }
-            slideShow_showContent();
-
-            // setup shortcut keys
-            document.onkeyup = function(e) {
-                if (e.code === 'KeyS' || e.code === 'Enter') {
-                    slideShow_fav();
-                } else if (e.code === 'KeyW') {
-                    slideShow_fav2();
-                } else if (e.code === 'Escape') {
-                    slideShow_hide();
-                } else if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
-                    slideShow_backNshow();
-                } else if (e.code === 'ArrowRight' || e.code === 'KeyD') {
-                    slideShow_nextNshow();
-                }
-                e.defaultPrevented = true;
-            };
-
-            document.onkeydown = function(e) {
-                if (e.code === 'ArrowUp') {
-                    slideShow_video_vol(document.getElementById("slideShow_content"), 1);
-                } else if (e.code === 'ArrowDown') {
-                    slideShow_video_vol(document.getElementById("slideShow_content"), -1);
-                }
-                e.stopPropagation();
+        if (setting_videoVolumeScroll) {
+            let current = 0;
+            let MouseWheelHandler = function(e) {
                 e.preventDefault();
-
-                e.returnValue = false;
-                e.cancelBubble = true;
+                e.stopPropagation();
+                e = window.event || e;
+                let delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+                current = current + delta;
+                slideShow_video_vol(content, delta);
                 return false;
             };
+
+            if (content.addEventListener) {
+                // IE9, Chrome, Safari, Opera
+                content.addEventListener("mousewheel", MouseWheelHandler, false);
+                // Firefox
+                content.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+            }
         }
 
-        function slideShow_hide() {
-            // hide content
-            slideShow_removeContent();
-
-            // remove shortcut keys
-            document.onkeyup = null;
-            document.onkeydown = null;
-
-            // rehook autocomplete
-            autocomplete_setup();
-
-            div_slideShow.style.display = "none"; // hide slideshow
-            button_slideShow_show.style.display = "inline-block"; // show button
-        }
-
-        button_slideShow_show.addEventListener("click", function() {
-            slideShow_show();
-        });
-
-        button_slideShow_hide.addEventListener("click", function() {
-            slideShow_hide();
-        });
-
-        div_trcont.append(button_slideShow_show);
-        document.body.append(div_slideShow);
+        content.src = contentURL;
+        div_slideShow.append(content);
+    } else {
+        console.log("idk if this is a video or image? :V --> " + contentURL);
     }
+}
 
-    //
-    // ENDLESS SCROLLING
-    //
+function slideShow_next() {
+    if (!currentPost_element.nextElementSibling) {
+        return;
+    }
+    currentPost_element_update(currentPost_element.nextElementSibling);
+    if (setting_showFavPosts2 && currentPost_element.classList.contains("fav")) {
+        slideShow_next();
+    }
+}
+
+function slideShow_back() {
+    if (!currentPost_element.previousElementSibling) {
+        return;
+    }
+    currentPost_element_update(currentPost_element.previousElementSibling);
+    if (setting_showFavPosts2 && currentPost_element.classList.contains("fav")) {
+        slideShow_back();
+    }
+}
+
+function slideShow_nextNshow() {
+    slideShow_next();
+    slideShow_showContent();
+}
+
+function slideShow_backNshow() {
+    slideShow_back();
+    slideShow_showContent();
+}
+
+function slideShow_fav() {
+    if (currentPost_element) {
+        favPost(currentPost_element_id, function() {
+            slideShow_updateUI();
+        });
+    }
+}
+
+function slideShow_fav2() {
+    if (currentPost_element) {
+        favPost2(currentPost_element_id);
+        slideShow_updateUI();
+    }
+}
+
+function slideShow_help() {
+    alert(
+        "Q - exit slideshow + focus on search query textbox\n" +
+        "ESCAPE - close slideshow / unfocus search query textbox\n" +
+        "ENTER - search (must unfocus search query textbox first)\n" +
+        "E - Toggle endless scrolling\n" +
+        "H - Toggle hiding favorites\n" +
+        "S - Toggle slideshow\n" +
+        "F - Add post to favorites\n" +
+        "G - Add post to superfavs\n" +
+        "A / LEFT ARROW  - move left\n" +
+        "D / RIGHT ARROW - move right\n"
+    );
+}
+
+button_slideShow_next.addEventListener("click", function() { slideShow_nextNshow(); });
+button_slideShow_back.addEventListener("click", function() { slideShow_backNshow(); });
+button_slideShow_fav.addEventListener("click", function() { slideShow_fav(); });
+button_slideShow_fav2.addEventListener("click", function() { slideShow_fav2(); });
+button_slideShow_help.addEventListener("click", function() { slideShow_help(); });
+
+let side = 0;
+div_slideShow.addEventListener('mousemove', function(event) {
+    if (event.target.classList.contains("slideShow_class_backNnext")) {
+        if (event.pageX > (div_slideShow.offsetWidth / 2)) {
+            div_slideShow.style.cursor = "e-resize";
+            side = 1;
+        } else {
+            div_slideShow.style.cursor = "w-resize";
+            side = 2;
+        }
+    } else {
+        div_slideShow.style.cursor = "auto";
+        side = 0;
+    }
+});
+
+div_slideShow.addEventListener('click', function(event) {
+    if (!event.target.classList.contains("slideShow_class_backNnext") || event.buttons != 0) {
+        return;
+    }
+    if (side == 1) {
+        slideShow_nextNshow();
+    } else if (side == 2) {
+        slideShow_backNshow();
+    }
+}, true);
+
+div_slideShow.addEventListener("click", function() { });
+
+// append all buttons and stuff
+div_slideShow_btnCont.append(button_slideShow_hide);
+div_slideShow_btnCont.append(button_slideShow_next);
+div_slideShow_btnCont.append(button_slideShow_back);
+div_slideShow_btnCont.append(button_slideShow_fav2);
+div_slideShow_btnCont.append(button_slideShow_fav);
+div_slideShow_btnCont.append(button_slideShow_help);
+div_slideShow.append(div_slideShow_btnCont);
+
+function slideShow_show() {
+
+    div_slideShow_showing = true;
+
+    div_slideShow.style.display = "block"; // show slideshow
+    button_slideShow_show.style.display = "none"; // hide button
+
+    // show first element
+    let spans = document.getElementsByClassName("thumb");
+    if (currentPost_element == null && spans.length >= 1) {
+        currentPost_element_update(spans[0]);
+        if (setting_showFavPosts2 && currentPost_element.classList.contains("fav")) {
+            slideShow_next();
+        }
+    }
+    slideShow_showContent();
+
+    // setup shortcut keys
+    document.onkeydown = function(e) {
+        if (e.code === 'ArrowUp') {
+            slideShow_video_vol(document.getElementById("slideShow_content"), 1);
+        } else if (e.code === 'ArrowDown') {
+            slideShow_video_vol(document.getElementById("slideShow_content"), -1);
+        }
+        e.stopPropagation();
+        e.preventDefault();
+
+        e.returnValue = false;
+        e.cancelBubble = true;
+        return false;
+    };
+}
+
+function slideShow_hide() {
+
+    div_slideShow_showing = false;
+
+    // hide content
+    slideShow_removeContent();
+
+    document.onkeydown = null;
+
+    // rehook autocomplete
+    autocomplete_setup();
+
+    div_slideShow.style.display = "none"; // hide slideshow
+    button_slideShow_show.style.display = "inline-block"; // show button
+}
+
+function slideShow_toggle() {
+    if (div_slideShow_showing) { slideShow_hide(); } else { slideShow_show(); }
+}
+
+
+button_slideShow_show.addEventListener("click", function() { slideShow_show(); });
+button_slideShow_hide.addEventListener("click", function() { slideShow_hide(); });
+
+div_trcont.append(button_slideShow_show);
+document.body.append(div_slideShow);
+
+
+// endless scrolling checkbox
+if (isPage_posts || isPage_fav) {
+
     let p_endlessScroll = document.createElement("p");
     p_endlessScroll.id = "endlessScrolling_p";
     p_endlessScroll.style = "display: block; float: left;";
@@ -1703,26 +1701,6 @@ if (isPage_post) {
 
     // set vars
     let postID = document.location.href.split("id=")[1].split("&")[0];
-
-    if (setting_enableFavOnEnter) {
-        document.onkeydown = function(e) {
-            let event = document.all ? window.event : e;
-            switch (e.target.tagName.toLowerCase()) {
-                case "input":
-                case "textarea":
-                case "select":
-                case "button":
-                case "tags":
-                case "comment":
-                    break;
-                default:
-                    if (event.key === 'Enter') {
-                        favPost(postID);
-                    }
-                    break;
-            }
-        }
-    }
 
     // add custom css
     GM_addStyle(css_post);
@@ -1937,11 +1915,9 @@ if (setting_mainPageExtra) {
                 }
             }
 
-            let form = input.closest("form");
             input.addEventListener("keydown", function(event) {
                  if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { taglistquick_add(); }
                  else if (event.ctrlKey && event.key === 'Enter') { taglist_add(); }
-                 else if (event.key === 'Enter') { form.submit(); }
             });
 
             let btn_bookmark = document.createElement("button");
@@ -2108,11 +2084,10 @@ if (setting_mainPageExtra) {
             btn_bookmark.onclick = function(e) { e.preventDefault(); taglist_add(); };
             btn_bookmark2.onclick = function(e) { e.preventDefault(); taglistquick_add(); };
 
-            let form = input.closest("form");
             input.addEventListener("keydown", function(event) {
                 if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { taglistquick_add(); }
                 else if (event.ctrlKey && event.key === 'Enter') { taglist_add(); }
-                else if (event.key === 'Enter') { form.submit(); }
+                else if (event.key === 'Escape') { document.activeElement.blur(); document.body.focus(); }
             });
 
             input.after(btn_bookmark);
@@ -2126,4 +2101,69 @@ if (setting_mainPageExtra) {
         }
     }
 }
+
+// global shortcuts
+document.addEventListener('keydown', function(e) {
+    let event = document.all ? window.event : e;
+    switch (e.target.tagName.toLowerCase()) {
+        case "input":
+        case "textarea":
+        case "select":
+        case "button":
+        case "tags":
+        case "comment": return;
+    }
+
+    if (event.key === 'Enter' || e.code === 'KeyR') {
+        let input = document.querySelector("#post-list input[type=text][name='tags']");
+        if (input == null) { input = document.querySelector("#post-view input[type=text][name='tags']"); }
+        let form = input.closest("form");
+        form.submit();
+    }
+
+    if (setting_enableFavOnEnter && isPage_post && event.key === 'Enter') {
+        let postID = document.location.href.split("id=")[1].split("&")[0];
+        favPost(postID);
+    }
+
+    if (setting_slideShow) {
+        if (e.code === 'KeyF' || e.code === 'Enter') {
+            slideShow_fav();
+        } else if (e.code === 'KeyG') {
+            slideShow_fav2();
+        } else if (e.code === 'KeyE') {
+            div_trcont_endless_scroll_input.checked = !div_trcont_endless_scroll_input.checked;
+
+            const event = new Event('change', {
+              'bubbles': true,
+              'cancelable': true
+            });
+            div_trcont_endless_scroll_input.dispatchEvent(event);
+        } else if (e.code === 'KeyH') {
+            div_trcont_hide_favs_input.checked = !div_trcont_hide_favs_input.checked;
+
+            const event = new Event('change', {
+              'bubbles': true,
+              'cancelable': true
+            });
+            div_trcont_hide_favs_input.dispatchEvent(event);
+        } else if (e.code === 'Escape') {
+            slideShow_hide();
+        } else if (e.code === 'KeyS') {
+            slideShow_toggle();
+        } else if (e.code === 'KeyQ') {
+            slideShow_hide();
+            let input = document.querySelector("#post-list input[type=text][name='tags']");
+            if (input == null) { input = document.querySelector("#post-view input[type=text][name='tags']"); }
+            input.focus();
+            input.select();
+            e.preventDefault();
+
+        } else if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
+            slideShow_backNshow();
+        } else if (e.code === 'ArrowRight' || e.code === 'KeyD') {
+            slideShow_nextNshow();
+        }
+    }
+});
 
