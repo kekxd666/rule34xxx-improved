@@ -20,6 +20,8 @@
 // - make slideshow work in favorites
 // - make slideshow prefetch a few posts after content so it's not slow
 
+// #region SETTINGS
+
 function getSetting(settingName, settingDefault) {
     let value = GM_getValue(settingName, null);
     if (value == null) { GM_setValue(settingName, settingDefault); value = settingDefault; }
@@ -49,6 +51,10 @@ var setting_slideShow_                 = "slideShow";                 var settin
 var setting_videoVolumeScroll_         = "videoVolumeScroll";         var setting_videoVolumeScroll          = getSetting(setting_videoVolumeScroll_,         true);
 var setting_loopVideo_                 = "loopVideo";                 var setting_loopVideo                  = getSetting(setting_loopVideo_,                 false);
 var setting_taglistquick_              = "taglistquick";              var setting_taglistquick               = getSetting(setting_taglistquick_,              ["sort:score", "animated"]);
+
+// #endregion
+
+// #region CSS STYLES
 
 var css_root = `
 :root { --favdisplay: inline; }
@@ -312,6 +318,9 @@ var css_post = `
     ` + (setting_stretchImgVid ? "" : "max-") + `height: ` + setting_viewportDependentHeight + `vh !important;
 }`) : "");
 
+// #endregion
+
+// #region UTILS / MISC
 
 // get thumbnail post id
 function getPostID(element) {
@@ -744,10 +753,9 @@ if (setting_forceDarkTheme) {
         GM_addStyle(css_betterDarkTheme)
     }
 }
+// #endregion
 
-
-
-// options page
+// #region OPTIONS PAGE
 if (isPage_opt) {
     let tbody_options = document.body.getElementsByTagName("tbody")[0];
 
@@ -865,8 +873,9 @@ if (isPage_opt) {
     makeCB_form(setting_videoVolumeScroll_, setting_videoVolumeScroll, "Video Volume Scroll", "Control video volume with mouse scroll wheel, must 'Embed Video' if viewing from post's page...");
     makeCB_form(setting_loopVideo_, setting_loopVideo, "Loop video", "Make the player loop the video.")
 }
+// #endregion
 
-// favorites page
+// #region FAVORITES PAGE / SEARCHING/FILTERING
 if (isPage_fav) {
 
     //// remove stupid <br>s on fav page wtf... why are they here
@@ -1054,6 +1063,9 @@ if (isPage_fav) {
         };
     }
 }
+// #endregion
+
+// #region PROCESS MEDIA
 
 if (setting_showFavPosts && setting_showFavPosts2) {
     document.documentElement.style.setProperty('--favdisplay', 'none');
@@ -1084,6 +1096,9 @@ function processMedia() {
 
 processMedia();
 
+// #endregion
+
+// #region FAVORITES PAGE / UPDATE 'favlist' / OPEN RANDOM ID
 if (setting_showFavPosts) {
     if (isPage_fav) {
 
@@ -1172,11 +1187,10 @@ if (setting_showFavPosts) {
         document.body.appendChild(favlistCont);
     }
 }
+// #endregion
 
+// #region SLIDESHOW
 
-//
-// ===[ TR CONTAINER ]
-//
 
 // top right container
 let div_trcont = document.createElement("div");
@@ -1588,8 +1602,9 @@ button_slideShow_hide.addEventListener("click", function() { slideShow_hide(); }
 div_trcont.append(button_slideShow_show);
 document.body.append(div_slideShow);
 
+// #endregion
 
-// endless scrolling checkbox
+// #region endless scrolling checkbox
 if (isPage_posts || isPage_fav) {
 
     let p_endlessScroll = document.createElement("p");
@@ -1696,7 +1711,9 @@ if (isPage_posts || isPage_fav) {
     main_scroll();
 }
 
-// post view (default vol, size the image/vid, add buttons)
+// #endregion
+
+// #region post view (default vol, size the image/vid, add buttons)
 if (isPage_post) {
 
     // set vars
@@ -1796,9 +1813,9 @@ if (isPage_post) {
         embedDefaultVideo();
     }
 }
+// #endregion
 
-
-
+// #region MAIN PAGE EXTRA
 
 if (setting_mainPageExtra) {
 
@@ -2102,7 +2119,9 @@ if (setting_mainPageExtra) {
     }
 }
 
-// global shortcuts
+// #endregion
+
+// #region global shortcuts
 document.addEventListener('keydown', function(e) {
     let event = document.all ? window.event : e;
     switch (e.target.tagName.toLowerCase()) {
@@ -2166,4 +2185,4 @@ document.addEventListener('keydown', function(e) {
         }
     }
 });
-
+// #endregion
