@@ -2080,11 +2080,21 @@ if (setting_mainPageExtra) {
             }
 
             function tagbarpins_add(e) {
+                let div = document.createElement("div");
+                div.style = "display: flex; gap: 5px; margin: 4px;"
+                let a_add = document.createElement("a");
+                a_add.innerHTML = "➕";
+                a_add.href = window.location.href + "+" + e;
+
                 let a = document.createElement("a");
+                a.style = "display: inline";
                 a.innerHTML = e;
-                a.style = "display: block";
-                a.href = window.location.href + "+" + e;
-                btn_bookmark2.after(a);
+                a.href = "index.php?page=post&s=list&tags=" + e;
+
+                div.appendChild(a_add);
+                div.appendChild(a);
+
+                btn_bookmark2.after(div);
             }
 
             function taglistpins_add() {
