@@ -878,6 +878,7 @@ if (isPage_opt) {
     makeCB_form(setting_slideShow_, setting_slideShow, "Slideshow", "Adds a button in the top right corner, when browsing, to activate slideshow mode");
     makeCB_form(setting_videoVolumeScroll_, setting_videoVolumeScroll, "Video Volume Scroll", "Control video volume with mouse scroll wheel, must 'Embed Video' if viewing from post's page...");
     makeCB_form(setting_loopVideo_, setting_loopVideo, "Loop video", "Make the player loop the video.")
+    makeCB_form(setting_biggerThumbs_, setting_biggerThumbs, "Bigger Thumbnails", "Make all thumbnails 250x250 pixels.")
 }
 // #endregion
 
@@ -2215,6 +2216,7 @@ document.addEventListener('keydown', function(e) {
     }
 });
 // #endregion
+
 
 
 
