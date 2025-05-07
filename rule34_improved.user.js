@@ -2094,6 +2094,9 @@ if (setting_mainPageExtra) {
                 div.style = "display: flex; gap: 5px; margin: 4px;"
                 let a_add = document.createElement("a");
                 a_add.innerHTML = "➕";
+                if (document.location.href.includes(e)) {
+                    a_add.style = "opacity: 0.2;";
+                }
                 a_add.href = window.location.href + "+" + e;
 
                 let a = document.createElement("a");
@@ -2133,10 +2136,7 @@ if (setting_mainPageExtra) {
             // populate
             let taglistpins = GM_getValue("taglistpins", []);
             for (let i = 0; i < taglistpins.length; i++) {
-                let pin = taglistpins[i];
-                if (!document.location.href.includes(pin)) {
-                    tagbarpins_add(taglistpins[i]);
-                }
+                tagbarpins_add(taglistpins[i]);
             }
         }
     }
