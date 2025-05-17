@@ -22,6 +22,7 @@ Navigate to your account options page to view and customize all of your options.
 - Remove Bloat
 - Embed Video
 - Thumb Fav
+- Open Random Post from Favorites (must update favlist first)
 - Main Page Extra (Tag Bookmark, Pinning Tags, Superfav Gallery)
 - SlideShow (for main posts page only tho, will add for favs too, in the future, :V, aka i'm a lazy mf)
 - Control Video Volume With Scroll
