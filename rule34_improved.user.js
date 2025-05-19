@@ -1030,8 +1030,6 @@ if (isPage_fav) {
             // call clear
             btn_clear.click();
 
-            const slp = slider ? slider.value : 500;
-
             // start search
             for (; cur <= max; cur += step) {
                 let url = base + "&pid=" + cur;
@@ -1065,7 +1063,7 @@ if (isPage_fav) {
                     txt_status.innerHTML = "Done!";
                 });
 
-                await sleep(slp);
+                await sleep(slider ? slider.value : 500);
                 if (shouldStop) {
                     shouldStop = false;
                     return;
@@ -1129,7 +1127,6 @@ if (setting_showFavPosts) {
         btn_updatefav.innerHTML = "Update";
 
         const slider = document.getElementById("delayRange");
-        const slp = slider ? slider.value : 300;
 
         async function getIds() {
             let reg = /pid=([0-9]*)/gm;
@@ -1170,7 +1167,7 @@ if (setting_showFavPosts) {
                 }
                 GM_setValue("favlist", favlist);
 
-                await sleep(slp);
+                await sleep(slider ? slider.value : 500);
             }
         }
         btn_updatefav.onclick = function() {
