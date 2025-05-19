@@ -966,7 +966,7 @@ if (isPage_fav) {
         slider.type = "range";
         slider.min = "0";
         slider.max = "4000";
-        slider.value = 1000;
+        slider.value = 500;
         slider.className = "r34imp_slider";
         slider.id = "delayRange";
 
@@ -1030,6 +1030,8 @@ if (isPage_fav) {
             // call clear
             btn_clear.click();
 
+            const slp = slider ? slider.value : 500;
+
             // start search
             for (; cur <= max; cur += step) {
                 let url = base + "&pid=" + cur;
@@ -1063,7 +1065,7 @@ if (isPage_fav) {
                     txt_status.innerHTML = "Done!";
                 });
 
-                await sleep(slider.value);
+                await sleep(slp);
                 if (shouldStop) {
                     shouldStop = false;
                     return;
@@ -1127,6 +1129,7 @@ if (setting_showFavPosts) {
         btn_updatefav.innerHTML = "Update";
 
         const slider = document.getElementById("delayRange");
+        const slp = slider ? slider.value : 300;
 
         async function getIds() {
             let reg = /pid=([0-9]*)/gm;
@@ -1167,7 +1170,7 @@ if (setting_showFavPosts) {
                 }
                 GM_setValue("favlist", favlist);
 
-                await sleep(slider.value);
+                await sleep(slp);
             }
         }
         btn_updatefav.onclick = function() {
@@ -2222,6 +2225,7 @@ document.addEventListener('keydown', function(e) {
     }
 });
 // #endregion
+
 
 
 
