@@ -1917,7 +1917,7 @@ if (setting_mainPageExtra) {
             }
 
             function taglist_add_txt(value) { taglist_add(input.value.trim()); }
-            function taglistpins_add_txt() { taglistpins_add_txt(input.value.trim()); }
+            function taglistpins_add_txt() { taglistpins_add(input.value.trim()); }
 
             function tagbar_add(text) {
                 let div = document.createElement("div");
@@ -1953,8 +1953,8 @@ if (setting_mainPageExtra) {
 
             let form = input.closest("form");
             input.addEventListener("keydown", function(event) {
-                 if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { taglistpins_add_txt(); }
-                 else if (event.ctrlKey && event.key === 'Enter') { taglist_add_txt(); }
+                 if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { event.preventDefault(); taglistpins_add_txt(); }
+                 else if (event.ctrlKey && event.key === 'Enter') { event.preventDefault(); taglist_add_txt(); }
                  else if (event.key === 'Enter') { event.preventDefault(); form.submit(); }
             });
 
@@ -2137,9 +2137,9 @@ if (setting_mainPageExtra) {
 
             let form = input.closest("form");
             input.addEventListener("keydown", function(event) {
-                if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { taglistpins_add(); }
-                else if (event.ctrlKey && event.key === 'Enter') { taglist_add(); }
-                else if (event.key === 'Escape') { document.activeElement.blur(); document.body.focus(); }
+                if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { event.preventDefault(); taglistpins_add(); }
+                else if (event.ctrlKey && event.key === 'Enter') { event.preventDefault(); taglist_add(); }
+                else if (event.key === 'Escape') { event.preventDefault(); document.activeElement.blur(); document.body.focus(); }
                 else if (event.key === 'Enter') { event.preventDefault(); form.submit(); }
             });
 
@@ -2222,6 +2222,7 @@ document.addEventListener('keydown', function(e) {
     }
 });
 // #endregion
+
 
 
 
