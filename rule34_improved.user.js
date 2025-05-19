@@ -1949,9 +1949,11 @@ if (setting_mainPageExtra) {
                 tagbar.appendChild(div);
             }
 
+            let form = input.closest("form");
             input.addEventListener("keydown", function(event) {
                  if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { taglistpins_add_txt(); }
                  else if (event.ctrlKey && event.key === 'Enter') { taglist_add_txt(); }
+                 else if (event.key === 'Enter') { event.preventDefault(); form.submit(); }
             });
 
             let btn_bookmark = document.createElement("button");
@@ -2131,10 +2133,12 @@ if (setting_mainPageExtra) {
             btn_bookmark.onclick = function(e) { e.preventDefault(); taglist_add(); };
             btn_bookmark2.onclick = function(e) { e.preventDefault(); taglistpins_add(); };
 
+            let form = input.closest("form");
             input.addEventListener("keydown", function(event) {
                 if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { taglistpins_add(); }
                 else if (event.ctrlKey && event.key === 'Enter') { taglist_add(); }
                 else if (event.key === 'Escape') { document.activeElement.blur(); document.body.focus(); }
+                else if (event.key === 'Enter') { event.preventDefault(); form.submit(); }
             });
 
             input.after(btn_bookmark);
@@ -2216,6 +2220,7 @@ document.addEventListener('keydown', function(e) {
     }
 });
 // #endregion
+
 
 
 
