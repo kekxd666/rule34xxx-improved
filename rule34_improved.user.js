@@ -1951,12 +1951,13 @@ if (setting_mainPageExtra) {
                 tagbar.appendChild(div);
             }
 
-            let form = input.closest("form");
-            input.addEventListener("keydown", function(event) {
-                 if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { event.preventDefault(); taglistpins_add_txt(); }
-                 else if (event.ctrlKey && event.key === 'Enter') { event.preventDefault(); taglist_add_txt(); }
-                 else if (event.key === 'Enter') { event.preventDefault(); form.submit(); }
-            });
+            // TODO: this needs fixing - i need to somehow handle enter key without messing up Awesomplete
+            //let form = input.closest("form");
+            //input.addEventListener("keydown", function(event) {
+            //     if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { event.preventDefault(); taglistpins_add_txt(); }
+            //     else if (event.ctrlKey && event.key === 'Enter') { event.preventDefault(); taglist_add_txt(); }
+            //     else if (event.key === 'Enter') { event.preventDefault(); form.submit(); }
+            //});
 
             let btn_bookmark = document.createElement("button");
             btn_bookmark.className = "r34imp_button";
@@ -1988,8 +1989,10 @@ if (setting_mainPageExtra) {
             btn_tagbarpins_sort.onclick = function() { tagbarpins_sort(); };
             btn_tagbarpins_sort.title = "Sort";
 
-            input.after(btn_bookmark);
-            btn_bookmark.after(btn_bookmark2);
+            let d_div = document.getElementById("links");
+            d_div.appendChild(btn_bookmark);
+            d_div.appendChild(btn_bookmark2);
+
             tagbar.appendChild(btn_tagbar_sort);
             tagbarpins.appendChild(btn_tagbarpins_sort);
 
@@ -2135,16 +2138,20 @@ if (setting_mainPageExtra) {
             btn_bookmark.onclick = function(e) { e.preventDefault(); taglist_add(); };
             btn_bookmark2.onclick = function(e) { e.preventDefault(); taglistpins_add(); };
 
-            let form = input.closest("form");
-            input.addEventListener("keydown", function(event) {
-                if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { event.preventDefault(); taglistpins_add(); }
-                else if (event.ctrlKey && event.key === 'Enter') { event.preventDefault(); taglist_add(); }
-                else if (event.key === 'Escape') { event.preventDefault(); document.activeElement.blur(); document.body.focus(); }
-                else if (event.key === 'Enter') { event.preventDefault(); form.submit(); }
-            });
+            // // TODO: this needs fixing - i need to somehow handle enter key without messing up Awesomplete
+            // let form = input.closest("form");
+            // input.addEventListener("keydown", function(event) {
+            //     if (event.ctrlKey && event.shiftKey && event.key === 'Enter') { event.preventDefault(); taglistpins_add(); }
+            //     else if (event.ctrlKey && event.key === 'Enter') { event.preventDefault(); taglist_add(); }
+            //     else if (event.key === 'Escape') { event.preventDefault(); document.activeElement.blur(); document.body.focus(); }
+            //     else if (event.key === 'Enter') { event.preventDefault(); form.submit(); }
+            // });
 
-            input.after(btn_bookmark);
-            btn_bookmark.after(btn_bookmark2);
+            let input_form = document.querySelector("#post-list .sidebar .tag-search");
+            let d_div = document.createElement("div");
+            d_div.appendChild(btn_bookmark);
+            d_div.appendChild(btn_bookmark2);
+            input_form.after(d_div);
 
             // populate
             let taglistpins = GM_getValue("taglistpins", []);
@@ -2222,10 +2229,3 @@ document.addEventListener('keydown', function(e) {
     }
 });
 // #endregion
-
-
-
-
-
-
-
