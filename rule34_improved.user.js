@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Rule34.xxx Improved
 // @namespace    UserScript
-// @version      3.2.3
+// @version      3.2.4
 // @description  A lot of improvements for rule34.xxx
 // @author       Hentiedup, 0xC0LD, usnkw, kekxd
 // @match        https://rule34.xxx/*
@@ -2080,7 +2080,6 @@ if (setting_mainPageExtra) {
 
         let input = document.querySelector("#post-list input[type=text][name='tags']");
         if (input == null) { input = document.querySelector("#post-view input[type=text][name='tags']"); }
-
         if (input != null) {
 
             let btn_bookmark = document.createElement("button");
@@ -2147,17 +2146,21 @@ if (setting_mainPageExtra) {
             //     else if (event.key === 'Enter') { event.preventDefault(); form.submit(); }
             // });
 
-            let input_form = document.querySelector("#post-view .sidebar .tag-search");
-            let d_div = document.createElement("div");
-            d_div.appendChild(btn_bookmark);
-            d_div.appendChild(btn_bookmark2);
-            input_form.after(d_div);
+            let input_form = document.querySelector("#post-list .sidebar .tag-search");
+            if (input_form == null) { input_form = document.querySelector("#post-view .sidebar .tag-search"); }
+            if (input_form != null) {
+                let d_div = document.createElement("div");
+                d_div.appendChild(btn_bookmark);
+                d_div.appendChild(btn_bookmark2);
+                input_form.after(d_div);
 
-            // populate
-            let taglistpins = GM_getValue("taglistpins", []);
-            for (let i = 0; i < taglistpins.length; i++) {
-                tagbarpins_add(taglistpins[i]);
+                // populate
+                let taglistpins = GM_getValue("taglistpins", []);
+                for (let i = 0; i < taglistpins.length; i++) {
+                    tagbarpins_add(taglistpins[i]);
+                }
             }
+
         }
     }
 }
@@ -2179,8 +2182,10 @@ document.addEventListener('keydown', function(e) {
     if (e.code === 'KeyR') {
         let input = document.querySelector("#post-list input[type=text][name='tags']");
         if (input == null) { input = document.querySelector("#post-view input[type=text][name='tags']"); }
-        let form = input.closest("form");
-        form.submit();
+        if (input != null) {
+            let form = input.closest("form");
+            form.submit();
+        }
     }
 
     if (setting_enableFavOnEnter && isPage_post && event.key === 'Enter') {
@@ -2217,10 +2222,11 @@ document.addEventListener('keydown', function(e) {
             slideShow_hide();
             let input = document.querySelector("#post-list input[type=text][name='tags']");
             if (input == null) { input = document.querySelector("#post-view input[type=text][name='tags']"); }
-            input.focus();
-            input.select();
-            e.preventDefault();
-
+            if (input != null) {
+                input.focus();
+                input.select();
+                e.preventDefault();
+            }
         } else if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
             slideShow_backNshow();
         } else if (e.code === 'ArrowRight' || e.code === 'KeyD') {
