@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Rule34.xxx Improved
 // @namespace    UserScript
-// @version      3.2.2
+// @version      3.2.3
 // @description  A lot of improvements for rule34.xxx
 // @author       Hentiedup, 0xC0LD, usnkw, kekxd
 // @match        https://rule34.xxx/*
@@ -2166,7 +2166,7 @@ if (setting_mainPageExtra) {
 
 // #region global shortcuts
 document.addEventListener('keydown', function(e) {
-    let event = document.all ? window.event : e;
+
     switch (e.target.tagName.toLowerCase()) {
         case "input":
         case "textarea":
@@ -2176,7 +2176,7 @@ document.addEventListener('keydown', function(e) {
         case "comment": return;
     }
 
-    if (event.key === 'Enter' || e.code === 'KeyR') {
+    if (e.code === 'KeyR') {
         let input = document.querySelector("#post-list input[type=text][name='tags']");
         if (input == null) { input = document.querySelector("#post-view input[type=text][name='tags']"); }
         let form = input.closest("form");
