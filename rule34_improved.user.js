@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Rule34.xxx Improved
 // @namespace    UserScript
-// @version      3.1
+// @version      3.2.2
 // @description  A lot of improvements for rule34.xxx
 // @author       Hentiedup, 0xC0LD, usnkw, kekxd
 // @match        https://rule34.xxx/*
@@ -2147,7 +2147,7 @@ if (setting_mainPageExtra) {
             //     else if (event.key === 'Enter') { event.preventDefault(); form.submit(); }
             // });
 
-            let input_form = document.querySelector("#post-list .sidebar .tag-search");
+            let input_form = document.querySelector("#post-view .sidebar .tag-search");
             let d_div = document.createElement("div");
             d_div.appendChild(btn_bookmark);
             d_div.appendChild(btn_bookmark2);
