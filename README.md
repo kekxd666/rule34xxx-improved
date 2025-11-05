@@ -35,4 +35,4 @@ Navigate to your account options page to view and customize all of your options.
 [![Firefox](https://img.shields.io/badge/Firefox-000020?style=for-the-badge&logo=FireFox&logoColor=FF0000)](https://addons.mozilla.org/en-US/firefox/addon/imagus/)
 
 ### Modify sieve to fix playing mp4 videos for rule34.xxx:
-<img src="assets/imagus-fix.png" width="730" height="615">
+![imagus fix](assets/imagus-fix.png)
